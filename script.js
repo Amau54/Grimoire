@@ -2493,12 +2493,10 @@ const RECETTES_SITE = [
     prep:['Broyer au pilon les épices et tout mélanger dans l’alcool.', 'Laisser macérer 6 semaines.', 'Dissoudre le miel dans le vin et ajouter la macération filtrée.', 'Verser le tout dans une jarre en verre et exposer 1 mois au soleil.', 'Filtrer et mettre en bouteilles.', 'Laisser reposer quelques semaines avant de consommer.', 'Cette préparation est un fortifiant à prendre en début d’hiver, faire un cure de quelques jours, prendre un petit verre le matin.'] },
 ];
 RECETTES_SITE.forEach(o => DATA.push(_recette(o)));
-/* Spécimen (image détourée du blog) associé à chaque recette, le cas échéant.
-   r.image = chemin ; r.imageFull = true si image pleine page (à encadrer). */
+/* Spécimen photographié de chaque recette (image complète, affichée comme une
+   photographie collée sur la page). */
 DATA.forEach(r => {
-  const im = (typeof IMAGES_SITE !== 'undefined' && IMAGES_SITE[r.id]) || null;
-  r.image = im ? im.s : null;
-  r.imageFull = im ? !!im.f : false;
+  r.image = (typeof IMAGES_SITE !== 'undefined' && IMAGES_SITE[r.id]) || null;
 });
 
 /* ---------------------------------------------------------------------
@@ -2785,7 +2783,7 @@ function vueRecette(r) {
   }).join('');
 
   const specimen = r.image
-    ? `<div class="specimen-frame${r.imageFull ? ' specimen-frame--full' : ''}">
+    ? `<div class="specimen-frame">
          <span class="tape t1"></span><span class="tape t2"></span><span class="tape t3"></span><span class="tape t4"></span>
          <img src="${r.image}" alt="Spécimen — ${escAttr(r.nom)}" loading="lazy">
        </div>`

@@ -80,3 +80,15 @@ l'esthétique herbier. Elles sont récupérées, recadrées (max 360 px) et opti
 - Couverture : 291/368 (liqueurs, crèmes, ratafias, hypocras, vins). Les rhums et
   quelques recettes hors-blog gardent la gravure SVG en repli (la page rhum n'expose
   pas de mapping image fiable en HTML statique).
+
+## Spécimens complétés & « photos collées »
+
+Toutes les recettes (368/368) ont désormais un spécimen photographique, affiché
+COMPLET (non détouré) comme une photographie collée sur la page (marge blanche de
+tirage + bandelettes + ombre + légère rotation), via `images/<id>.jpg`.
+
+- Images existantes : tirage complet réutilisé.
+- Rhums : 49 vraies photos des préparations extraites de la page rhum du blog
+  (segmentation par recette, `commons_fetch.py` non concerné) ; appariement exact.
+- Compléments web (28) : Wikimedia Commons (photos d'ingrédients, licences libres),
+  `commons_fetch.py` + termes curatés ; planche-contact pour contrôle visuel.

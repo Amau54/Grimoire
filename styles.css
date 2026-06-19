@@ -370,10 +370,13 @@ body{
   display:block;
   width:100%;
   height:auto;
-  /* SPÉCIMENS DÉTOURÉS (PNG/WebP à fond transparent) : pas de mix-blend.
-     L'ombre portée drop-shadow suit la silhouette → effet "spécimen posé". */
-  filter:sepia(.10) contrast(1.02) saturate(.95)
-         drop-shadow(0 16px 20px rgba(40,25,12,.30));
+  /* PHOTOGRAPHIE COLLÉE : tirage complet (non détouré) avec marge blanche de
+     tirage, ombre portée et léger virage — comme une photo prise puis collée. */
+  background:#fbf7ec;
+  padding:9px 9px 26px;                 /* large marge bas façon Polaroïd */
+  border:1px solid rgba(120,104,68,.30);
+  box-shadow:0 16px 26px rgba(40,25,12,.34), 0 1px 0 rgba(255,255,255,.6) inset;
+  filter:sepia(.05) contrast(1.02) saturate(.98);
 }
 /* halo d'auréole de pressage sous le spécimen (tache, pas de dessin) */
 .specimen-frame::before{
@@ -1125,11 +1128,14 @@ ol.prep li:last-child{ padding-bottom:0; }
 .carte__gravure--photo{ height:auto; }
 .carte__photo{
   display:block;
-  width:auto; max-width:100%;
-  height:58px;
-  object-fit:contain;
-  /* fond transparent : pas de cadre blanc, ombre douce qui suit la silhouette */
-  filter:sepia(.08) saturate(.95) drop-shadow(0 6px 8px rgba(40,25,12,.28));
+  width:64px; height:64px;
+  object-fit:cover; object-position:center;
+  /* petite photo collée : marge blanche + ombre */
+  background:#fbf7ec; padding:3px 3px 7px;
+  border:1px solid rgba(120,104,68,.30);
+  box-shadow:0 4px 8px rgba(40,25,12,.26);
+  transform:rotate(-1.5deg);
+  filter:sepia(.05) saturate(.98);
 }
 .carte__corps{ display:flex; flex-direction:column; gap:4px; }
 .carte__cat{
