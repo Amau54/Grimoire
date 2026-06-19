@@ -2494,9 +2494,10 @@ const RECETTES_SITE = [
 ];
 RECETTES_SITE.forEach(o => DATA.push(_recette(o)));
 /* Spécimen photographié de chaque recette (image complète, affichée comme une
-   photographie collée sur la page). */
+   photographie collée sur la page) + préparation enrichie de jetons quantités. */
 DATA.forEach(r => {
   r.image = (typeof IMAGES_SITE !== 'undefined' && IMAGES_SITE[r.id]) || null;
+  if (typeof PREP_SITE !== 'undefined' && PREP_SITE[r.id]) r.preparation = PREP_SITE[r.id];
 });
 
 /* ---------------------------------------------------------------------
@@ -2637,6 +2638,17 @@ function scaleIngredient(ing, f) {
   return { qte, nom, adj };
 }
 
+/* Expanse les jetons ⟦I<n>⟧ d'une étape en quantités recalculables (.iq). */
+function expandPrep(step, ings) {
+  return String(step).replace(/⟦I(\d+)⟧/g, (m, n) => {
+    const ing = ings[+n];
+    if (!ing || ing.qte == null) return '';
+    const u = ing.unite || '';
+    const uA = u.replace(/"/g, '&quot;');
+    return ` <span class="iq" data-q="${ing.qte}" data-u="${uA}" data-s="${ing.scalable ? 1 : 0}">${fmt(ing.qte)}${u ? ' ' + u : ''}</span>`;
+  });
+}
+
 /* ---------------------------------------------------------------------
    6 ter. ÉRUDITION (latin, numérotation) — aucun ornement vectoriel
 --------------------------------------------------------------------- */
@@ -2675,7 +2687,7 @@ function carteRecette(r) {
   return `
     <a class="carte" href="#/recette/${r.id}" style="--rot:${_rot(r.id)}deg">
       <span class="carte__gravure${r.image ? ' carte__gravure--photo' : ''}" aria-hidden="true">${r.image
-        ? `<img class="carte__photo" src="${r.image}" alt="" loading="lazy">`
+        ? `<img class="carte__photo" src="${r.image}" alt="Spécimen — ${r.nom.replace(/"/g, '&quot;')}" loading="lazy" decoding="async">`
         : '<span class="carte__nospec">❧</span>'}</span>
       <span class="carte__corps">
         <span class="carte__cat">${catNom(r.categorie)}</span>
@@ -2776,9 +2788,10 @@ function vueRecette(r) {
   const macTl = (r.timeline.find(t => /mac[ée]r/i.test(t.phase)) || {}).duree
     || (r.macerationJours ? r.macerationJours + ' jours' : '');
 
-  const lignesIng = r.ingredients.map(i => {
+  const lignesIng = r.ingredients.map((i, idx) => {
     const d = scaleIngredient(i, 1);
     return `<tr data-q="${i.qte == null ? '' : i.qte}" data-u="${escAttr(i.unite || '')}" data-s="${i.scalable ? 1 : 0}" data-n="${escAttr(i.nom)}">`
+      + `<td class="ck"><input type="checkbox" data-idx="${idx}" aria-label="Préparé : ${escAttr(i.nom)}"></td>`
       + `<td class="qte${d.adj ? ' adj' : ''}">${d.qte}</td><td class="nom">${i.nom}</td></tr>`;
   }).join('');
 
@@ -2821,12 +2834,12 @@ function vueRecette(r) {
         <aside class="cartouche">
           <span class="tape ct"></span>
           <div class="genus">${latinBinom(r)}</div>
-          <div class="vern">${r.nom}</div>
+          <h1 class="vern">${r.nom}</h1>
           <div class="id-rule"></div>
           <div class="specs">
             <div class="spec"><div class="v">${r.degre}&deg;</div><div class="l">Degré</div></div>
             <div class="spec"><div class="v">${macBig}&nbsp;${macUnit}</div><div class="l">Macération</div></div>
-            <div class="spec"><div class="v"><input id="lotVol" class="lot-input" type="number" min="0.1" step="0.1" value="${fmt(r.lot)}" data-base="${r.lot}" aria-label="Volume du lot en litres"></div><div class="l">Lot · litres</div></div>
+            <div class="spec"><div class="v" id="lotRef">${fmt(r.lot)}&nbsp;L</div><div class="l">Lot · référence</div></div>
           </div>
           <dl>
             <div class="line"><dt>Catégorie</dt><dd>${catNom(r.categorie)}</dd></div>
@@ -2837,6 +2850,7 @@ function vueRecette(r) {
           <span class="stamp">Vérifié · Codex</span>
           <div class="cartouche-actions no-print">
             <button class="btn btn-fav ${fav ? 'is-fav' : ''}" data-fav="${r.id}">✦ ${fav ? 'Favori' : 'Garder'}</button>
+            <button class="btn btn--ghost cook-mode" id="cookMode" type="button" aria-pressed="false" hidden title="Garder l'écran allumé pendant la préparation">☀ Écran éveillé</button>
             <button class="btn btn--ghost" onclick="window.print()">Imprimer</button>
           </div>
         </aside>
@@ -2848,8 +2862,16 @@ function vueRecette(r) {
         <div class="recipe-grid">
           <div>
             <h2 class="section-title">Matière · <span id="lotCap">pour ${fmt(r.lot)} litre${r.lot > 1 ? 's' : ''}</span></h2>
+            <div class="lot-calc no-print" role="group" aria-label="Calculateur de lot">
+              <span class="lc-l">Calculateur de lot</span>
+              <button class="lc-mul" type="button" data-mul="0.5" title="Diviser par deux">½</button>
+              <span class="lc-field">pour <input id="lotVol" class="lot-input" type="number" min="0.05" step="0.1" value="${fmt(r.lot)}" data-base="${r.lot}" aria-label="Volume du lot en litres"> L</span>
+              <button class="lc-mul" type="button" data-mul="2" title="Doubler">×2</button>
+              <button class="lc-reset" type="button" title="Revenir au lot de référence">↺</button>
+              <span class="lc-fac" aria-live="polite">×<b id="lotFactor">1</b></span>
+            </div>
             <table class="ingredients" id="ingrTable">
-              <thead><tr><th class="q">Quantité</th><th>Ingrédient</th></tr></thead>
+              <thead><tr><th scope="col" class="ck" aria-label="Fait"></th><th scope="col" class="q">Quantité</th><th scope="col">Ingrédient</th></tr></thead>
               <tbody>${lignesIng}</tbody>
             </table>
 
@@ -2859,7 +2881,7 @@ function vueRecette(r) {
 
           <div>
             <h2 class="section-title">Procédé</h2>
-            <ol class="prep">${r.preparation.map(e => `<li>${e}</li>`).join('')}</ol>
+            <ol class="prep">${r.preparation.map(e => `<li>${expandPrep(e, r.ingredients)}</li>`).join('')}</ol>
             ${r.conseils ? `<p class="pen-note">${r.conseils}</p>` : ''}
           </div>
         </div>
@@ -2944,6 +2966,39 @@ function rendreCalcul() {
   `;
 }
 
+/* Données structurées schema.org/Recipe (SEO) pour la fiche affichée. */
+function injectRecipeJsonLd(r) {
+  const old = document.getElementById('ld-recipe');
+  if (old) old.remove();
+  const ld = {
+    '@context': 'https://schema.org/', '@type': 'Recipe', name: r.nom,
+    image: r.image ? [new URL(r.image, location.href).href] : undefined,
+    description: r.histoire || undefined,
+    author: { '@type': 'Organization', name: 'Codex des Liqueurs & Hypocras' },
+    recipeCategory: catNom(r.categorie), recipeYield: fmt(r.lot) + ' L',
+    recipeIngredient: r.ingredients.map(i => [i.qte != null ? fmt(i.qte) : '', i.unite, i.nom].filter(Boolean).join(' ').trim()),
+    recipeInstructions: r.preparation.map(t => ({ '@type': 'HowToStep', text: String(t).replace(/⟦I\d+⟧/g, '').replace(/\s+/g, ' ').trim() }))
+  };
+  const s = document.createElement('script');
+  s.type = 'application/ld+json'; s.id = 'ld-recipe'; s.textContent = JSON.stringify(ld);
+  document.head.appendChild(s);
+}
+
+/* Finitions après rendu : apparition au scroll, fondu des images, retour-haut. */
+function postRender() {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // fondu des images de spécimen au chargement
+  $$('.specimen-frame img, .carte__photo').forEach(img => {
+    if (img.complete) img.classList.add('is-loaded');
+    else img.addEventListener('load', () => img.classList.add('is-loaded'), { once: true });
+  });
+  if (reduce || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+  }), { rootMargin: '0px 0px -8% 0px' });
+  $$('.carte, .plate, .cover').forEach(el => { el.classList.add('reveal'); io.observe(el); });
+}
+
 /* ---------------------------------------------------------------------
    8. ROUTAGE (par ancre)
 --------------------------------------------------------------------- */
@@ -2952,6 +3007,7 @@ function router() {
   const seg = hash.replace(/^#\//, '').split('/');
   const cont = app();
   window.scrollTo(0, 0);
+  if (seg[0] !== 'recette') { const ld = document.getElementById('ld-recipe'); if (ld) ld.remove(); }
 
   if (seg[0] === '' || seg[0] === undefined) {
     cont.innerHTML = vueAccueil();
@@ -2992,7 +3048,7 @@ function router() {
   }
   else if (seg[0] === 'recette') {
     const r = getRecette(seg[1]);
-    if (r) { cont.innerHTML = vueRecette(r); STORE.pushRecent(r.id); brancherFiche(); }
+    if (r) { cont.innerHTML = vueRecette(r); STORE.pushRecent(r.id); brancherFiche(); injectRecipeJsonLd(r); }
     else cont.innerHTML = '<p class="vide">Cette page du grimoire est introuvable.</p>';
   }
   else if (seg[0] === 'favoris') {
@@ -3007,6 +3063,7 @@ function router() {
   }
 
   majSidebar();
+  postRender();
 }
 
 /* ---------------------------------------------------------------------
@@ -3081,16 +3138,16 @@ function brancherFiche() {
     majSidebar();
   });
 
-  // Recalcul de lot EN DIRECT sur le tableau d'ingrédients
+  // CALCULATEUR DE LOT EN DIRECT (tableau d'ingrédients + quantités du procédé)
   const vol = $('#lotVol');
   const table = $('#ingrTable');
-  if (vol && table) {
+  if (vol) {
     const base = parseFloat(vol.dataset.base) || 1;
     const recalc = () => {
       const v = parseFloat(String(vol.value).replace(',', '.'));
       if (!v || v <= 0) return;
       const f = v / base;
-      $$('tbody tr', table).forEach(tr => {
+      if (table) $$('tbody tr', table).forEach(tr => {
         if (!('n' in tr.dataset)) return;
         const q = tr.dataset.q, u = tr.dataset.u || '', s = tr.dataset.s === '1';
         const cq = $('.qte', tr), cn = $('.nom', tr);
@@ -3100,11 +3157,60 @@ function brancherFiche() {
         else { cq.textContent = fmt(parseFloat(q)) + (u ? ' ' + u : ''); cq.classList.add('adj'); }
         if (cn) cn.textContent = scaleNom(tr.dataset.n || cn.textContent, f);
       });
-      const disc = $('#lotDisc'); if (disc) disc.textContent = fmt(v) + ' L';
+      // quantités inline insérées dans le procédé
+      $$('.iq').forEach(el => {
+        const q = el.dataset.q; if (q == null || q === '') return;
+        const u = el.dataset.u || '', s = el.dataset.s !== '0';
+        el.textContent = (s ? fmt(parseFloat(q) * f) : fmt(parseFloat(q))) + (u ? ' ' + u : '');
+      });
+      const fac = $('#lotFactor'); if (fac) fac.textContent = fmt(f);
       const cap = $('#lotCap'); if (cap) cap.textContent = 'pour ' + fmt(v) + ' litre' + (v > 1 ? 's' : '');
     };
     vol.addEventListener('input', recalc);
     vol.addEventListener('change', recalc);
+    $$('.lc-mul').forEach(b => b.addEventListener('click', () => {
+      const cur = parseFloat(String(vol.value).replace(',', '.')) || base;
+      vol.value = fmt(Math.max(0.05, cur * parseFloat(b.dataset.mul)));
+      recalc();
+    }));
+    const rb = $('.lc-reset');
+    if (rb) rb.addEventListener('click', () => { vol.value = fmt(base); recalc(); });
+    recalc();
+  }
+
+  // Cases à cocher d'ingrédients (suivi de préparation, persistant par recette)
+  if (table) {
+    const id = (location.hash.split('/')[2]) || '';
+    const key = 'codex_check_' + id;
+    let coches;
+    try { coches = new Set(JSON.parse(localStorage.getItem(key) || '[]')); } catch (e) { coches = new Set(); }
+    $$('input[type="checkbox"][data-idx]', table).forEach(cb => {
+      const i = +cb.dataset.idx;
+      if (coches.has(i)) { cb.checked = true; cb.closest('tr').classList.add('done'); }
+      cb.addEventListener('change', () => {
+        cb.closest('tr').classList.toggle('done', cb.checked);
+        if (cb.checked) coches.add(i); else coches.delete(i);
+        try { localStorage.setItem(key, JSON.stringify([...coches])); } catch (e) {}
+      });
+    });
+  }
+
+  // Mode cuisine : empêche la mise en veille de l'écran (Wake Lock)
+  const cm = $('#cookMode');
+  if (cm && 'wakeLock' in navigator) {
+    cm.hidden = false;
+    let wl = null;
+    const release = () => { cm.setAttribute('aria-pressed', 'false'); };
+    cm.addEventListener('click', async () => {
+      if (wl) { try { await wl.release(); } catch (e) {} wl = null; release(); return; }
+      try { wl = await navigator.wakeLock.request('screen'); cm.setAttribute('aria-pressed', 'true'); wl.addEventListener('release', release); }
+      catch (e) {}
+    });
+    document.addEventListener('visibilitychange', async () => {
+      if (cm.getAttribute('aria-pressed') === 'true' && document.visibilityState === 'visible') {
+        try { wl = await navigator.wakeLock.request('screen'); wl.addEventListener('release', release); } catch (e) {}
+      }
+    });
   }
 }
 
@@ -3181,6 +3287,17 @@ function brancherChrome() {
   $('#sidebar').addEventListener('click', e => {
     if (e.target.closest('a')) document.body.classList.remove('sidebar-ouverte');
   });
+  // bouton « Retour en haut »
+  const toTop = $('#toTop');
+  if (toTop) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }));
+    let tick = false;
+    window.addEventListener('scroll', () => {
+      if (tick) return; tick = true;
+      requestAnimationFrame(() => { toTop.classList.toggle('show', window.scrollY > 900); tick = false; });
+    }, { passive: true });
+  }
 }
 
 /* ---------------------------------------------------------------------

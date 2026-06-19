@@ -1470,3 +1470,133 @@ ol.prep li:last-child{ padding-bottom:0; }
 
 /* rubriques (réutilise .chapters) */
 .chapters--rubriques { margin-top: 8px; }
+
+/* =====================================================================
+   AMÉLIORATIONS — issues d'une recherche web UX/A11y/typo/sémantique
+   (focus-visible, reduced-motion, mesure, cibles tactiles, calculateur,
+   quantités du procédé, cases à cocher, reveal, impression…)
+   ===================================================================== */
+
+/* P1-1 — focus clavier conforme (WCAG 2.4.7/2.4.11) */
+:where(a,button,input,select,textarea,[tabindex],.carte,.chapter-tab,.puce-filtre):focus-visible{
+  outline:3px solid var(--wine); outline-offset:2px; border-radius:2px;
+}
+:where(a,button,input,select):focus:not(:focus-visible){ outline:none; }
+
+/* P1-2 — respecter prefers-reduced-motion */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important; animation-iteration-count:1!important;
+    transition-duration:.01ms!important; scroll-behavior:auto!important;
+  }
+}
+
+/* P1-3 / P3-19/20 — mesure de lecture, interligne, équilibre des lignes */
+.recipe p,.lede,.prep li,.pen-note,.lore p{ max-width:66ch; }
+.recipe p,.lede,.lore p{ line-height:1.58; text-wrap:pretty; }
+.prep li{ line-height:1.5; }
+.recipe p{ hyphens:auto; -webkit-hyphens:auto; }
+.vern,.genus,.codex,.planche-no,.cover h1{ text-wrap:balance; }
+@media (max-width:640px){ .recipe p,.prep li,.lede{ line-height:1.45; } }
+
+/* P2-14 — chiffres anciens dans le corps, tabulaires dans les quantités */
+.recipe,.lede,.pen-note,.lore{ font-variant-numeric:oldstyle-nums proportional-nums; }
+td.qte,.lot-input,.spec .v,#lotFactor,.iq,.lot-calc{ font-variant-numeric:lining-nums tabular-nums; }
+
+/* P1-6 — cibles tactiles ≥44px, champ lot ≥16px (anti-zoom iOS) */
+.lot-input,.lc-mul,.lc-reset,.btn,.sidebar__liste a,#toggleTheme,.chapter-tab,.cook-mode{ min-height:44px; }
+.lot-input{ font-size:16px; }
+
+/* P2-15 — voile ivoire derrière le texte courant sur texture (contraste garanti) */
+.lede,.pen-note{
+  background:rgba(244,239,226,.78);
+  box-shadow:0 0 0 7px rgba(244,239,226,.78);
+  border-radius:2px;
+}
+:root[data-theme="sombre"] .lede,
+:root[data-theme="sombre"] .pen-note{ background:rgba(28,24,18,.55); box-shadow:0 0 0 7px rgba(28,24,18,.55); }
+
+/* P3-24 — content-visibility sur la grille de cartes (perf 368 items) */
+.grille-recettes .carte{ content-visibility:auto; contain-intrinsic-size:auto 120px; }
+@media print{ .grille-recettes .carte{ content-visibility:visible; } }
+
+/* P3-16/25 — apparition au scroll + fondu des images */
+@media (prefers-reduced-motion:no-preference){
+  .reveal{ opacity:0; transform:translateY(10px); transition:opacity .5s ease, transform .5s ease; }
+  .reveal.is-in{ opacity:1; transform:none; }
+  .specimen-frame img{ opacity:0; transition:opacity .45s ease; }
+  .specimen-frame img.is-loaded,.specimen-frame img[data-noanim]{ opacity:1; }
+}
+
+/* P3-26 — flash bref des quantités recalculées */
+@keyframes maj-qte{ from{ color:var(--wine); } to{ color:inherit; } }
+@media (prefers-reduced-motion:no-preference){ .qte.maj,.iq.maj{ animation:maj-qte .65s ease; } }
+
+/* ---- CALCULATEUR DE LOT (barre dans la planche) ---- */
+.lot-calc{
+  display:flex; flex-wrap:wrap; align-items:center; gap:8px;
+  margin:0 0 14px; padding:8px 12px;
+  background:rgba(244,239,226,.6); border:1px solid rgba(90,76,46,.30);
+}
+.lot-calc .lc-l{
+  font-family:'Special Elite',monospace; font-size:10px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-faint); margin-right:2px;
+}
+.lot-calc .lc-field{ font-family:'Cormorant',serif; color:var(--ink-soft); }
+.lot-calc .lot-input{
+  width:72px; text-align:center; font-family:'Special Elite',monospace;
+  background:rgba(255,252,243,.7); border:1px solid rgba(80,66,38,.4);
+  color:var(--ink); padding:6px 6px;
+}
+.lot-calc .lot-input::-webkit-outer-spin-button,
+.lot-calc .lot-input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+.lc-mul,.lc-reset{
+  font-family:'Cormorant SC',serif; font-weight:600; font-size:14px; cursor:pointer;
+  background:rgba(214,201,164,.5); border:1px solid rgba(80,66,38,.32);
+  color:var(--ink); padding:6px 11px; min-width:38px;
+}
+.lc-mul:hover,.lc-reset:hover{ background:rgba(222,210,174,.85); }
+.lc-fac{ margin-left:auto; font-family:'Special Elite',monospace; font-size:13px; color:var(--wine); }
+.lc-fac b{ font-size:15px; }
+
+/* ---- QUANTITÉS INLINE DANS LE PROCÉDÉ ---- */
+.iq{
+  font-family:'Special Elite',monospace; font-size:.82em; color:var(--wine);
+  white-space:nowrap;
+}
+.iq::before{ content:"("; } .iq::after{ content:")"; }
+
+/* ---- CASES À COCHER D'INGRÉDIENTS (suivi, survit au recalcul) ---- */
+.ingredients td.ck{ width:30px; padding-right:6px; }
+.ingredients td.ck input{ width:18px; height:18px; accent-color:var(--wine); cursor:pointer; }
+.ingredients tr.done td.qte,.ingredients tr.done td.nom{ opacity:.45; }
+.ingredients tr.done td.nom{ text-decoration:line-through; }
+
+/* ---- MODE CUISINE / RETOUR-HAUT / LIEN D'ÉVITEMENT ---- */
+.cook-mode[aria-pressed="true"]{ background:var(--wine); color:var(--label); border-color:var(--wine); }
+.skip-link{ position:absolute; left:-9999px; }
+.skip-link:focus{ position:fixed; left:10px; top:10px; z-index:200;
+  background:var(--label); color:var(--ink); padding:10px 14px; border:1px solid var(--ink); }
+.to-top{
+  position:fixed; right:16px; bottom:16px; z-index:60;
+  font-family:'Cormorant SC',serif; letter-spacing:.06em; cursor:pointer;
+  background:var(--label); color:var(--ink); border:1px solid rgba(80,66,38,.4);
+  padding:10px 14px; opacity:0; pointer-events:none; transition:opacity .2s ease;
+  box-shadow:0 8px 18px -10px var(--shadow);
+}
+.to-top.show{ opacity:.96; pointer-events:auto; }
+
+/* P3-27 — confort thème sombre */
+:root[data-theme="sombre"] .recipe{ line-height:1.62; }
+
+/* P2-13 — impression « planche » propre */
+@media print{
+  .plate,.cartouche,.carte,.specimen-frame,figure,.note,.lore p,.timeline{ break-inside:avoid; }
+  .section-title,.vern,.genus,.plate-banner{ break-after:avoid; }
+  .recipe p,.lede{ orphans:3; widows:3; }
+  .lot-calc,.cartouche-actions,.to-top,.skip-link,.cook-mode{ display:none!important; }
+  @page{ margin:16mm; }
+}
+
+/* h1 sémantique pour le nom de recette : conserver le rendu de l'étiquette */
+.cartouche h1.vern{ margin:0 0 14px; font-size:15px; }

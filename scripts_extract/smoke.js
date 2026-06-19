@@ -1,6 +1,7 @@
 const fs = require('fs'), vm = require('vm');
 const notes = fs.existsSync('notes.js') ? fs.readFileSync('notes.js', 'utf8') : '';
 const imgs = fs.existsSync('images.js') ? fs.readFileSync('images.js','utf8') : '';
+const prep = fs.existsSync('prep.js') ? fs.readFileSync('prep.js','utf8') : '';
 const code = notes + '\n' + fs.readFileSync('script.js', 'utf8');
 
 function mkEl() {
@@ -28,12 +29,12 @@ const doc = {
   createElement() { return mkEl(); },
   createDocumentFragment() { return mkEl(); },
   addEventListener(ev, cb) { if (ev === 'DOMContentLoaded') this._ready = cb; },
-  body: mkEl(), documentElement: mkEl(), title: '',
+  body: mkEl(), documentElement: mkEl(), head: mkEl(), title: '',
 };
 const win = {
   addEventListener() {}, removeEventListener() {},
   matchMedia() { return { matches: false, addEventListener() {}, addListener() {} }; },
-  location: { hash: '', href: '' }, scrollTo() {}, print() {},
+  location: { hash: '', href: 'http://localhost/' }, scrollTo() {}, print() {},
   localStorage: { _d: {}, getItem(k) { return this._d[k] ?? null; }, setItem(k, v) { this._d[k] = String(v); }, removeItem(k) { delete this._d[k]; } },
 };
 const sandbox = {
