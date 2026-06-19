@@ -2752,10 +2752,16 @@ function numPlanche(r) { return DATA.indexOf(r) + 1; }
 const app = () => $('#app');
 
 /** Carte de recette réutilisable. */
+/** Légère rotation stable (déduite de l'id) : « posé à la main », non aléatoire au rendu. */
+function _rot(id) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return (((h % 13) - 6) * 0.12).toFixed(2);
+}
 function carteRecette(r) {
   const fav = STORE.isFavori(r.id) ? 'is-fav' : '';
   return `
-    <a class="carte" href="#/recette/${r.id}">
+    <a class="carte" href="#/recette/${r.id}" style="--rot:${_rot(r.id)}deg">
       <span class="carte__gravure${r.image ? ' carte__gravure--photo' : ''}" aria-hidden="true">${r.image
         ? `<img class="carte__photo" src="${r.image}" alt="" loading="lazy">`
         : (GRAVURES[r.gravure] || '')}</span>
@@ -2936,6 +2942,8 @@ function vueRecette(r) {
 
             ${FILET}
 
+            ${r.conseils ? `<div class="field-obs"><span class="fo-label">Note de terrain</span>${r.conseils}</div>` : ''}
+
             ${r.histoire ? `<h3 class="sec-title">De l'origine &amp; des vertus</h3>
             <div class="prose lettrine"><p>${r.histoire}</p></div>` : ''}
 
@@ -2951,11 +2959,10 @@ function vueRecette(r) {
             <h3 class="sec-title">Cours des opérations · tempus</h3>
             <div class="timeline">${r.timeline.map(t => `<div class="tl-row"><div class="ph">${t.phase}</div><div class="du">${t.duree}</div></div>`).join('')}</div>
 
-            ${(r.proprietes || r.conseils) ? `${FILET_COURT}
-            <h3 class="sec-title">Notes du grimoire</h3>
-            <div class="notes">
+            ${r.proprietes ? `${FILET_COURT}
+            <h3 class="sec-title">Vertus &amp; propriétés</h3>
+            <div class="notes notes--solo">
               ${note('Vertus', r.proprietes, 'propriete')}
-              ${note("Conseils d'apothicaire", r.conseils, 'conseil')}
             </div>` : ''}
 
             ${r.dicton ? `<div class="dicton"><p>${r.dicton}</p></div>` : ''}
