@@ -1,443 +1,1148 @@
-/* =====================================================================
-   CODEX DES LIQUEURS & HYPOCRAS — Feuille de style
-   Ambiance : parchemin, brun cuir, cuivre, or vieilli, vert sauge.
-   Deux thèmes : clair (parchemin) et "grimoire" sombre (cuir patiné).
-   Responsive : sidebar fixe sur grand écran, tiroir sur mobile.
-   ===================================================================== */
+/* =============================================================================
+   CODEX DES LIQUEURS & HYPOCRAS — feuille de style « planche d'herbier enluminé »
+   ---------------------------------------------------------------------------
+   Système visuel repris fidèlement de la maquette de référence
+   (scripts_extract/_data/design_candidates/cand_2_planche-herbier.html) :
+   papier ivoire moucheté, encre sépia, aquarelle vert sauge, filets capillaires
+   or, touches rouge cinabre, petites capitales espacées, lettrines.
+   Toutes les couleurs passent par des variables CSS afin que le thème sombre
+   « grimoire » fonctionne par simple redéfinition des variables.
+   ========================================================================== */
 
-/* ----------------------------- 1. VARIABLES ----------------------------- */
+/* =============================================================================
+   1. THÈMES & VARIABLES
+   ========================================================================== */
 :root,
-:root[data-theme="clair"] {
-  --parchemin:      #f3e7c9;
-  --parchemin-2:    #ece0c0;
-  --parchemin-bord: #e6d6ad;
-  --encre:          #3a2c1a;
-  --encre-douce:    #6b5638;
-  --cuir:           #6b4423;
-  --cuir-fonce:     #4a2f17;
-  --cuivre:         #a9683b;
-  --or:             #b08d3c;
-  --or-clair:       #c9a85a;
-  --sauge:          #6b7a52;
-  --sauge-clair:    #8a986f;
-  --rouge-sceau:    #8a2f24;
+:root[data-theme="clair"]{
+  /* ---- Palette « planche d'herbier » (ivoire, défaut) ---- */
+  --paper:#f4efe2;          /* ivoire crème */
+  --paper-2:#efe8d6;        /* crème un peu plus chaud */
+  --paper-edge:#e7dec8;     /* bord de page */
+  --fleck:#d8cdb0;          /* mouchetures */
+  --ink:#473726;            /* encre sépia foncé (texte) */
+  --ink-soft:#6b5a45;       /* sépia adouci */
+  --ink-faint:#9a8a72;      /* sépia clair, légendes */
+  --sage:#7c8763;           /* vert sauge (aquarelle) */
+  --sage-deep:#5d6a47;      /* olive profond */
+  --sage-pale:#aeb592;      /* sauge délavé */
+  --gold:#a9842f;           /* or vieilli */
+  --rouge:#8c3a2b;          /* rouge enluminure / hypocras */
+  --hair:#cabfa3;           /* filet capillaire */
+  --hair-soft:#ddd3bb;
+  --shadow:rgba(60,46,28,.10);
 
-  --fond:           #e7d6b0;
-  --carte:          #f6ecd2;
-  --carte-bord:     #d8c293;
-  --ombre:          rgba(74, 47, 23, 0.22);
-  --filet:          #c2a86a;
-
-  --titre:    'Cinzel', 'Trajan Pro', serif;
-  --sous:     'Cormorant Garamond', 'Garamond', serif;
-  --corps:    'EB Garamond', 'Garamond', Georgia, serif;
+  /* ---- Variables d'appoint pour le « chrome » de l'application ---- */
+  --fond-app:radial-gradient(ellipse at 50% -10%, #efe8d6 0%, #e4dac1 60%, #d8cdaf 100%);
+  --topbar-bg:var(--paper-2);
+  --voile:rgba(60,46,28,.34);            /* voile mobile du tiroir */
+  --champ-bg:rgba(255,252,243,.55);      /* fond des champs de saisie */
+  --encart-bg:rgba(255,253,246,.42);     /* fond des encarts/cartes */
+  --selection:rgba(124,135,99,.25);      /* sélection de texte */
 }
 
-/* Thème grimoire sombre : cuir patiné, encre claire, dorures */
-:root[data-theme="sombre"] {
-  --parchemin:      #2b2117;
-  --parchemin-2:    #241b12;
-  --parchemin-bord: #3a2c1c;
-  --encre:          #ecdcb8;
-  --encre-douce:    #c9b48a;
-  --cuir:           #c9a85a;
-  --cuir-fonce:     #e0c887;
-  --cuivre:         #c47e4a;
-  --or:             #d8b95f;
-  --or-clair:       #ecd58a;
-  --sauge:          #9fb07d;
-  --sauge-clair:    #b6c498;
-  --rouge-sceau:    #c25a4a;
+/* ---- Thème « grimoire » nuit : encre/cuir sombre, dorures, parchemin éclairé
+        pour les encarts — sobre et lisible, contraste suffisant. ---- */
+:root[data-theme="sombre"]{
+  --paper:#23201b;          /* cuir/encre sombre */
+  --paper-2:#1c1915;        /* plus profond (barres) */
+  --paper-edge:#3a342a;     /* bord de page */
+  --fleck:#332e25;          /* mouchetures discrètes */
+  --ink:#ece3cf;            /* parchemin éclairé (texte) */
+  --ink-soft:#c4b69a;       /* sépia clair adouci */
+  --ink-faint:#9a8c71;      /* légendes */
+  --sage:#9aa67d;           /* sauge éclaircie */
+  --sage-deep:#b7c195;      /* olive lumineux (sur fond sombre) */
+  --sage-pale:#5d6a47;      /* sauge profonde pour les filets */
+  --gold:#cba24a;           /* dorure plus vive */
+  --rouge:#c66a52;          /* cinabre éclairci, lisible */
+  --hair:#4a4335;           /* filet capillaire sombre */
+  --hair-soft:#3a3429;
+  --shadow:rgba(0,0,0,.45);
 
-  --fond:           #1c150d;
-  --carte:          #2e2317;
-  --carte-bord:     #463420;
-  --ombre:          rgba(0, 0, 0, 0.5);
-  --filet:          #7a6433;
+  --fond-app:radial-gradient(ellipse at 50% -10%, #26221b 0%, #1b1813 60%, #141109 100%);
+  --topbar-bg:#1c1915;
+  --voile:rgba(0,0,0,.55);
+  --champ-bg:rgba(255,248,230,.05);
+  --encart-bg:rgba(255,248,230,.045);
+  --selection:rgba(154,166,125,.30);
 }
 
-/* ----------------------------- 2. BASE ----------------------------- */
-* { box-sizing: border-box; }
+/* =============================================================================
+   2. RÉINITIALISATION & CORPS
+   ========================================================================== */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 
-html { scroll-behavior: smooth; }
+body{
+  margin:0;
+  color:var(--ink);
+  font-family:'EB Garamond',Garamond,'Times New Roman',serif;
+  font-size:18px;
+  line-height:1.72;
+  background:var(--fond-app);
+  background-attachment:fixed;
+  min-height:100vh;
+}
+::selection{background:var(--selection)}
 
-body {
-  margin: 0;
-  font-family: var(--corps);
-  font-size: 19px;
-  line-height: 1.65;
-  color: var(--encre);
-  background-color: var(--fond);
-  /* texture parchemin discrète, générée en CSS (taches + grain) */
+img{max-width:100%;height:auto}
+a{color:inherit}
+
+/* =============================================================================
+   3. TEXTURE PAPIER RÉUTILISABLE  (.paper-tex)
+   ========================================================================== */
+.paper-tex{
+  position:relative;
+  background-color:var(--paper);
   background-image:
-    radial-gradient(circle at 18% 22%, rgba(122, 90, 45, 0.10) 0, transparent 32%),
-    radial-gradient(circle at 82% 12%, rgba(122, 90, 45, 0.08) 0, transparent 28%),
-    radial-gradient(circle at 65% 88%, rgba(80, 55, 25, 0.10) 0, transparent 34%),
-    radial-gradient(circle at 35% 70%, rgba(80, 55, 25, 0.06) 0, transparent 30%);
-  background-attachment: fixed;
+    radial-gradient(circle at 12% 18%, var(--fleck) 0, transparent 1.1px),
+    radial-gradient(circle at 78% 33%, var(--fleck) 0, transparent 1px),
+    radial-gradient(circle at 33% 62%, var(--fleck) 0, transparent 1.2px),
+    radial-gradient(circle at 64% 80%, var(--fleck) 0, transparent 1px),
+    radial-gradient(circle at 88% 71%, var(--fleck) 0, transparent 1.1px),
+    radial-gradient(circle at 47% 9%,  var(--fleck) 0, transparent 1px),
+    radial-gradient(circle at 7% 88%,  var(--fleck) 0, transparent 1px),
+    radial-gradient(circle at 92% 12%, var(--fleck) 0, transparent 1px),
+    radial-gradient(ellipse at 25% 15%, rgba(255,251,238,.55), transparent 55%),
+    radial-gradient(ellipse at 80% 85%, rgba(208,196,168,.35), transparent 60%);
+  background-size:
+    220px 220px, 260px 260px, 300px 300px, 240px 240px,
+    280px 280px, 200px 200px, 320px 320px, 300px 300px,
+    100% 100%, 100% 100%;
+}
+:root[data-theme="sombre"] .paper-tex{
+  background-image:
+    radial-gradient(circle at 12% 18%, var(--fleck) 0, transparent 1.1px),
+    radial-gradient(circle at 78% 33%, var(--fleck) 0, transparent 1px),
+    radial-gradient(circle at 33% 62%, var(--fleck) 0, transparent 1.2px),
+    radial-gradient(circle at 64% 80%, var(--fleck) 0, transparent 1px),
+    radial-gradient(circle at 88% 71%, var(--fleck) 0, transparent 1.1px),
+    radial-gradient(circle at 47% 9%,  var(--fleck) 0, transparent 1px),
+    radial-gradient(circle at 7% 88%,  var(--fleck) 0, transparent 1px),
+    radial-gradient(circle at 92% 12%, var(--fleck) 0, transparent 1px),
+    radial-gradient(ellipse at 25% 15%, rgba(255,244,214,.05), transparent 55%),
+    radial-gradient(ellipse at 80% 85%, rgba(0,0,0,.30), transparent 60%);
 }
 
-a { color: var(--cuivre); text-decoration: none; }
-a:hover { color: var(--cuir); text-decoration: underline; }
-
-h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; color: var(--cuir-fonce); }
-
-img, svg { max-width: 100%; }
-
-/* ----------------------------- 3. BARRE SUPÉRIEURE ----------------------------- */
-.topbar {
-  position: sticky; top: 0; z-index: 40;
-  display: flex; align-items: center; gap: 1rem;
-  padding: 0.6rem 1.2rem;
-  background: linear-gradient(180deg, var(--cuir) 0%, var(--cuir-fonce) 100%);
-  border-bottom: 3px solid var(--or);
-  box-shadow: 0 2px 12px var(--ombre);
+/* page enluminée : piqûres d'âge sur le pourtour */
+.page{
+  position:relative;
+  border:1px solid var(--paper-edge);
+  box-shadow:
+    0 1px 0 rgba(255,252,243,.7) inset,
+    0 0 0 1px rgba(120,96,60,.05),
+    0 22px 50px -28px var(--shadow);
 }
-.topbar__marque { display: flex; align-items: center; gap: 0.5rem; color: var(--parchemin); }
-.topbar__marque:hover { text-decoration: none; color: #fff; }
-.topbar__sceau { font-size: 1.6rem; color: var(--or-clair); }
-.topbar__nom { font-family: var(--titre); font-size: 1.15rem; letter-spacing: 1px; }
-.topbar__recherche { flex: 1; max-width: 460px; margin: 0 auto; }
-.topbar__recherche input,
-.barre-filtres input,
-.recherche-globale input {
-  width: 100%; padding: 0.55rem 0.9rem;
-  font-family: var(--sous); font-size: 1rem;
-  color: var(--encre); background: var(--carte);
-  border: 1px solid var(--or); border-radius: 999px;
-  box-shadow: inset 0 1px 3px var(--ombre);
-}
-.topbar__recherche input:focus,
-.barre-filtres input:focus,
-.recherche-globale input:focus { outline: 2px solid var(--or-clair); }
-
-.burger {
-  display: none; font-size: 1.4rem; background: none; border: none;
-  color: var(--parchemin); cursor: pointer; padding: 0.2rem 0.4rem;
+.page::after{
+  content:"";
+  position:absolute;inset:0;
+  pointer-events:none;
+  box-shadow:inset 0 0 70px rgba(120,96,60,.10), inset 0 0 14px rgba(120,96,60,.06);
 }
 
-/* ----------------------------- 4. BOUTONS ----------------------------- */
-.btn {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  font-family: var(--sous); font-size: 1rem; cursor: pointer;
-  padding: 0.5rem 1rem;
-  color: var(--parchemin); background: var(--cuir);
-  border: 1px solid var(--or); border-radius: 6px;
-  box-shadow: 0 1px 4px var(--ombre); transition: transform .08s, background .2s;
-}
-.btn:hover { background: var(--cuivre); text-decoration: none; }
-.btn:active { transform: translateY(1px); }
-.btn--ghost { background: transparent; color: var(--parchemin); }
-.btn--ghost:hover { background: rgba(255,255,255,0.12); }
-.btn-fav.is-fav { background: var(--or); color: var(--cuir-fonce); border-color: var(--or-clair); }
+/* =============================================================================
+   4. ORNEMENTS PARTAGÉS  (.corner / .rule / .smallcaps)
+   ========================================================================== */
+.corner{position:absolute;width:74px;height:74px;color:var(--sage-deep);opacity:.8;pointer-events:none}
+.corner.tl{top:14px;left:14px}
+.corner.tr{top:14px;right:14px;transform:scaleX(-1)}
+.corner.bl{bottom:14px;left:14px;transform:scaleY(-1)}
+.corner.br{bottom:14px;right:14px;transform:scale(-1,-1)}
+@media(max-width:640px){.corner{width:50px;height:50px}}
 
-/* ----------------------------- 5. STRUCTURE / SIDEBAR ----------------------------- */
-.cadre { display: flex; align-items: flex-start; max-width: 1500px; margin: 0 auto; }
+/* filet capillaire + losange central */
+.rule{display:flex;align-items:center;justify-content:center;gap:14px;color:var(--gold);margin:26px 0}
+.rule .ln{height:1px;flex:1;max-width:300px;
+  background:linear-gradient(90deg,transparent,var(--hair) 18%,var(--hair) 82%,transparent)}
+.rule svg{flex:none;color:var(--sage-deep)}
 
-.sidebar {
-  position: sticky; top: 64px; align-self: flex-start;
-  width: 270px; flex-shrink: 0; height: calc(100vh - 64px);
-  overflow-y: auto;
-  padding: 1.4rem 1.1rem;
-  background: var(--parchemin-2);
-  border-right: 2px solid var(--filet);
-}
-.sidebar__lien-accueil {
-  display: block; font-family: var(--titre); font-size: 1rem;
-  color: var(--cuir-fonce); margin-bottom: 1rem; padding-bottom: 0.6rem;
-  border-bottom: 1px solid var(--filet);
-}
-.sidebar__titre {
-  font-size: 0.78rem; letter-spacing: 1.5px; text-transform: uppercase;
-  color: var(--or); margin: 1.3rem 0 0.5rem;
-}
-.sidebar__liste { list-style: none; margin: 0; padding: 0; }
-.sidebar__liste li { margin: 0.15rem 0; }
-.sidebar__liste a {
-  display: flex; align-items: center; gap: 0.5rem;
-  padding: 0.35rem 0.5rem; border-radius: 5px;
-  color: var(--encre); font-family: var(--sous); font-size: 1.05rem;
-}
-.sidebar__liste a:hover { background: var(--parchemin-bord); text-decoration: none; }
-.sidebar__liste a.actif { background: var(--sauge); color: #fff; }
-.sidebar__liste .lien-theme { font-style: italic; color: var(--encre-douce); }
-.sidebar__liste--recents a { font-size: 0.98rem; }
-.muet { color: var(--encre-douce); font-style: italic; font-size: 0.92rem; padding: 0.3rem 0.5rem; }
-.badge {
-  margin-left: auto; font-style: normal; font-size: 0.78rem;
-  background: var(--cuivre); color: #fff; border-radius: 999px;
-  padding: 0.05rem 0.5rem;
-}
-.sidebar__pied {
-  margin-top: 1.6rem; padding-top: 1rem; border-top: 1px solid var(--filet);
-  font-family: var(--sous); font-style: italic; font-size: 0.92rem; color: var(--encre-douce);
+.smallcaps{
+  font-family:'Cormorant SC','Cormorant','Cinzel',serif;
+  text-transform:uppercase;
+  letter-spacing:.30em;
+  font-weight:600;
 }
 
-/* ----------------------------- 6. CONTENU ----------------------------- */
-.contenu {
-  flex: 1; min-width: 0; padding: 2rem clamp(1rem, 4vw, 3rem) 3rem;
-  max-width: 1080px; margin: 0 auto;
+/* =============================================================================
+   5. CHROME — BARRE SUPÉRIEURE  (.topbar)
+   ========================================================================== */
+.topbar{
+  position:sticky;top:0;z-index:60;
+  display:flex;align-items:center;gap:16px;
+  padding:8px clamp(14px,3vw,28px);
+  background:var(--topbar-bg);
+  border-bottom:1px solid var(--hair);
+  box-shadow:0 1px 0 rgba(255,252,243,.4) inset, 0 6px 18px -14px var(--shadow);
+}
+.topbar__marque{
+  display:flex;align-items:center;gap:9px;
+  text-decoration:none;color:var(--ink);flex:none;
+}
+.topbar__sceau{
+  font-size:1.35rem;color:var(--sage-deep);line-height:1;
+}
+.topbar__nom{
+  font-family:'Cormorant SC','Cormorant','Cinzel',serif;
+  text-transform:uppercase;letter-spacing:.22em;font-weight:600;
+  font-size:.92rem;color:var(--ink);white-space:nowrap;
+}
+.topbar__recherche{
+  flex:1;display:flex;justify-content:center;margin:0;min-width:0;
+}
+.topbar__recherche input{
+  width:100%;max-width:440px;
+  border:1px solid var(--hair);
+  background:var(--champ-bg);
+  color:var(--ink);
+  font-family:'EB Garamond',Garamond,serif;font-size:1rem;
+  padding:8px 16px;border-radius:2px;outline:none;
+  box-shadow:0 1px 0 rgba(255,255,255,.5) inset;
+}
+.topbar__recherche input::placeholder{color:var(--ink-faint);font-style:italic}
+.topbar__recherche input:focus{border-color:var(--sage);box-shadow:0 0 0 2px var(--selection)}
+
+/* bouton hamburger (mobile) */
+.burger{
+  display:none;flex:none;
+  border:1px solid var(--hair);background:var(--champ-bg);
+  color:var(--ink);font-size:1.1rem;line-height:1;
+  padding:6px 11px;border-radius:2px;cursor:pointer;
+}
+.burger:hover{background:rgba(124,135,99,.12)}
+
+/* =============================================================================
+   6. BOUTONS  (.btn / .btn--ghost / .btn-fav)
+   ========================================================================== */
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:'Cormorant SC','Cormorant','Cinzel',serif;
+  text-transform:uppercase;letter-spacing:.14em;font-size:.74rem;font-weight:600;
+  color:var(--ink);
+  border:1px solid var(--hair);
+  background:var(--champ-bg);
+  padding:8px 15px;border-radius:2px;cursor:pointer;
+  text-decoration:none;line-height:1.1;
+  transition:background .2s,border-color .2s,color .2s;
+  box-shadow:0 1px 0 rgba(255,255,255,.45) inset;
+}
+.btn:hover{background:rgba(124,135,99,.12);border-color:var(--sage)}
+.btn:active{transform:translateY(.5px)}
+.btn--ghost{background:transparent;box-shadow:none}
+.btn--ghost:hover{background:rgba(124,135,99,.10)}
+
+/* étoile favori — touche cinabre quand actif */
+.btn-fav.is-fav{
+  color:var(--rouge);
+  border-color:var(--rouge);
+  background:rgba(140,58,43,.07);
+}
+.btn-fav.is-fav span{color:var(--gold)}
+
+/* =============================================================================
+   7. CHARPENTE — CADRE / SIDEBAR / CONTENU
+   ========================================================================== */
+.cadre{
+  display:flex;
+  align-items:flex-start;
+  gap:0;
+  width:100%;
 }
 
-.titre-page { font-size: 2.2rem; margin: 0.4rem 0 1.4rem; }
-.titre-section {
-  font-size: 1.5rem; margin: 2.4rem 0 1rem;
-  padding-bottom: 0.4rem; border-bottom: 2px solid var(--filet);
+/* ----- INDEX LATÉRAL façon table d'un livre ----- */
+.sidebar{
+  flex:none;width:268px;
+  align-self:stretch;
+  position:sticky;top:53px;
+  max-height:calc(100vh - 53px);
+  overflow-y:auto;
+  padding:26px 22px 30px;
+  background:var(--paper-2);
+  border-right:1px solid var(--hair);
+  z-index:40;
 }
-.intro { font-family: var(--sous); font-size: 1.2rem; color: var(--encre-douce); }
+.sidebar__lien-accueil{
+  display:block;text-decoration:none;
+  font-family:'Cormorant','Cormorant Garamond',serif;font-style:italic;
+  font-size:1.12rem;color:var(--sage-deep);
+  padding-bottom:14px;margin-bottom:6px;
+  border-bottom:1px solid var(--hair-soft);
+}
+.sidebar__lien-accueil:hover{color:var(--rouge)}
 
-/* Fil d'Ariane */
-.ariane { font-family: var(--sous); font-size: 1rem; color: var(--encre-douce); margin-bottom: 0.6rem; }
-.ariane a { color: var(--cuivre); }
-.ariane__sep { margin: 0 0.4rem; color: var(--filet); }
+.sidebar__titre{
+  font-family:'Cormorant SC','Cormorant','Cinzel',serif;
+  text-transform:uppercase;letter-spacing:.24em;
+  font-size:.7rem;font-weight:600;color:var(--ink-faint);
+  margin:22px 0 8px;
+}
+.sidebar__titre:first-of-type{margin-top:14px}
 
-/* ----------------------------- 7. COUVERTURE (ACCUEIL) ----------------------------- */
-.couverture {
-  margin: 0.5rem 0 2rem; padding: 2.5rem 1.5rem;
-  text-align: center;
-  background:
-    repeating-linear-gradient(45deg, transparent, transparent 18px, rgba(122,90,45,0.025) 18px, rgba(122,90,45,0.025) 36px),
-    var(--carte);
-  border: 2px solid var(--or);
-  border-radius: 10px;
-  box-shadow: 0 6px 22px var(--ombre), inset 0 0 0 6px var(--parchemin), inset 0 0 0 7px var(--filet);
+.sidebar__liste{list-style:none;margin:0;padding:0}
+.sidebar__liste li{margin:0}
+.sidebar__liste a{
+  display:flex;align-items:baseline;gap:8px;
+  text-decoration:none;color:var(--ink);
+  font-size:1.02rem;
+  padding:5px 9px;border-radius:2px;border-left:2px solid transparent;
+  transition:background .18s,color .18s,border-color .18s;
 }
-.couverture__cadre { max-width: 720px; margin: 0 auto; }
-.couverture__sur { font-family: var(--sous); letter-spacing: 5px; text-transform: uppercase; color: var(--cuivre); margin: 0; }
-.couverture__titre {
-  font-size: clamp(2.4rem, 6vw, 3.8rem); margin: 0.2rem 0;
-  color: var(--cuir-fonce); text-shadow: 1px 1px 0 var(--or-clair);
+.sidebar__liste a span[aria-hidden]{color:var(--sage-deep);flex:none}
+.sidebar__liste a em{
+  margin-left:auto;font-style:normal;
+  font-family:'Cormorant SC',serif;letter-spacing:.08em;
+  font-size:.72rem;color:var(--ink-faint);
 }
-.couverture__sous { font-family: var(--sous); font-style: italic; font-size: 1.3rem; color: var(--encre-douce); margin: 0.3rem 0 1rem; }
-.couverture__filet { color: var(--or); font-size: 1.6rem; margin: 0.6rem 0 1.4rem; }
-.recherche-globale { max-width: 520px; margin: 0 auto; }
-.recherche-globale input { text-align: center; padding: 0.7rem 1.2rem; font-size: 1.1rem; }
+.sidebar__liste a:hover{background:rgba(124,135,99,.10);color:var(--ink)}
+.sidebar__liste a.actif{
+  border-left-color:var(--rouge);
+  background:rgba(140,58,43,.06);
+  color:var(--rouge);font-weight:600;
+}
+.sidebar__liste a.actif span[aria-hidden]{color:var(--rouge)}
 
-/* Statistiques */
-.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 1.5rem 0; }
-.stat {
-  text-align: center; padding: 1.1rem 0.5rem;
-  background: var(--carte); border: 1px solid var(--carte-bord); border-radius: 8px;
-  box-shadow: 0 2px 8px var(--ombre);
+/* badge (compteur de favoris) */
+.badge{
+  display:inline-block;min-width:1.4em;text-align:center;
+  font-family:'Cormorant SC',serif;font-style:normal;letter-spacing:.06em;
+  font-size:.68rem;line-height:1.5;
+  color:var(--paper);background:var(--sage-deep);
+  border-radius:999px;padding:0 .5em;margin-left:.35em;
 }
-.stat__nb { display: block; font-family: var(--titre); font-size: 2.1rem; color: var(--cuivre); }
-.stat__lbl { font-family: var(--sous); letter-spacing: 1px; text-transform: uppercase; font-size: 0.82rem; color: var(--encre-douce); }
+:root[data-theme="sombre"] .badge{color:#1c1915}
 
-/* Tuiles de catégories */
-.grille-cat { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.1rem; }
-.tuile-cat {
-  display: flex; flex-direction: column; gap: 0.25rem;
-  padding: 1.2rem; color: var(--encre);
-  background: var(--carte); border: 1px solid var(--carte-bord); border-radius: 8px;
-  box-shadow: 0 2px 8px var(--ombre); transition: transform .12s, box-shadow .12s;
-}
-.tuile-cat:hover { transform: translateY(-3px); box-shadow: 0 6px 16px var(--ombre); text-decoration: none; border-color: var(--or); }
-.tuile-cat__ico { font-size: 1.8rem; }
-.tuile-cat__nom { font-family: var(--titre); font-size: 1.2rem; color: var(--cuir-fonce); }
-.tuile-cat__nb { font-family: var(--sous); font-size: 0.9rem; color: var(--cuivre); }
-.tuile-cat__desc { font-family: var(--sous); font-style: italic; color: var(--encre-douce); font-size: 0.98rem; }
-
-/* Tuiles de thèmes */
-.grille-theme { display: flex; flex-wrap: wrap; gap: 0.7rem; }
-.tuile-theme {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  padding: 0.5rem 0.9rem; color: var(--encre);
-  background: var(--parchemin-2); border: 1px solid var(--filet); border-radius: 999px;
-  font-family: var(--sous); font-size: 1.05rem;
-}
-.tuile-theme:hover { background: var(--sauge); color: #fff; text-decoration: none; }
-.tuile-theme em { font-style: normal; background: var(--or); color: var(--cuir-fonce); border-radius: 999px; padding: 0 0.5rem; font-size: 0.82rem; }
-
-/* ----------------------------- 8. GRILLE & CARTES DE RECETTES ----------------------------- */
-.grille-recettes { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.1rem; }
-.carte {
-  position: relative; display: flex; gap: 0.9rem; align-items: center;
-  padding: 1rem; color: var(--encre);
-  background: var(--carte); border: 1px solid var(--carte-bord); border-radius: 8px;
-  box-shadow: 0 2px 8px var(--ombre); transition: transform .12s, box-shadow .12s, border-color .12s;
-}
-.carte:hover { transform: translateY(-3px); box-shadow: 0 7px 18px var(--ombre); border-color: var(--or); text-decoration: none; }
-.carte__gravure { flex-shrink: 0; width: 56px; height: 56px; color: var(--cuivre); opacity: 0.85; }
-.carte__corps { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
-.carte__cat { font-family: var(--sous); font-size: 0.82rem; letter-spacing: 1px; text-transform: uppercase; color: var(--cuivre); }
-.carte__nom { font-family: var(--titre); font-size: 1.12rem; color: var(--cuir-fonce); }
-.carte__meta { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.2rem; }
-.carte__fav { position: absolute; top: 0.6rem; right: 0.7rem; color: var(--carte-bord); font-size: 1.1rem; }
-.carte__fav.is-fav { color: var(--or); }
-
-/* Puces / étiquettes */
-.puce {
-  font-family: var(--sous); font-size: 0.84rem;
-  padding: 0.1rem 0.6rem; border-radius: 999px;
-  background: var(--parchemin-2); border: 1px solid var(--filet); color: var(--encre-douce);
-}
-.puce--faible { background: #e3ead2; color: #4a5a30; border-color: var(--sauge); }
-.puce--moyen  { background: #efe0c4; color: #7a5320; border-color: var(--cuivre); }
-.puce--fort   { background: #ecd3c2; color: #7a2f1e; border-color: var(--rouge-sceau); }
-.puce--theme  { background: transparent; border-style: dashed; }
-:root[data-theme="sombre"] .puce--faible { background: #2f3a22; color: #b6c498; }
-:root[data-theme="sombre"] .puce--moyen  { background: #3a2c18; color: #d8b95f; }
-:root[data-theme="sombre"] .puce--fort   { background: #3a221b; color: #d98b76; }
-
-.compte { font-family: var(--sous); color: var(--encre-douce); }
-.vide { font-family: var(--sous); font-style: italic; font-size: 1.15rem; color: var(--encre-douce); padding: 1.5rem 0; }
-
-/* ----------------------------- 9. BARRE DE FILTRES ----------------------------- */
-.barre-filtres {
-  display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;
-  padding: 1rem; margin-bottom: 1rem;
-  background: var(--carte); border: 1px solid var(--carte-bord); border-radius: 8px;
-}
-.barre-filtres > input { flex: 1; min-width: 200px; }
-.filtres-puces { display: flex; flex-wrap: wrap; gap: 0.8rem; }
-.filtre-groupe { display: flex; align-items: center; gap: 0.4rem; }
-.filtre-groupe__titre { font-family: var(--sous); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--cuivre); }
-.puce-filtre {
-  font-family: var(--sous); font-size: 0.9rem; cursor: pointer;
-  padding: 0.25rem 0.7rem; border-radius: 999px;
-  background: var(--parchemin-2); border: 1px solid var(--filet); color: var(--encre);
-}
-.puce-filtre:hover { border-color: var(--or); }
-.puce-filtre.actif { background: var(--sauge); color: #fff; border-color: var(--sauge); }
-
-/* ----------------------------- 10. FICHE RECETTE ----------------------------- */
-.fiche {
-  background: var(--carte);
-  border: 1px solid var(--carte-bord); border-radius: 10px;
-  box-shadow: 0 4px 18px var(--ombre);
-  padding: clamp(1.2rem, 3vw, 2.4rem);
-  /* double filet décoratif */
-  outline: 1px solid var(--filet); outline-offset: -10px;
-}
-.fiche__entete {
-  display: grid; grid-template-columns: auto 1fr auto; gap: 1.2rem; align-items: center;
-  padding-bottom: 1.2rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--filet);
-}
-.fiche__gravure { width: 92px; height: 92px; color: var(--cuivre); }
-.fiche__cat { font-family: var(--sous); letter-spacing: 2px; text-transform: uppercase; color: var(--cuivre); margin: 0; }
-.fiche__nom { font-size: clamp(1.8rem, 4vw, 2.6rem); margin: 0.1rem 0 0.6rem; }
-.fiche__badges { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-.fiche__actions { display: flex; flex-direction: column; gap: 0.5rem; }
-
-.bloc { margin: 1.8rem 0; }
-.bloc__titre {
-  font-size: 1.4rem; margin: 0 0 0.7rem;
-  position: relative; padding-left: 1.4rem;
-}
-.bloc__titre::before { content: "❧"; position: absolute; left: 0; color: var(--or); }
-.bloc__note { font-family: var(--sous); font-style: italic; color: var(--encre-douce); margin: 0 0 0.6rem; }
-
-/* Tableau d'ingrédients */
-.tableau-ingredients { width: 100%; border-collapse: collapse; font-family: var(--sous); font-size: 1.08rem; }
-.tableau-ingredients th {
-  text-align: left; font-family: var(--titre); font-size: 0.85rem; letter-spacing: 1px;
-  text-transform: uppercase; color: var(--cuivre);
-  padding: 0.5rem 0.6rem; border-bottom: 2px solid var(--filet);
-}
-.tableau-ingredients td { padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--carte-bord); }
-.tableau-ingredients tr:nth-child(even) td { background: rgba(122, 90, 45, 0.045); }
-.tableau-ingredients .qte { font-weight: 600; color: var(--cuir-fonce); white-space: nowrap; }
-.lien-calc { display: inline-block; margin-top: 0.8rem; font-family: var(--sous); }
-
-/* Étapes numérotées */
-.etapes { list-style: none; counter-reset: etape; margin: 0; padding: 0; }
-.etapes li {
-  position: relative; padding: 0.4rem 0 0.4rem 2.8rem; margin-bottom: 0.4rem;
-  counter-increment: etape;
-}
-.etapes li::before {
-  content: counter(etape); position: absolute; left: 0; top: 0.3rem;
-  width: 2rem; height: 2rem; display: grid; place-items: center;
-  font-family: var(--titre); font-size: 0.95rem; color: var(--parchemin);
-  background: var(--cuir); border: 1px solid var(--or); border-radius: 50%;
+.sidebar__pied{
+  margin:26px 0 0;padding-top:14px;
+  border-top:1px solid var(--hair-soft);
+  font-family:'Cormorant','Cormorant Garamond',serif;font-style:italic;
+  font-size:.96rem;color:var(--ink-faint);line-height:1.55;
 }
 
-/* Chronologie / timeline */
-.timeline { list-style: none; margin: 0; padding: 0.5rem 0 0; display: flex; flex-wrap: wrap; gap: 0; position: relative; }
-.timeline__etape {
-  flex: 1 1 140px; position: relative; padding: 0 0.6rem 1.2rem; text-align: center;
+/* voile mobile (révélé quand le tiroir est ouvert) */
+.sidebar-ouverte::after{
+  content:"";position:fixed;inset:0;z-index:35;
+  background:var(--voile);
 }
-.timeline__etape::after {
-  content: ""; position: absolute; top: 9px; left: 50%; right: -50%; height: 2px;
-  background: var(--filet); z-index: 0;
-}
-.timeline__etape:last-child::after { display: none; }
-.timeline__pic {
-  position: relative; z-index: 1; display: block; width: 18px; height: 18px; margin: 0 auto 0.5rem;
-  background: var(--cuivre); border: 3px solid var(--carte); border-radius: 50%;
-  box-shadow: 0 0 0 1px var(--or);
-}
-.timeline__phase { display: block; font-family: var(--titre); font-size: 0.95rem; color: var(--cuir-fonce); }
-.timeline__duree { display: block; font-family: var(--sous); font-style: italic; font-size: 0.92rem; color: var(--encre-douce); }
 
-/* Encarts (notes du grimoire) */
-.encarts { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
-.encart {
-  padding: 1rem 1.2rem; border-radius: 8px;
-  background: var(--parchemin-2); border-left: 4px solid var(--or);
+/* ----- CONTENU PRINCIPAL ----- */
+.contenu{
+  flex:1;min-width:0;
+  width:100%;max-width:1100px;
+  margin:0 auto;
+  padding:clamp(22px,3.4vw,46px) clamp(16px,3vw,40px) 60px;
 }
-.encart h3 { font-size: 1.05rem; margin: 0 0 0.4rem; color: var(--cuir-fonce); }
-.encart p { margin: 0; font-family: var(--sous); font-size: 1.08rem; }
-.encart--histoire  { border-left-color: var(--cuivre); }
-.encart--propriete { border-left-color: var(--sauge); }
-.encart--conseil   { border-left-color: var(--or); }
-.encart--dicton    { border-left-color: var(--rouge-sceau); background: transparent; border: 1px dashed var(--filet); }
-.dicton { font-family: var(--sous); font-style: italic; font-size: 1.2rem; text-align: center; color: var(--cuivre); }
 
-/* ----------------------------- 11. CALCULATEUR ----------------------------- */
-.calc { background: var(--carte); border: 1px solid var(--carte-bord); border-radius: 10px; padding: 1.5rem; box-shadow: 0 3px 14px var(--ombre); }
-.calc__controles { display: flex; flex-wrap: wrap; gap: 1.2rem; align-items: flex-end; margin-bottom: 1.2rem; padding-bottom: 1.2rem; border-bottom: 2px solid var(--filet); }
-.calc__controles label { display: flex; flex-direction: column; gap: 0.3rem; font-family: var(--sous); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--cuivre); }
-.calc__controles select, .calc__controles input {
-  font-family: var(--corps); font-size: 1.05rem; padding: 0.5rem 0.7rem;
-  background: var(--parchemin); color: var(--encre);
-  border: 1px solid var(--or); border-radius: 6px; min-width: 200px;
+/* =============================================================================
+   8. FIL D'ARIANE  (.ariane)
+   ========================================================================== */
+.ariane{
+  display:flex;flex-wrap:wrap;align-items:center;gap:6px;
+  font-family:'Cormorant SC','Cormorant',serif;
+  text-transform:uppercase;letter-spacing:.18em;
+  font-size:.66rem;color:var(--ink-faint);
+  margin-bottom:18px;
 }
-.calc__base, .calc__facteur { font-family: var(--sous); color: var(--encre-douce); }
-.calc__facteur { font-size: 1.15rem; margin-bottom: 0.8rem; }
-.calc__facteur strong { color: var(--cuivre); }
+.ariane a{color:var(--ink-faint);text-decoration:none;border-bottom:1px solid transparent}
+.ariane a:hover{color:var(--sage-deep);border-bottom-color:var(--hair)}
+.ariane [aria-current="page"]{color:var(--ink)}
+.ariane__sep{color:var(--hair);margin:0 1px}
 
-/* ----------------------------- 12. PIED DE PAGE ----------------------------- */
-.piedpage { text-align: center; padding: 2rem 1rem; background: var(--parchemin-2); border-top: 2px solid var(--filet); font-family: var(--sous); color: var(--encre-douce); }
-.piedpage__avert { font-size: 0.92rem; color: var(--cuivre); }
+/* =============================================================================
+   9. TITRES DE PAGE / SECTION / INTRO
+   ========================================================================== */
+.titre-page{
+  font-family:'Cormorant SC','Cormorant','Cinzel',serif;font-weight:700;
+  font-size:clamp(2rem,5vw,3rem);letter-spacing:.14em;
+  color:var(--ink);margin:.1em 0 .35em;line-height:1.08;
+}
+.titre-section{
+  font-family:'Cormorant SC','Cormorant','Cinzel',serif;font-weight:600;
+  text-transform:uppercase;letter-spacing:.2em;
+  font-size:1.04rem;color:var(--sage-deep);
+  margin:42px 0 16px;
+  display:flex;align-items:center;gap:14px;
+}
+.titre-section::after{
+  content:"";flex:1;height:1px;
+  background:linear-gradient(90deg,var(--hair),transparent);
+}
+.intro{
+  max-width:640px;color:var(--ink-soft);font-size:1.06rem;
+  margin:0 0 26px;
+}
 
-/* ----------------------------- 13. RESPONSIVE ----------------------------- */
-@media (max-width: 900px) {
-  body { font-size: 18px; }
-  .burger { display: block; }
-  .topbar__nom { display: none; }
-  .sidebar {
-    position: fixed; top: 0; left: 0; z-index: 60;
-    height: 100vh; width: 280px;
-    transform: translateX(-100%); transition: transform .25s ease;
-    box-shadow: 4px 0 18px var(--ombre);
+/* =============================================================================
+   10. PAGE DE GARDE / COUVERTURE (vue accueil)
+   ========================================================================== */
+.couverture{
+  position:relative;
+  margin-bottom:30px;
+  padding:clamp(34px,6vw,68px) 7% clamp(30px,5vw,52px);
+  text-align:center;
+  border:1px solid var(--paper-edge);
+  background-color:var(--paper);
+  background-image:
+    radial-gradient(circle at 14% 20%, var(--fleck) 0, transparent 1.1px),
+    radial-gradient(circle at 80% 30%, var(--fleck) 0, transparent 1px),
+    radial-gradient(circle at 35% 70%, var(--fleck) 0, transparent 1.1px),
+    radial-gradient(circle at 88% 78%, var(--fleck) 0, transparent 1px),
+    radial-gradient(ellipse at 25% 12%, rgba(255,251,238,.5), transparent 55%);
+  background-size:240px 240px,280px 280px,300px 300px,260px 260px,100% 100%;
+  box-shadow:0 1px 0 rgba(255,252,243,.7) inset, 0 22px 50px -30px var(--shadow);
+}
+.couverture__cadre{
+  position:relative;
+  border:1px solid var(--hair);
+  padding:clamp(28px,5vw,54px) clamp(18px,4vw,40px);
+}
+.couverture__cadre::before,
+.couverture__cadre::after{
+  content:"";position:absolute;width:14px;height:14px;border:1px solid var(--gold);opacity:.7;
+}
+.couverture__cadre::before{top:7px;left:7px;border-right:0;border-bottom:0}
+.couverture__cadre::after{bottom:7px;right:7px;border-left:0;border-top:0}
+.couverture__sur{
+  font-family:'Cormorant SC','Cormorant',serif;
+  text-transform:uppercase;letter-spacing:.42em;font-size:.8rem;
+  color:var(--ink-faint);margin:0 0 .2em;
+}
+.couverture__titre{
+  font-family:'Cormorant SC','Cormorant','Cinzel',serif;font-weight:700;
+  font-size:clamp(2.4rem,7vw,4.4rem);letter-spacing:.1em;line-height:1.02;
+  color:var(--ink);margin:.05em 0 .2em;
+}
+.couverture__sous{
+  font-family:'Cormorant','Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(1.05rem,2.6vw,1.4rem);color:var(--sage-deep);
+  margin:0 auto;max-width:560px;
+}
+.couverture__filet{
+  color:var(--gold);font-size:1.3rem;margin:18px 0 4px;letter-spacing:.4em;
+}
+.recherche-globale{margin:24px auto 0;max-width:520px;display:block}
+.recherche-globale input{
+  width:100%;
+  border:1px solid var(--hair);background:var(--champ-bg);color:var(--ink);
+  font-family:'EB Garamond',Garamond,serif;font-size:1.05rem;
+  padding:11px 18px;border-radius:2px;outline:none;text-align:center;
+  box-shadow:0 1px 0 rgba(255,255,255,.55) inset;
+}
+.recherche-globale input::placeholder{color:var(--ink-faint);font-style:italic}
+.recherche-globale input:focus{border-color:var(--sage);box-shadow:0 0 0 2px var(--selection)}
+
+/* =============================================================================
+   11. STATISTIQUES  (.stats / .stat)
+   ========================================================================== */
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  border:1px solid var(--hair);
+  margin:0 0 34px;
+}
+.stat{
+  text-align:center;padding:22px 12px;
+  border-left:1px solid var(--hair-soft);
+}
+.stat:first-child{border-left:0}
+.stat__nb{
+  display:block;
+  font-family:'Cormorant','Cormorant Garamond',serif;font-weight:600;
+  font-size:2.2rem;line-height:1;color:var(--rouge);
+}
+.stat__lbl{
+  display:block;margin-top:6px;
+  font-family:'Cormorant SC','Cormorant',serif;
+  text-transform:uppercase;letter-spacing:.2em;
+  font-size:.66rem;color:var(--ink-soft);
+}
+
+/* =============================================================================
+   12. GRILLE DES CATÉGORIES  (.grille-cat / .tuile-cat)
+   ========================================================================== */
+.grille-cat{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;
+  margin-bottom:14px;
+}
+.tuile-cat{
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;
+  text-decoration:none;color:var(--ink);
+  border:1px solid var(--hair);background:var(--encart-bg);
+  border-radius:2px;padding:24px 18px 20px;
+  transition:border-color .2s,background .2s,transform .2s;
+}
+.tuile-cat:hover{border-color:var(--sage);background:rgba(124,135,99,.08);transform:translateY(-2px)}
+.tuile-cat__ico{font-size:2rem;color:var(--sage-deep);line-height:1}
+.tuile-cat__nom{
+  font-family:'Cormorant SC','Cormorant','Cinzel',serif;font-weight:600;
+  text-transform:uppercase;letter-spacing:.14em;font-size:.92rem;
+  color:var(--ink);
+}
+.tuile-cat__nb{
+  font-family:'Cormorant',serif;font-style:italic;
+  font-size:.86rem;color:var(--ink-faint);
+}
+.tuile-cat__desc{font-size:.92rem;color:var(--ink-soft);line-height:1.5}
+
+/* =============================================================================
+   13. RUBRIQUES THÉMATIQUES  (.grille-theme / .tuile-theme)
+   ========================================================================== */
+.grille-theme{
+  display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;
+}
+.tuile-theme{
+  display:inline-flex;align-items:center;gap:8px;
+  text-decoration:none;color:var(--ink);
+  border:1px solid var(--hair);background:var(--champ-bg);
+  border-radius:2px;padding:8px 14px;
+  font-family:'Cormorant','Cormorant Garamond',serif;font-size:1.02rem;
+  transition:border-color .2s,background .2s,color .2s;
+}
+.tuile-theme span[aria-hidden]{color:var(--sage-deep)}
+.tuile-theme em{
+  font-style:normal;font-family:'Cormorant SC',serif;letter-spacing:.06em;
+  font-size:.72rem;color:var(--paper);background:var(--sage-deep);
+  border-radius:999px;padding:1px .55em;
+}
+:root[data-theme="sombre"] .tuile-theme em{color:#1c1915}
+.tuile-theme:hover{border-color:var(--sage);background:rgba(124,135,99,.1);color:var(--rouge)}
+.lien-theme.actif{color:var(--rouge);font-weight:600}
+
+/* =============================================================================
+   14. GRILLE DE RECETTES  (.grille-recettes / .carte) — étiquettes d'herbier
+   ========================================================================== */
+.grille-recettes{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;
+}
+.carte{
+  position:relative;display:flex;flex-direction:column;
+  text-decoration:none;color:var(--ink);
+  border:1px solid var(--hair);
+  background:var(--paper);
+  border-radius:2px;                /* coins droits / à peine adoucis */
+  padding:18px 18px 16px;
+  transition:border-color .2s,box-shadow .2s,transform .2s;
+}
+.carte:hover{
+  border-color:var(--sage);
+  box-shadow:0 10px 26px -20px var(--shadow);
+  transform:translateY(-2px);
+}
+.carte__gravure{
+  display:flex;align-items:center;justify-content:center;
+  height:64px;margin-bottom:10px;
+  color:var(--sage-deep);font-size:2.1rem;line-height:1;
+}
+.carte__gravure svg{width:auto;height:60px;max-width:100%}
+.carte__corps{display:flex;flex-direction:column;gap:4px}
+.carte__cat{
+  font-family:'Cormorant SC','Cormorant',serif;
+  text-transform:uppercase;letter-spacing:.2em;
+  font-size:.6rem;color:var(--ink-faint);
+}
+.carte__nom{
+  font-family:'Cormorant','Cormorant Garamond',serif;font-weight:600;
+  font-size:1.28rem;line-height:1.15;color:var(--ink);
+}
+.carte__meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+
+/* étoile favori des cartes */
+.carte__fav{
+  position:absolute;top:12px;right:12px;
+  font-size:1rem;color:var(--hair);line-height:1;
+  transition:color .2s;
+}
+.carte__fav.is-fav{color:var(--gold)}
+.carte:hover .carte__fav{color:var(--sage-pale)}
+.carte:hover .carte__fav.is-fav{color:var(--gold)}
+
+/* =============================================================================
+   15. PUCES  (.puce / .puce--faible|moyen|fort|theme)
+   ========================================================================== */
+.puce{
+  display:inline-flex;align-items:center;
+  font-family:'Cormorant SC','Cormorant',serif;
+  text-transform:uppercase;letter-spacing:.1em;
+  font-size:.62rem;font-weight:600;line-height:1.4;
+  color:var(--ink-soft);
+  border:1px solid var(--hair);background:var(--champ-bg);
+  border-radius:2px;padding:2px 8px;
+}
+.puce--faible{color:var(--sage-deep);border-color:var(--sage-pale)}
+.puce--moyen{color:var(--gold);border-color:var(--gold)}
+.puce--fort{color:var(--rouge);border-color:var(--rouge)}
+.puce--theme{
+  color:var(--ink-faint);font-style:normal;letter-spacing:.08em;
+  text-transform:none;font-family:'Cormorant',serif;font-size:.82rem;
+}
+
+/* =============================================================================
+   16. BARRE DE FILTRES (vue liste)
+   ========================================================================== */
+.barre-filtres{
+  display:flex;flex-direction:column;gap:14px;
+  margin:0 0 18px;
+}
+#rechercheListe{
+  width:100%;max-width:460px;
+  border:1px solid var(--hair);background:var(--champ-bg);color:var(--ink);
+  font-family:'EB Garamond',Garamond,serif;font-size:1.02rem;
+  padding:9px 16px;border-radius:2px;outline:none;
+  box-shadow:0 1px 0 rgba(255,255,255,.5) inset;
+}
+#rechercheListe::placeholder{color:var(--ink-faint);font-style:italic}
+#rechercheListe:focus{border-color:var(--sage);box-shadow:0 0 0 2px var(--selection)}
+
+.filtres-puces{display:flex;flex-wrap:wrap;gap:18px 26px}
+.filtre-groupe{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.filtre-groupe__titre{
+  font-family:'Cormorant SC','Cormorant',serif;
+  text-transform:uppercase;letter-spacing:.2em;
+  font-size:.64rem;color:var(--ink-faint);margin-right:2px;
+}
+.puce-filtre{
+  font-family:'Cormorant SC','Cormorant',serif;
+  text-transform:uppercase;letter-spacing:.1em;font-size:.66rem;font-weight:600;
+  color:var(--ink-soft);
+  border:1px solid var(--hair);background:var(--champ-bg);
+  border-radius:2px;padding:5px 11px;cursor:pointer;
+  transition:background .18s,border-color .18s,color .18s;
+}
+.puce-filtre:hover{border-color:var(--sage);color:var(--sage-deep)}
+.puce-filtre.actif{
+  color:var(--paper);background:var(--sage-deep);border-color:var(--sage-deep);
+}
+:root[data-theme="sombre"] .puce-filtre.actif{color:#1c1915}
+
+.compte{
+  font-family:'Cormorant','Cormorant Garamond',serif;font-style:italic;
+  color:var(--ink-faint);font-size:1rem;margin:0 0 16px;
+}
+
+/* =============================================================================
+   17. FICHE RECETTE  (.fiche + classes maquette .plate/.hero/.lettrine…)
+   ========================================================================== */
+.fiche{
+  position:relative;
+  border:1px solid var(--paper-edge);
+  background-color:var(--paper);
+  background-image:
+    radial-gradient(circle at 12% 18%, var(--fleck) 0, transparent 1.1px),
+    radial-gradient(circle at 78% 33%, var(--fleck) 0, transparent 1px),
+    radial-gradient(circle at 33% 62%, var(--fleck) 0, transparent 1.2px),
+    radial-gradient(circle at 64% 80%, var(--fleck) 0, transparent 1px),
+    radial-gradient(ellipse at 25% 12%, rgba(255,251,238,.45), transparent 55%);
+  background-size:240px 240px,280px 280px,300px 300px,260px 260px,100% 100%;
+  padding:clamp(26px,4vw,52px) clamp(20px,5%,60px) clamp(28px,4vw,46px);
+  box-shadow:0 1px 0 rgba(255,252,243,.7) inset, 0 22px 50px -30px var(--shadow);
+}
+:root[data-theme="sombre"] .fiche{
+  background-image:
+    radial-gradient(circle at 12% 18%, var(--fleck) 0, transparent 1.1px),
+    radial-gradient(circle at 78% 33%, var(--fleck) 0, transparent 1px),
+    radial-gradient(circle at 33% 62%, var(--fleck) 0, transparent 1.2px),
+    radial-gradient(circle at 64% 80%, var(--fleck) 0, transparent 1px),
+    radial-gradient(ellipse at 25% 12%, rgba(255,244,214,.04), transparent 55%);
+}
+
+/* en-tête de fiche */
+.fiche__entete{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;gap:22px;
+  padding-bottom:22px;margin-bottom:6px;
+  border-bottom:1px solid var(--hair);
+}
+.fiche__gravure{
+  flex:none;width:84px;height:84px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--sage-deep);font-size:2.6rem;
+  border:1px solid var(--hair);border-radius:2px;
+  background:linear-gradient(180deg, rgba(255,253,246,.5), rgba(244,239,226,.15));
+}
+.fiche__gravure svg{width:auto;height:64px;max-width:100%}
+.fiche__cat{
+  font-family:'Cormorant SC','Cormorant',serif;
+  text-transform:uppercase;letter-spacing:.26em;
+  font-size:.7rem;color:var(--ink-faint);margin:0 0 2px;
+}
+.fiche__nom{
+  font-family:'Cormorant SC','Cormorant','Cinzel',serif;font-weight:700;
+  font-size:clamp(1.9rem,4.6vw,3rem);letter-spacing:.06em;line-height:1.06;
+  color:var(--ink);margin:.05em 0 .25em;
+}
+.fiche__badges{display:flex;flex-wrap:wrap;gap:7px}
+.fiche__actions{
+  display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex:none;
+}
+
+/* ----- BLOCS de fiche (Ingrédients, Préparation, Chronologie, Notes) ----- */
+.bloc{margin-top:34px}
+.bloc__titre{
+  font-family:'Cormorant SC','Cormorant','Cinzel',serif;font-weight:600;
+  text-transform:uppercase;letter-spacing:.2em;
+  font-size:1.02rem;color:var(--sage-deep);
+  margin:0 0 14px;
+  display:flex;align-items:center;gap:14px;
+}
+.bloc__titre::after{
+  content:"";flex:1;height:1px;
+  background:linear-gradient(90deg,var(--hair),transparent);
+}
+.bloc__note{
+  font-family:'Cormorant','Cormorant Garamond',serif;font-style:italic;
+  color:var(--ink-soft);font-size:1rem;margin:0 0 14px;
+}
+.bloc__note strong{font-style:normal;color:var(--ink)}
+
+/* ----- TABLEAU D'INGRÉDIENTS  (.tableau-ingredients + .ingr maquette) ----- */
+.tableau-ingredients,
+.ingr{
+  width:100%;max-width:620px;border-collapse:collapse;margin:0 0 6px;
+}
+.tableau-ingredients thead th{
+  text-align:left;
+  font-family:'Cormorant SC','Cormorant',serif;
+  text-transform:uppercase;letter-spacing:.16em;
+  font-size:.64rem;font-weight:600;color:var(--ink-faint);
+  padding:0 8px 8px;border-bottom:1px solid var(--hair);
+}
+.tableau-ingredients thead th:first-child{text-align:right;width:130px}
+.tableau-ingredients td,
+.ingr td{
+  padding:9px 8px;border-bottom:1px solid var(--hair-soft);vertical-align:baseline;
+}
+.tableau-ingredients tr:last-child td,
+.ingr tr:last-child td{border-bottom:0}
+.tableau-ingredients td.qte,
+.ingr td.q{
+  white-space:nowrap;text-align:right;width:130px;padding-right:16px;
+  font-family:'Cormorant','Cormorant Garamond',serif;font-weight:600;
+  color:var(--sage-deep);font-size:1.05rem;
+}
+.ingr td.n{color:var(--ink)}
+.ingr td.opt{color:var(--ink-faint);font-style:italic;font-size:.92em}
+/* ingrédient « à doser au goût » : italique discret */
+.ingr td.q.adj,
+.tableau-ingredients td.qte.adj{
+  font-style:italic;font-weight:500;color:var(--ink-faint);
+}
+
+.lien-calc{
+  display:inline-block;margin-top:6px;
+  font-family:'Cormorant','Cormorant Garamond',serif;font-style:italic;
+  color:var(--sage-deep);text-decoration:none;
+  border-bottom:1px solid var(--hair);
+}
+.lien-calc:hover{color:var(--rouge);border-bottom-color:var(--rouge)}
+
+/* ----- PRÉPARATION (.etapes + .prep maquette, chiffres romains) ----- */
+.etapes,
+.prep{
+  max-width:620px;list-style:none;padding:0;margin:0;counter-reset:step;
+}
+.etapes li,
+.prep li{
+  counter-increment:step;position:relative;
+  padding:10px 0 12px 56px;border-bottom:1px solid var(--hair-soft);
+}
+.etapes li:last-child,
+.prep li:last-child{border-bottom:0}
+.etapes li::before,
+.prep li::before{
+  content:counter(step,upper-roman);
+  position:absolute;left:0;top:9px;width:38px;text-align:center;
+  font-family:'Cormorant SC','Cormorant',serif;font-weight:600;font-size:.95rem;
+  color:var(--gold);letter-spacing:.04em;
+}
+.etapes li::after,
+.prep li::after{
+  content:"";position:absolute;left:46px;top:6px;bottom:6px;width:1px;background:var(--hair-soft);
+}
+
+/* ----- CHRONOLOGIE (.timeline) — frise verticale capillaire ----- */
+.timeline{
+  max-width:600px;list-style:none;padding:0 0 0 30px;margin:6px 0 0;
+  position:relative;
+}
+.timeline::before{
+  content:"";position:absolute;left:6px;top:8px;bottom:8px;width:1px;
+  background:linear-gradient(var(--hair),var(--sage-pale),var(--hair));
+}
+.timeline__etape{
+  position:relative;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;
+  padding:9px 0;
+}
+.timeline__pic,
+.tl-row::before{
+  content:"";position:absolute;left:-26px;top:13px;width:9px;height:9px;
+  border:1px solid var(--sage-deep);background:var(--paper);transform:rotate(45deg);
+}
+.timeline__phase,
+.tl-row .ph{
+  font-family:'Cormorant SC','Cormorant',serif;letter-spacing:.14em;
+  text-transform:uppercase;font-size:.78rem;color:var(--ink);font-weight:600;
+}
+.timeline__duree,
+.tl-row .du{
+  font-family:'Cormorant','Cormorant Garamond',serif;font-style:italic;
+  color:var(--ink-soft);font-size:.98rem;
+}
+
+/* ----- NOTES DU GRIMOIRE (.encarts / .encart + .notes maquette 2×2) ----- */
+.encarts,
+.notes{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  border:1px solid var(--hair);
+}
+.encart,
+.note{
+  padding:20px 24px;position:relative;background:var(--encart-bg);
+}
+/* filets internes de la grille 2×2 */
+.encarts > *,
+.notes > *{border-top:1px solid var(--hair)}
+.encarts > *:nth-child(1),
+.encarts > *:nth-child(2),
+.notes > *:nth-child(1),
+.notes > *:nth-child(2){border-top:0}
+.encarts > *:nth-child(odd),
+.notes > *:nth-child(odd){border-right:1px solid var(--hair)}
+
+.encart h3,
+.note h4{
+  margin:0 0 8px;
+  font-family:'Cormorant SC','Cormorant',serif;
+  text-transform:uppercase;letter-spacing:.16em;
+  font-size:.72rem;font-weight:600;color:var(--sage-deep);
+  display:flex;align-items:center;gap:9px;
+}
+.note h4 svg{color:var(--gold);flex:none}
+.encart p,
+.note p{margin:0;font-size:1rem;line-height:1.62;color:var(--ink)}
+
+/* encart « dicton » : pleine largeur, cinabre, italique */
+.encart--dicton{grid-column:1 / -1}
+.dicton{text-align:center;max-width:560px;margin:0 auto}
+.dicton,
+.encart--dicton p{
+  font-family:'Cormorant','Cormorant Garamond',serif;font-style:italic;
+  font-size:1.3rem;line-height:1.5;color:var(--rouge);
+}
+
+/* =============================================================================
+   18. CLASSES DE PLANCHE DE LA MAQUETTE  (.plate / .margin / .hero …)
+   — disponibles pour un rendu « planche d'herbier » à 1 colonne + marge.
+   ========================================================================== */
+.plate{
+  margin-top:30px;
+  display:grid;
+  grid-template-columns:148px 1fr;   /* marge esthétique / colonne unique */
+}
+.margin{
+  position:relative;
+  border-right:1px solid var(--hair);
+  padding:54px 20px 40px;
+  display:flex;flex-direction:column;align-items:center;gap:26px;
+}
+.margin::after{
+  content:"";position:absolute;top:120px;bottom:120px;right:-1px;width:7px;
+  background:repeating-linear-gradient(to bottom,var(--hair) 0 1px,transparent 1px 26px);
+}
+.glyph-seal{width:62px;height:62px;color:var(--sage-deep)}
+.planet{font-family:'Cormorant',serif;font-size:1.9rem;color:var(--ink-soft);line-height:1}
+.planet-lab{
+  font-family:'Cormorant SC',serif;font-size:.6rem;letter-spacing:.22em;
+  color:var(--ink-faint);margin-top:-18px;
+}
+.margin .skull{width:40px;height:40px;color:var(--ink-soft);opacity:.85}
+.cipher{
+  font-family:'Cormorant SC',serif;font-size:.7rem;letter-spacing:.24em;color:var(--ink-faint);
+  writing-mode:vertical-rl;text-orientation:upright;line-height:1.9;margin-top:4px;
+}
+.column{padding:54px 7% 26px}
+
+/* ----- ESTAMPILLE DE LOT + contrôle de volume LIVE dans la marge ----- */
+.lot-stamp{margin-top:auto;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.lot-stamp .v{font-family:'Cormorant',serif;font-size:1.5rem;color:var(--rouge)}
+.lot-stamp .l{font-family:'Cormorant SC',serif;font-size:.58rem;letter-spacing:.2em;color:var(--ink-faint)}
+.lot-input{
+  width:64px;text-align:center;
+  font-family:'Cormorant','Cormorant Garamond',serif;font-size:1.1rem;
+  color:var(--rouge);
+  border:1px solid var(--hair);           /* bordure capillaire */
+  background:var(--champ-bg);
+  border-radius:2px;padding:4px 6px;outline:none;
+  -moz-appearance:textfield;appearance:textfield;
+}
+.lot-input::-webkit-outer-spin-button,
+.lot-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.lot-input:focus{border-color:var(--sage);box-shadow:0 0 0 2px var(--selection)}
+
+/* en-tête de planche */
+.plate-head{text-align:center}
+.plate-head .num{font-family:'Cormorant SC',serif;letter-spacing:.34em;font-size:.72rem;color:var(--ink-faint)}
+.plate-head h2{
+  font-family:'Cormorant SC','Cormorant','Cinzel',serif;font-weight:700;
+  font-size:clamp(2rem,5.2vw,3.3rem);letter-spacing:.18em;
+  margin:.18em 0 .05em;color:var(--ink);
+}
+.plate-head .binom{
+  font-family:'Cormorant',serif;font-style:italic;color:var(--sage-deep);
+  font-size:1.18rem;letter-spacing:.02em;
+}
+.plate-head .binom b{font-style:normal;font-weight:600}
+
+/* HÉROS botanique encadré d'un filet capillaire */
+.hero{
+  margin:30px auto 8px;max-width:560px;
+  border:1px solid var(--hair);
+  background:linear-gradient(180deg, rgba(255,253,246,.6), rgba(244,239,226,.2));
+  padding:22px 22px 10px;position:relative;
+}
+.hero::before,.hero::after{content:"";position:absolute;width:12px;height:12px;border:1px solid var(--gold);opacity:.7}
+.hero::before{top:6px;left:6px;border-right:0;border-bottom:0}
+.hero::after{bottom:6px;right:6px;border-left:0;border-top:0}
+.hero svg{display:block;width:100%;height:auto}
+.hero .renvoi{font-family:'Cormorant',serif;font-style:italic;font-size:.78rem;fill:var(--ink-faint)}
+.hero-cap{
+  text-align:center;font-family:'Cormorant SC',serif;letter-spacing:.2em;
+  font-size:.66rem;color:var(--ink-faint);padding:8px 0 4px;
+}
+
+/* badges degré / durée — petites estampilles circulaires (planche) */
+.badges{display:flex;justify-content:center;gap:42px;margin:30px 0 6px;flex-wrap:wrap}
+.badges .disc{
+  width:78px;height:78px;border-radius:50%;
+  border:1px solid var(--hair);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 50% 35%, rgba(255,253,246,.8), rgba(239,232,214,.4));
+  box-shadow:0 0 0 4px var(--paper),0 0 0 5px var(--hair-soft);
+}
+.badges .disc .big{font-family:'Cormorant',serif;font-size:1.7rem;color:var(--rouge);line-height:1}
+.badges .disc .unit{font-family:'Cormorant SC',serif;font-size:.55rem;letter-spacing:.16em;color:var(--ink-faint)}
+.badges .lab{font-family:'Cormorant SC',serif;letter-spacing:.2em;font-size:.62rem;color:var(--ink-soft)}
+
+/* section titres de planche */
+.sec-title{
+  text-align:center;margin:8px 0 4px;
+  font-family:'Cormorant SC',serif;letter-spacing:.26em;
+  font-size:.92rem;color:var(--sage-deep);font-weight:600;text-transform:uppercase;
+}
+
+/* corps de texte justifié + lettrine */
+.prose{text-align:justify;hyphens:auto;color:var(--ink);max-width:620px;margin:0 auto}
+.prose p{margin:0 0 1em}
+.lettrine::first-letter{
+  font-family:'Cormorant','Cormorant Garamond',serif;font-weight:600;
+  float:left;font-size:4.1rem;line-height:.78;
+  padding:6px 12px 0 0;color:var(--rouge);
+}
+.lettrine.sage::first-letter{color:var(--sage-deep)}
+
+/* tl-row (variante maquette de la chronologie) */
+.tl-row{position:relative;padding:8px 0}
+
+/* cul-de-lampe + folio */
+.culdelampe{display:flex;justify-content:center;margin:24px 0 4px;color:var(--sage-deep)}
+.culdelampe svg{width:120px;height:auto;opacity:.9}
+.folio{
+  text-align:center;font-family:'Cormorant SC',serif;letter-spacing:.34em;
+  font-size:.72rem;color:var(--ink-faint);padding:14px 0 6px;
+}
+.folio .dash{color:var(--hair)}
+
+@media(max-width:760px){
+  .plate{grid-template-columns:1fr}
+  .margin{
+    flex-direction:row;flex-wrap:wrap;justify-content:center;
+    border-right:0;border-bottom:1px solid var(--hair);padding:24px 20px;gap:24px;
   }
-  body.sidebar-ouverte .sidebar { transform: translateX(0); }
-  body.sidebar-ouverte::after {
-    content: ""; position: fixed; inset: 0; z-index: 50;
-    background: rgba(0,0,0,0.45);
-  }
-  .stats { grid-template-columns: repeat(2, 1fr); }
-  .fiche__entete { grid-template-columns: 1fr; text-align: center; }
-  .fiche__gravure { margin: 0 auto; }
-  .fiche__badges { justify-content: center; }
-  .fiche__actions { flex-direction: row; justify-content: center; flex-wrap: wrap; }
-  .timeline__etape { flex-basis: 100%; text-align: left; padding-left: 2rem; }
-  .timeline__etape::after { display: none; }
-  .timeline__pic { position: absolute; left: 0; margin: 0; }
+  .margin::after{display:none}
+  .cipher{writing-mode:horizontal-tb;text-orientation:mixed}
+  .lot-stamp{margin-top:0}
+  .column{padding:36px 7% 20px}
 }
 
-/* ----------------------------- 14. IMPRESSION / PDF ----------------------------- */
-@media print {
-  :root[data-theme="sombre"] { /* force la lisibilité à l'impression */
-    --encre: #000; --cuir-fonce: #000; --carte: #fff; --encre-douce: #333;
+/* =============================================================================
+   19. CALCULATEUR  (.calc)
+   ========================================================================== */
+.calc{
+  border:1px solid var(--hair);background:var(--encart-bg);
+  border-radius:2px;padding:clamp(18px,3vw,30px);
+}
+.calc__controles{
+  display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px 26px;
+  padding-bottom:18px;margin-bottom:18px;
+  border-bottom:1px solid var(--hair-soft);
+}
+.calc__controles label{
+  display:flex;flex-direction:column;gap:5px;
+  font-family:'Cormorant SC','Cormorant',serif;
+  text-transform:uppercase;letter-spacing:.16em;
+  font-size:.66rem;color:var(--ink-faint);
+}
+.calc__controles select,
+.calc__controles input{
+  font-family:'EB Garamond',Garamond,serif;font-size:1.02rem;
+  text-transform:none;letter-spacing:normal;color:var(--ink);
+  border:1px solid var(--hair);background:var(--champ-bg);
+  border-radius:2px;padding:8px 12px;outline:none;min-width:200px;
+}
+.calc__controles select:focus,
+.calc__controles input:focus{border-color:var(--sage);box-shadow:0 0 0 2px var(--selection)}
+.calc__base{
+  font-family:'Cormorant','Cormorant Garamond',serif;font-style:italic;
+  color:var(--ink-soft);font-size:1rem;margin:0;align-self:center;
+}
+.calc__base strong{font-style:normal;color:var(--ink)}
+.calc__facteur{
+  font-family:'Cormorant','Cormorant Garamond',serif;font-style:italic;
+  color:var(--sage-deep);font-size:1.1rem;margin:0 0 12px;
+}
+.calc__facteur strong{font-style:normal;color:var(--rouge)}
+
+/* =============================================================================
+   20. ÉTATS — ENCARTS GÉNÉRIQUES, VIDE, MUET
+   ========================================================================== */
+.vide{
+  font-family:'Cormorant','Cormorant Garamond',serif;font-style:italic;
+  color:var(--ink-faint);font-size:1.1rem;
+  text-align:center;padding:32px 18px;
+  border:1px dashed var(--hair);border-radius:2px;
+  grid-column:1 / -1;
+}
+.muet{
+  font-family:'Cormorant','Cormorant Garamond',serif;font-style:italic;
+  color:var(--ink-faint);font-size:.96rem;padding:4px 9px;list-style:none;
+}
+
+/* =============================================================================
+   21. PIED DE PAGE  (.piedpage)
+   ========================================================================== */
+.piedpage{
+  text-align:center;
+  padding:30px 18px 40px;margin-top:20px;
+  border-top:1px solid var(--hair);
+  background:var(--paper-2);
+  color:var(--ink-soft);
+}
+.piedpage p{margin:.3em 0}
+.piedpage__avert{
+  max-width:640px;margin:.6em auto 0;
+  font-family:'Cormorant','Cormorant Garamond',serif;font-style:italic;
+  font-size:.92rem;color:var(--rouge);
+}
+
+/* =============================================================================
+   22. RESPONSIVE
+   ========================================================================== */
+
+/* --- Tablette : statistiques en 2 colonnes (< 900px) --- */
+@media(max-width:900px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stat:nth-child(3){border-left:0}
+  .stat:nth-child(3),
+  .stat:nth-child(4){border-top:1px solid var(--hair-soft)}
+}
+
+/* --- Sidebar en tiroir coulissant (< 900px) --- */
+@media(max-width:900px){
+  .burger{display:inline-flex}
+  .topbar__nom{display:none}      /* on garde le sceau, on libère la place */
+  .cadre{display:block}
+  .sidebar{
+    position:fixed;top:0;left:0;bottom:0;
+    width:min(300px,84vw);max-height:none;height:100%;
+    transform:translateX(-100%);
+    transition:transform .28s ease;
+    border-right:1px solid var(--hair);
+    box-shadow:8px 0 30px -18px var(--shadow);
+    z-index:50;
   }
-  body { background: #fff; color: #000; font-size: 12pt; }
-  .no-print, .topbar, .sidebar, .piedpage, .fiche__actions, .lien-calc { display: none !important; }
-  .cadre, .contenu { display: block; max-width: none; margin: 0; padding: 0; }
-  .fiche { box-shadow: none; border: none; outline: none; padding: 0; }
-  .carte, .stat { box-shadow: none; }
-  a { color: #000; text-decoration: none; }
-  .etapes li::before { background: #000; color: #fff; }
-  .bloc, .encart { break-inside: avoid; }
+  body.sidebar-ouverte .sidebar{transform:translateX(0)}
+  .contenu{max-width:none}
+}
+@media(min-width:901px){
+  /* pas de voile sur grand écran même si la classe persiste */
+  .sidebar-ouverte::after{display:none}
+}
+
+/* --- .notes / .encarts en 1 colonne (< 640px) --- */
+@media(max-width:640px){
+  .encarts,
+  .notes{grid-template-columns:1fr}
+  .encarts > *,
+  .notes > *{border-right:0 !important;border-top:1px solid var(--hair)}
+  .encarts > *:first-child,
+  .notes > *:first-child{border-top:0}
+  .fiche__entete{grid-template-columns:1fr;text-align:center;justify-items:center}
+  .fiche__actions{align-items:center}
+  .fiche__badges{justify-content:center}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .grille-recettes{grid-template-columns:1fr}
+}
+
+/* =============================================================================
+   23. IMPRESSION  (@media print) — planche propre, une colonne, encre noire
+   ========================================================================== */
+@media print{
+  .no-print,
+  .topbar,
+  .sidebar,
+  .piedpage,
+  .burger{display:none !important}
+
+  body{
+    background:#fff !important;color:#000;
+    font-size:12pt;line-height:1.5;
+  }
+  .contenu{max-width:none;margin:0;padding:0}
+  .cadre{display:block}
+
+  /* tout passe en blanc / noir sobre */
+  .fiche,
+  .couverture,
+  .page,
+  .paper-tex,
+  .calc,
+  .carte,
+  .encart,
+  .note,
+  .tuile-cat,
+  .stats,
+  .stat{
+    background:#fff !important;
+    background-image:none !important;
+    box-shadow:none !important;
+    color:#000;
+  }
+  .fiche{border:1px solid #999;padding:0 0 12pt}
+  .fiche__entete{border-bottom:1px solid #999}
+  .corner{display:none}
+
+  /* la fiche s'imprime en une seule colonne */
+  .plate{grid-template-columns:1fr}
+  .margin{display:none}
+  .encarts,
+  .notes{grid-template-columns:1fr;border-color:#bbb}
+
+  /* couleurs d'accent atténuées à l'impression */
+  .titre-page,.titre-section,.fiche__nom,.bloc__titre,.plate-head h2,
+  .sec-title,.dicton,.encart--dicton p,.stat__nb,.calc__facteur strong,
+  .carte__nom,.lettrine::first-letter{color:#000 !important}
+  .puce,.btn{border-color:#999;color:#222}
+
+  a{color:#000;text-decoration:none}
+
+  /* éviter les coupures malheureuses */
+  .note,
+  .encart,
+  .bloc,
+  .carte,
+  .tuile-cat,
+  .timeline__etape,
+  .etapes li,
+  .prep li,
+  .ingr tr,
+  .tableau-ingredients tr{break-inside:avoid;page-break-inside:avoid}
+  .bloc__titre,
+  .titre-section{break-after:avoid}
 }

@@ -1,5 +1,6 @@
 const fs = require('fs'), vm = require('vm');
-const code = fs.readFileSync('script.js', 'utf8');
+const notes = fs.existsSync('notes.js') ? fs.readFileSync('notes.js', 'utf8') : '';
+const code = notes + '\n' + fs.readFileSync('script.js', 'utf8');
 
 function mkEl() {
   const el = {

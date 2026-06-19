@@ -706,6 +706,7 @@ const DATA = [
 function _ing(a) { return { qte: a[0], unite: a[1], nom: a[2], scalable: a[3] !== false }; }
 function _recette(o) {
   const mj = o.mac || 0;
+  const n = (typeof NOTES_SITE !== 'undefined' && NOTES_SITE[o.id]) || null;
   return {
     id: o.id,
     nom: o.nom,
@@ -725,10 +726,10 @@ function _recette(o) {
       { phase: 'Vieillissement', duree: o.vieil || 'facultatif' },
       { phase: 'Dégustation',   duree: o.degust || 'frais, en apéritif ou en digestif' }
     ],
-    histoire: o.histoire || null,
-    proprietes: o.proprietes || null,
-    conseils: o.conseils || null,
-    dicton: o.dicton || null
+    histoire: o.histoire || (n && n.h) || null,
+    proprietes: o.proprietes || (n && n.p) || null,
+    conseils: o.conseils || (n && n.c) || null,
+    dicton: o.dicton || (n && n.d) || null
   };
 }
 
@@ -1893,7 +1894,7 @@ const RECETTES_SITE = [
 
   { id:'rt-ratafia-de-citronnelle-xvii-siecle', nom:'Ratafia de Citronnelle (XVII siècle)', cat:'ratafias', themes:['fruits', 'epices', 'plantes', 'historiques'], gravure:'fruit', degre:24, mac:30, macTxt:'un mois', lot:2.6,
     tags:['eau-de-vie', 'cannelle', 'sucre'],
-    ing:[[4,'pintes','eau de vie vous zesterez douze beaux citr'],[2,'gros','cannelle concassée'],[2,'livres','sucre']],
+    ing:[[4,'pintes','eau-de-vie'],[12,'pièces','citrons (zestes)'],[2,'gros','cannelle concassée'],[1,'once','grains de coriandre'],[2,'livres','sucre'],[1.5,'pinte','eau (pour fondre le sucre)']],
     prep:['Pour quatre pintes d’eau de vie vous zesterez douze beaux citrons ; ajoutez-y deux gros de cannelle concassée et une once de grains de coriandre ; avec deux livres de sucre que l’on fera fondre dans une pinte et demie d’eau ; laissez le tout infuser un mois ; passez ensuite votre liqueur et mettez-la dans des bouteilles fermées et cirées.'] },
 
   { id:'rt-ratafia-de-clementines', nom:'Ratafia De Clémentines', cat:'ratafias', themes:['fruits', 'epices'], gravure:'fruit', degre:24, mac:56, macTxt:'8 semaines', lot:1.3,
@@ -1913,7 +1914,7 @@ const RECETTES_SITE = [
 
   { id:'rt-ratafia-de-fleurs-d-orangers', nom:'Ratafia de Fleurs d’Orangers', cat:'ratafias', themes:['fruits', 'fleurs'], gravure:'fruit', degre:24, mac:20, macTxt:'vingt jour', lot:2.6,
     tags:['eau-de-vie', 'sucre', 'eau'],
-    ing:[[8,'pintes','eau de vie'],[4,'livres','sucre'],[2,'pintes','eau de fleur d’oranger']],
+    ing:[[8,'pintes','eau-de-vie'],[4,'livres','sucre'],[1.5,'livre','fleurs d’oranger (les plus blanches possible)'],[null,'','eau (quantité nécessaire pour le sirop)',false]],
     prep:['Prenez huit pintes d’eau de vie, quatre livres de sucre et une livre et demie de fleur d‘orange, la plus blanche possible.', 'Vous faites fondre el sucre dans la quantité d‘eau nécessaire, et vous y mettez votre fleur d’orange épluchée ; lorsqu’elle à reçu un bouillon vous retirez le mélange du feu, vous le laissez refroidir, puis le mettez dans un vase de grés et y versez l’eau de vie, tenez hermétiquement fermé, et laissez infuser pendant dix-huit ou vingt jour ; après cela, vous filtrez le ratafia.', 'On nous a rapporté qu’il a été fait de ce ratafia, à partir d’eau de fleur d’oranger.', 'Dans ce cas il faut mettre 2 pintes d’eau de fleur d’oranger à la place des fleurs.'] },
 
   { id:'rt-ratafia-de-framboises', nom:'Ratafia de Framboises', cat:'ratafias', themes:['fruits'], gravure:'fruit', degre:24, mac:0, macTxt:'—', lot:2.6,
@@ -1953,7 +1954,7 @@ const RECETTES_SITE = [
 
   { id:'rt-ratafia-de-mures', nom:'Ratafia de Mûres', cat:'ratafias', themes:['fruits'], gravure:'fruit', degre:24, mac:8, macTxt:'huit jours', lot:2.6,
     tags:['eau-de-vie', 'sucre'],
-    ing:[[8,'pintes','eau de vie'],[3,'livres','sucre'],[3,'livres','mûres']],
+    ing:[[8,'pintes','eau-de-vie'],[1,'pinte','eau de rivière'],[3.5,'livres','sucre'],[3,'livres','mûres'],[0.5,'livre','groseilles rouges'],[0.5,'livre','framboises'],[0.5,'gros','macis']],
     prep:['Prenez huit pintes d’eau de vie, une d’eau de rivière, trois livres et demie de sucre, trois livres de mûres, demie-livre de groseilles rouges, autant de framboises et demi gros de macis.', 'Après avoir égrené les groseilles, réunissez tous les fruits, écrasez-les tous ensemble, et mettez-en le jus, ainsi que le macis, infusez dans le macis pendant quinze à dix-huit jours.', 'Alors vous faites fondre le sucre dans la pinte d’eau, vous y décantez la liqueur, y mêlez l’eau de vie, la filtrez et la mettez en bouteilles.'] },
 
   { id:'rt-ratafia-de-noyaux', nom:'Ratafia de Noyaux', cat:'ratafias', themes:['fruits', 'epices'], gravure:'fruit', degre:24, mac:120, macTxt:'quatre mois', lot:2.6,
@@ -1963,7 +1964,7 @@ const RECETTES_SITE = [
 
   { id:'rt-ratafiat-de-noix-recette-du-vxii-siecle', nom:'Ratafiat de Noix (recette du VXII siècle)', cat:'ratafias', themes:['fruits', 'epices'], gravure:'fruit', degre:24, mac:28, macTxt:'4 à 5 semaines', lot:2.6,
     tags:['eau-de-vie', 'sucre'],
-    ing:[[2,'pintes','eau de vie'],[1,'livre','sucre deux clous de girofle']],
+    ing:[[2,'pintes','eau-de-vie'],[16,'pièces','noix vertes (fendues en deux)'],[1.5,'livre','sucre'],[2,'clous','girofle'],[1,'bâton','cannelle'],[null,'','macis (très peu)',false]],
     prep:['Le ratafia de noix se fait vers le temps de la Magdeleine (fin juillet) que les noix sont formées ; pour deux pintes d’eau de vie que vous mettrez dans une cruche bien bouchée.', 'Vous y mettrez quinze à seize noix entières que vous fendrez par la moitié ; mettez votre cruche à la cave pour y laisserez infuser les noix avec l’eau de vie environ 4 à 5 semaines.', 'Vous aurez soin de bien remuer la cruche au moins 2 fois par semaine pour bien mêler les noix et l’eau de vie et lui en communique parfaitement le goût.', 'Ensuite vous filtrerez l’eau de vie et le remettrez dans la cruche avec une livre et demie de sucre deux clous de girofle, un petit bâton de cannelle et très peu de macis (noix de muscade).', 'Faites encore infuser le tout l’espace de trois semaines, ensuite vous filtrerez et mettrez en bouteille.', 'Plus vous garderez ce ratafia meilleur il deviendra.'] },
 
   { id:'rt-ratafia-de-peches', nom:'Ratafia de Pêches', cat:'ratafias', themes:['fruits', 'epices'], gravure:'fruit', degre:24, mac:56, macTxt:'8 semaines', lot:1.3,
@@ -2613,30 +2614,135 @@ function fmt(n) {
 /* ---------------------------------------------------------------------
    6. RECHERCHE & FILTRES
 --------------------------------------------------------------------- */
+const deacc = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '');
+const norm = s => deacc(s).toLowerCase();
+/* mots-vides ignorés pour affiner la recherche par ingrédient */
+const STOPWORDS = new Set(['de', 'd', 'des', 'du', 'la', 'le', 'les', 'l', 'a', 'au', 'aux',
+  'en', 'et', 'ou', 'un', 'une', 'pour', 'par', 'sur', 'sans', 'avec']);
+
+/* Recherche précise, pondérée, sensible aux ingrédients (ET strict sur les mots). */
 function rechercher(query, filtres = {}) {
-  const q = (query || '').trim().toLowerCase();
-  return DATA.filter(r => {
-    // Filtre catégorie principale
-    if (filtres.categorie && r.categorie !== filtres.categorie) return false;
-    // Filtre thème transversal
-    if (filtres.theme && !r.themes.includes(filtres.theme)) return false;
-    // Filtre alcool
-    if (filtres.alcool && bandeAlcool(r.degre).id !== filtres.alcool) return false;
-    // Filtre durée
-    if (filtres.duree && bandeDuree(r.macerationJours).id !== filtres.duree) return false;
-    // Texte libre : nom, catégorie, tags, ingrédients
-    if (q) {
-      const hay = [
-        r.nom, catNom(r.categorie),
-        r.tags.join(' '),
-        r.ingredients.map(i => i.nom).join(' '),
-        r.themes.join(' ')
-      ].join(' ').toLowerCase();
-      if (!hay.includes(q)) return false;
+  const tokens = norm(query).split(/\s+/).filter(t => t && !STOPWORDS.has(t));
+  const out = [];
+  for (const r of DATA) {
+    if (filtres.categorie && r.categorie !== filtres.categorie) continue;
+    if (filtres.theme && !r.themes.includes(filtres.theme)) continue;
+    if (filtres.alcool && bandeAlcool(r.degre).id !== filtres.alcool) continue;
+    if (filtres.duree && bandeDuree(r.macerationJours).id !== filtres.duree) continue;
+    if (!tokens.length) { out.push({ r, score: 0 }); continue; }
+    const cn = norm(r.nom);
+    const ci = norm(r.ingredients.map(i => i.nom).join(' '));
+    const ct = norm((r.tags || []).join(' '));
+    const cc = norm(catNom(r.categorie));
+    const ce = norm((r.themes || []).map(t => (THEMES.find(x => x.id === t) || {}).nom || t).join(' '));
+    let score = 0, ok = true;
+    for (const tk of tokens) {
+      let s = 0;
+      if (cn.includes(tk)) s += cn.split(/\s+/).includes(tk) ? 12 : 8;
+      if (ci.includes(tk)) s += 5;
+      if (ct.includes(tk)) s += 3;
+      if (cc.includes(tk)) s += 2;
+      if (ce.includes(tk)) s += 2;
+      if (!s) { ok = false; break; }   // chaque mot doit matcher quelque part
+      score += s;
     }
-    return true;
+    if (ok) out.push({ r, score });
+  }
+  out.sort((a, b) => b.score - a.score || a.r.nom.localeCompare(b.r.nom));
+  return out.map(o => o.r);
+}
+
+/* ---------------------------------------------------------------------
+   6 bis. RECALCUL DE LOT — mise à l'échelle « intelligente »
+   Met à l'échelle la quantité structurée ET les quantités glissées dans
+   les phrases (ex. « 400 g par litre » est un ratio : on n'y touche pas ;
+   « à 40° » est un degré : on n'y touche pas non plus).
+--------------------------------------------------------------------- */
+const _RE_QTE_TXT = /(\d+(?:[.,]\d+)?)\s*(kg|g|mg|cl|ml|l)\b/gi;
+function scaleNom(nom, f) {
+  return String(nom).replace(_RE_QTE_TXT, (m, num, unit, off, str) => {
+    const after = str.slice(off + m.length);
+    if (/^\s*°/.test(after)) return m;                    // degré (40°)
+    if (/^\s*(?:par\s+l|\/\s*l)/i.test(after)) return m;  // ratio « par litre »
+    return fmt(parseFloat(num.replace(',', '.')) * f) + ' ' + unit;
   });
 }
+function scaleIngredient(ing, f) {
+  const nom = scaleNom(ing.nom, f);
+  let qte, adj = false;
+  if (ing.qte == null) qte = '—';
+  else if (ing.scalable) qte = fmt(ing.qte * f) + (ing.unite ? ' ' + ing.unite : '');
+  else { qte = fmt(ing.qte) + (ing.unite ? ' ' + ing.unite : ''); adj = true; }
+  return { qte, nom, adj };
+}
+
+/* ---------------------------------------------------------------------
+   6 ter. ORNEMENTS & ÉRUDITION (SVG inline, symboles planétaires, latin)
+--------------------------------------------------------------------- */
+const _CORNER = '<path d="M3 71 C3 40 8 14 36 9"/><path d="M36 9 C26 5 16 6 9 13"/>'
+  + '<path d="M36 9 C42 18 41 28 32 34 C33 24 35 16 36 9Z" fill="currentColor" fill-opacity=".12"/>'
+  + '<path d="M14 52 C22 50 27 44 27 36"/><circle cx="6" cy="68" r="1.5" fill="currentColor" stroke="none"/>';
+function coins() {
+  return ['tl', 'tr', 'bl', 'br'].map(p =>
+    `<svg class="corner ${p}" viewBox="0 0 74 74" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true">${_CORNER}</svg>`
+  ).join('');
+}
+const FILET = '<div class="rule"><span class="ln"></span>'
+  + '<svg width="26" height="14" viewBox="0 0 26 14" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M1 7 H10 M16 7 H25"/><path d="M13 2 l3 5 -3 5 -3 -5 Z" fill="currentColor" fill-opacity=".15"/></svg>'
+  + '<span class="ln"></span></div>';
+const FILET_COURT = '<div class="rule"><span class="ln" style="max-width:150px"></span>'
+  + '<svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><path d="M7 0 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2Z" fill-opacity=".5"/></svg>'
+  + '<span class="ln" style="max-width:150px"></span></div>';
+const CULDELAMPE = '<div class="culdelampe"><svg viewBox="0 0 120 46" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true">'
+  + '<path d="M60 4 v10"/><path d="M60 14 C44 18 36 30 60 42 C84 30 76 18 60 14Z" fill="currentColor" fill-opacity=".10"/>'
+  + '<path d="M60 18 C50 22 48 30 60 38 C72 30 70 22 60 18Z"/><path d="M58 6 q-6 2 -9 7 M62 6 q6 2 9 7"/>'
+  + '<path d="M30 24 q14 4 24 -2 M90 24 q-14 4 -24 -2"/><circle cx="26" cy="24" r="1.8" fill="currentColor" stroke="none"/>'
+  + '<circle cx="94" cy="24" r="1.8" fill="currentColor" stroke="none"/><path d="M14 26 q8 -3 12 -2 M106 26 q-8 -3 -12 -2"/></svg></div>';
+const SEAL = '<svg class="seal" viewBox="0 0 104 104" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">'
+  + '<circle cx="52" cy="52" r="48" stroke-dasharray="1 4"/><circle cx="52" cy="52" r="41"/>'
+  + '<path d="M44 30 h16 l-2 14 a16 16 0 1 1 -12 0 Z" fill="currentColor" fill-opacity=".10"/>'
+  + '<path d="M52 58 m-9 0 a9 9 0 1 0 18 0 a9 9 0 1 0 -18 0"/><path d="M46 30 h12" stroke-width="1.4"/>'
+  + '<path d="M52 44 v6"/><path d="M40 70 q12 8 24 0"/><circle cx="52" cy="62" r="2.4" fill="currentColor" stroke="none"/></svg>';
+const GLYPH_SEAL = '<svg class="glyph-seal" viewBox="0 0 62 62" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true">'
+  + '<circle cx="31" cy="31" r="29" stroke-dasharray="1 3.5"/><circle cx="31" cy="31" r="23"/>'
+  + '<path d="M31 14 v34 M14 31 h34 M19 19 l24 24 M43 19 l-24 24" stroke-opacity=".55"/>'
+  + '<circle cx="31" cy="31" r="5" fill="currentColor" fill-opacity=".18"/></svg>';
+const SKULL = '<svg class="skull" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true">'
+  + '<path d="M9 19 a11 11 0 0 1 22 0 v6 q0 3 -3 3 h-2 v3 h-10 v-3 h-2 q-3 0 -3 -3 Z" fill="currentColor" fill-opacity=".08"/>'
+  + '<circle cx="15" cy="19" r="3.2"/><circle cx="25" cy="19" r="3.2"/><path d="M20 23 l-1.6 4 h3.2 Z" fill="currentColor"/>'
+  + '<path d="M15 31 v3 M20 31 v3 M25 31 v3"/></svg>';
+const ICO_NOTE = {
+  histoire: '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 2 h7 l2 2 v9 h-9 Z"/><path d="M5 6 h5 M5 9 h5"/></svg>',
+  propriete: '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M7.5 1 C5 4 5 8 7.5 11 C10 8 10 4 7.5 1Z"/><path d="M7.5 11 v3"/></svg>',
+  conseil: '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="7.5" cy="7.5" r="6"/><path d="M7.5 4 v4 l2.5 1.5"/></svg>'
+};
+/* planète régente + symbole alchimique par catégorie */
+const PLANETES = {
+  hypocras: { sym: '♃', nom: 'Jupiter' },
+  vins:     { sym: '☉', nom: 'Soleil' },
+  liqueurs: { sym: '☿', nom: 'Mercure' },
+  cremes:   { sym: '☽', nom: 'Lune' },
+  ratafias: { sym: '♀', nom: 'Vénus' },
+  rhums:    { sym: '♂', nom: 'Mars' }
+};
+const _ROOT_LAT = {
+  hypocras: 'Vinum hippocraticum', vins: 'Vinum aromaticum', liqueurs: 'Liquor spirituosus',
+  cremes: 'Crema dulcis', ratafias: 'Ratafia domesticum', rhums: 'Saccharum spiritus'
+};
+function latinBinom(r) {
+  const racine = _ROOT_LAT[r.categorie] || 'Liquor';
+  const ba = bandeAlcool(r.degre).id;
+  const epith = ba === 'fort' ? 'spiritus validus' : ba === 'faible' ? 'lenis' : 'ad mensam';
+  return `<b>${racine}</b> · ${epith}`;
+}
+const _ROM = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
+function romain(n) {
+  if (!n) return '';
+  const u = [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'],
+    [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
+  let s = ''; for (const [v, sym] of u) { while (n >= v) { s += sym; n -= v; } } return s;
+}
+function numPlanche(r) { return DATA.indexOf(r) + 1; }
 
 /* ---------------------------------------------------------------------
    7. RENDU DES VUES
@@ -2685,15 +2791,21 @@ function vueAccueil() {
   const nbPlantes = compteTags(['génépi','mélisse','angélique','sureau','épine','prunellier','armoise','feuilles','fleurs','plante']);
 
   return `
-    <section class="couverture">
-      <div class="couverture__cadre">
-        <p class="couverture__sur">Codex des</p>
-        <h1 class="couverture__titre">Liqueurs &amp; Hypocras</h1>
-        <p class="couverture__sous">Grimoire des macérations, ratafias, crèmes &amp; vins d'apothicaire</p>
-        <div class="couverture__filet" aria-hidden="true">❦</div>
-        <form class="recherche-globale" role="search" onsubmit="return false;">
-          <input id="rechercheAccueil" type="search" placeholder="Rechercher une recette, un fruit, une plante, une épice…" aria-label="Recherche globale" autocomplete="off">
+    <section class="page paper-tex frontispage">
+      ${coins()}
+      <div class="frontis">
+        ${SEAL}
+        <div class="overline">Officine &amp; Cellier · Codex</div>
+        <h1>Liqueurs <span class="amp">&amp;</span> Hypocras</h1>
+        <div class="latin">Herbarium Vinorum &amp; Liquorum Antiquorum</div>
+        <p class="sub">${nbRecettes} recettes de liqueurs, crèmes, ratafias, hypocras, vins d'épices &amp; rhums arrangés, relevées et dressées à la manière des planches d'herbier.</p>
+        ${FILET}
+        <form class="search" role="search" onsubmit="return false;">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14 l4 4"/></svg>
+          <input id="rechercheAccueil" type="search" placeholder="Rechercher une recette, un ingrédient, une vertu…" aria-label="Recherche globale" autocomplete="off">
+          <span class="kbd">Entrée</span>
         </form>
+        <div class="folio-front">~ Frontispice ~</div>
       </div>
     </section>
 
@@ -2749,14 +2861,26 @@ function vueListe({ titre, recettes, ariane: fil, filtresActifs }) {
   `;
 }
 
-/** Vue : fiche recette. */
+/** Vue : fiche recette — planche d'herbier. */
 function vueRecette(r) {
-  const ba = bandeAlcool(r.degre);
+  const escAttr = s => String(s).replace(/"/g, '&quot;');
+  const pl = PLANETES[r.categorie] || { sym: '☿', nom: 'Mercure' };
+  const np = numPlanche(r);
   const assoc = recettesAssociees(r);
   const fav = STORE.isFavori(r.id);
 
-  const encart = (titre, contenu, cls) => contenu
-    ? `<div class="encart encart--${cls}"><h3>${titre}</h3><p>${contenu}</p></div>` : '';
+  const macBig = r.macerationJours >= 60 ? fmt(Math.round(r.macerationJours / 30 * 10) / 10)
+    : (r.macerationJours || '—');
+  const macUnit = r.macerationJours >= 60 ? 'mois' : 'jours';
+
+  const lignesIng = r.ingredients.map(i => {
+    const d = scaleIngredient(i, 1);
+    return `<tr data-q="${i.qte == null ? '' : i.qte}" data-u="${escAttr(i.unite || '')}" data-s="${i.scalable ? 1 : 0}" data-n="${escAttr(i.nom)}">`
+      + `<td class="q${d.adj ? ' adj' : ''}">${d.qte}</td><td class="n">${i.nom}</td></tr>`;
+  }).join('');
+
+  const note = (titre, contenu, cls) => contenu
+    ? `<div class="note"><h4>${ICO_NOTE[cls] || ''}${titre}</h4><p>${contenu}</p></div>` : '';
 
   return `
     ${ariane([
@@ -2765,75 +2889,86 @@ function vueRecette(r) {
       { label: r.nom }
     ])}
 
-    <article class="fiche" id="fiche">
-      <header class="fiche__entete">
-        <div class="fiche__gravure" aria-hidden="true">${GRAVURES[r.gravure] || ''}</div>
-        <div class="fiche__titres">
-          <p class="fiche__cat">${catNom(r.categorie)}</p>
-          <h1 class="fiche__nom">${r.nom}</h1>
-          <div class="fiche__badges">
-            <span class="puce puce--${ba.id}">${r.degre}° · ${ba.label}</span>
-            <span class="puce">Macération : ${bandeDuree(r.macerationJours).label}</span>
-            ${r.themes.map(t => `<span class="puce puce--theme">${THEMES.find(x=>x.id===t)?.nom || t}</span>`).join('')}
+    <article class="fiche">
+      <section class="page paper-tex">
+        ${coins()}
+        <div class="plate">
+
+          <aside class="margin">
+            ${GLYPH_SEAL}
+            <div class="planet" title="${pl.nom}">${pl.sym}</div>
+            <div class="planet-lab">${pl.nom}</div>
+            ${SKULL}
+            <div class="cipher">${romain(np)} · MMXXVI · ${pl.sym}</div>
+            <div class="lot-stamp">
+              <label class="lot-l" for="lotVol">Lot · litres</label>
+              <input id="lotVol" class="lot-input" type="number" min="0.1" step="0.1"
+                     value="${fmt(r.lot)}" data-base="${r.lot}" aria-label="Volume du lot en litres">
+            </div>
+          </aside>
+
+          <div class="column">
+            <header class="plate-head">
+              <div class="num smallcaps">Planche ${romain(np)} · ${catNom(r.categorie)}</div>
+              <h2>${r.nom}</h2>
+              <div class="binom">${latinBinom(r)}</div>
+            </header>
+
+            <figure class="hero">
+              <div class="hero-plate" aria-hidden="true">${GRAVURES[r.gravure] || ''}</div>
+              <svg class="hero-scale" viewBox="0 0 180 8" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true">
+                <path d="M0 4 H180"/><path d="M0 1 V7 M45 2 V6 M90 1 V7 M135 2 V6 M180 1 V7"/>
+              </svg>
+            </figure>
+            <figcaption class="hero-cap">${pl.sym} ${pl.nom} · planche botanique — ${r.themes.map(t => (THEMES.find(x => x.id === t) || {}).nom || t).join(' · ') || 'macération'}</figcaption>
+
+            <div class="badges">
+              <div class="badge"><div class="disc"><span class="big">${r.degre}</span><span class="unit">degrés</span></div><span class="lab">Titre alcoolique</span></div>
+              <div class="badge"><div class="disc"><span class="big">${macBig}</span><span class="unit">${macUnit}</span></div><span class="lab">Macération</span></div>
+              <div class="badge"><div class="disc"><span class="big" id="lotDisc" style="font-size:1.25rem">${fmt(r.lot)} L</span><span class="unit">lot</span></div><span class="lab">Rendement</span></div>
+            </div>
+
+            ${FILET}
+
+            ${r.histoire ? `<h3 class="sec-title">De l'origine &amp; des vertus</h3>
+            <div class="prose lettrine"><p>${r.histoire}</p></div>` : ''}
+
+            ${FILET_COURT}
+            <h3 class="sec-title">Matière première · <span id="lotCap">pour ${fmt(r.lot)} litre${r.lot > 1 ? 's' : ''}</span></h3>
+            <table class="ingr" id="ingrTable"><tbody>${lignesIng}</tbody></table>
+
+            ${FILET_COURT}
+            <h3 class="sec-title">Du procédé · operatio</h3>
+            <ol class="prep">${r.preparation.map(e => `<li>${e}</li>`).join('')}</ol>
+
+            ${FILET_COURT}
+            <h3 class="sec-title">Cours des opérations · tempus</h3>
+            <div class="timeline">${r.timeline.map(t => `<div class="tl-row"><div class="ph">${t.phase}</div><div class="du">${t.duree}</div></div>`).join('')}</div>
+
+            ${(r.proprietes || r.conseils) ? `${FILET_COURT}
+            <h3 class="sec-title">Notes du grimoire</h3>
+            <div class="notes">
+              ${note('Vertus', r.proprietes, 'propriete')}
+              ${note("Conseils d'apothicaire", r.conseils, 'conseil')}
+            </div>` : ''}
+
+            ${r.dicton ? `<div class="dicton"><p>${r.dicton}</p></div>` : ''}
+            ${CULDELAMPE}
+
+            <div class="actions-fiche no-print">
+              <button class="btn btn-fav ${fav ? 'is-fav' : ''}" data-fav="${r.id}"><span aria-hidden="true">✦</span> ${fav ? 'Favori' : 'Ajouter aux favoris'}</button>
+              <button class="btn btn--ghost" onclick="window.print()"><span aria-hidden="true">🖨</span> Imprimer / PDF</button>
+            </div>
+
+            <div class="folio"><span class="dash">—</span>&nbsp; ${romain(np)} &nbsp;<span class="dash">—</span></div>
           </div>
-        </div>
-        <div class="fiche__actions">
-          <button class="btn btn-fav ${fav ? 'is-fav' : ''}" data-fav="${r.id}">
-            <span aria-hidden="true">✦</span> ${fav ? 'Favori' : 'Ajouter aux favoris'}
-          </button>
-          <button class="btn" onclick="window.print()"><span aria-hidden="true">🖨</span> Imprimer / PDF</button>
-        </div>
-      </header>
-
-      <section class="bloc">
-        <h2 class="bloc__titre">Ingrédients</h2>
-        <p class="bloc__note">Proportions pour un lot d'environ <strong>${fmt(r.lot)} L</strong> de produit fini.</p>
-        <table class="tableau-ingredients">
-          <thead><tr><th>Quantité</th><th>Ingrédient</th></tr></thead>
-          <tbody>
-            ${r.ingredients.map(i => `
-              <tr>
-                <td class="qte">${i.qte != null ? fmt(i.qte) + ' ' + i.unite : '—'}</td>
-                <td>${i.nom}</td>
-              </tr>`).join('')}
-          </tbody>
-        </table>
-        <a class="lien-calc" href="#/calculateur/${r.id}">⚖ Recalculer les quantités pour un autre volume</a>
-      </section>
-
-      <section class="bloc">
-        <h2 class="bloc__titre">Préparation</h2>
-        <ol class="etapes">
-          ${r.preparation.map(e => `<li>${e}</li>`).join('')}
-        </ol>
-      </section>
-
-      <section class="bloc">
-        <h2 class="bloc__titre">Chronologie</h2>
-        <ol class="timeline">
-          ${r.timeline.map(t => `
-            <li class="timeline__etape">
-              <span class="timeline__pic" aria-hidden="true"></span>
-              <span class="timeline__phase">${t.phase}</span>
-              <span class="timeline__duree">${t.duree}</span>
-            </li>`).join('')}
-        </ol>
-      </section>
-
-      <section class="bloc bloc--encarts">
-        <h2 class="bloc__titre">Notes du grimoire</h2>
-        <div class="encarts">
-          ${encart('Histoire &amp; anecdotes', r.histoire, 'histoire')}
-          ${encart('Propriétés', r.proprietes, 'propriete')}
-          ${encart('Conseils d\'apothicaire', r.conseils, 'conseil')}
-          ${r.dicton ? `<div class="encart encart--dicton"><h3>Dicton</h3><p class="dicton">${r.dicton}</p></div>` : ''}
         </div>
       </section>
 
       ${assoc.length ? `
-      <section class="bloc no-print">
-        <h2 class="bloc__titre">Recettes associées</h2>
-        <p class="bloc__note">Elles partagent des ingrédients avec celle-ci.</p>
+      <section class="voisines no-print">
+        <h2 class="titre-section">Recettes voisines</h2>
+        <p class="muet">Elles partagent des ingrédients avec celle-ci.</p>
         <div class="grille-recettes">${assoc.map(carteRecette).join('')}</div>
       </section>` : ''}
     </article>
@@ -3030,13 +3165,36 @@ function brancherFiltres(base) {
 
 function brancherFiche() {
   const btn = $('.btn-fav');
-  if (!btn) return;
-  btn.addEventListener('click', () => {
+  if (btn) btn.addEventListener('click', () => {
     const actif = STORE.toggleFavori(btn.dataset.fav);
     btn.classList.toggle('is-fav', actif);
     btn.innerHTML = `<span aria-hidden="true">✦</span> ${actif ? 'Favori' : 'Ajouter aux favoris'}`;
     majSidebar();
   });
+
+  // Recalcul de lot EN DIRECT sur le tableau d'ingrédients
+  const vol = $('#lotVol');
+  const table = $('#ingrTable');
+  if (vol && table) {
+    const base = parseFloat(vol.dataset.base) || 1;
+    const recalc = () => {
+      const v = parseFloat(String(vol.value).replace(',', '.'));
+      if (!v || v <= 0) return;
+      const f = v / base;
+      $$('tr', table).forEach(tr => {
+        const q = tr.dataset.q, u = tr.dataset.u || '', s = tr.dataset.s === '1';
+        const cq = $('.q', tr), cn = $('.n', tr);
+        if (q === '') { cq.textContent = '—'; }
+        else if (s) { cq.textContent = fmt(parseFloat(q) * f) + (u ? ' ' + u : ''); cq.classList.remove('adj'); }
+        else { cq.textContent = fmt(parseFloat(q)) + (u ? ' ' + u : ''); cq.classList.add('adj'); }
+        if (cn) cn.textContent = scaleNom(tr.dataset.n || cn.textContent, f);
+      });
+      const disc = $('#lotDisc'); if (disc) disc.textContent = fmt(v) + ' L';
+      const cap = $('#lotCap'); if (cap) cap.textContent = 'pour ' + fmt(v) + ' litre' + (v > 1 ? 's' : '');
+    };
+    vol.addEventListener('input', recalc);
+    vol.addEventListener('change', recalc);
+  }
 }
 
 function brancherCalculateur() {

@@ -44,3 +44,23 @@ durées, degré). Il n'invente aucune donnée chiffrée. Les encarts narratifs
 l'app, comme pour le premier lot de recettes du site.
 
 Le dossier `_data/` (HTML brut + JSON intermédiaires) n'est pas versionné.
+
+## Notes du grimoire (encarts narratifs)
+
+Les encarts `histoire / proprietes / conseils / dicton` des recettes du site ont
+été rédigés en éventail (un agent par tranche de recettes), ancrés dans la culture
+botanique/historique réelle de l'ingrédient principal, avec mises en garde pour les
+plantes toxiques. Résultat fusionné dans `../notes.js` (`const NOTES_SITE`), chargé
+avant `script.js` et injecté par `_recette` via `NOTES_SITE[o.id]`.
+
+- `dump_for_notes.js` : liste les recettes sans notes -> `_data/notes_todo.json`.
+- `_data/notes_out/` : lots JSON produits (gitignoré) ; fusionnés dans `notes.js`.
+
+## Fonctionnalités & design
+
+- `feature_logic.js` : prototype + tests des deux moteurs (recalcul de lot « intelligent »
+  qui met aussi à l'échelle les quantités glissées dans les phrases ; recherche pondérée
+  par ingrédient, insensible aux accents, ET strict). Intégrés dans `script.js`.
+- Design « planche d'herbier enluminé » : exploration de 5 directions + jury, gagnant
+  `_data/design_candidates/cand_2_planche-herbier.html`. Système repris dans `../styles.css`
+  (+ `../styles-extra.css` pour le frontispice et les extras de fiche).

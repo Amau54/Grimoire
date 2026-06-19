@@ -1,6 +1,7 @@
 const fs = require('fs');
 const vm = require('vm');
-let code = fs.readFileSync('script.js', 'utf8');
+const notes = fs.existsSync('notes.js') ? fs.readFileSync('notes.js', 'utf8') : '';
+let code = notes + '\n' + fs.readFileSync('script.js', 'utf8');
 // ne garder que la portion de construction des données (sans le DOM)
 const cut = code.indexOf('RECETTES_SITE.forEach(o => DATA.push(_recette(o)));');
 if (cut === -1) { console.error('marqueur introuvable'); process.exit(1); }
@@ -31,6 +32,7 @@ for (const r of DATA) {
   if (!Array.isArray(r.ingredients) || r.ingredients.length === 0) errs.push('ingrédients vides (' + r.id + ')');
   if (!Array.isArray(r.preparation) || r.preparation.length === 0) errs.push('préparation vide (' + r.id + ')');
   if (!Array.isArray(r.timeline) || r.timeline.length === 0) errs.push('timeline vide (' + r.id + ')');
+  if (!r.histoire || !r.proprietes || !r.conseils || !r.dicton) errs.push('notes incomplètes (' + r.id + ')');
   for (const ing of r.ingredients || []) {
     if (typeof ing.nom !== 'string' || !ing.nom) errs.push('ing.nom invalide (' + r.id + ')');
     if (!('qte' in ing) || !('unite' in ing)) errs.push('ing structure (' + r.id + ')');
