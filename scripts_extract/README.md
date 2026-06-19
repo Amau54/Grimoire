@@ -64,3 +64,19 @@ avant `script.js` et injecté par `_recette` via `NOTES_SITE[o.id]`.
 - Design « planche d'herbier enluminé » : exploration de 5 directions + jury, gagnant
   `_data/design_candidates/cand_2_planche-herbier.html`. Système repris dans `../styles.css`
   (+ `../styles-extra.css` pour le frontispice et les extras de fiche).
+
+## Planches botaniques (images du blog)
+
+Le blog illustre la plupart des recettes par d'authentiques **planches botaniques
+anciennes** (style Redouté, fond ivoire, binôme latin) — parfaitement raccord avec
+l'esthétique herbier. Elles sont récupérées, recadrées (max 360 px) et optimisées
+(JPEG q82, 35 → 7 Mo) dans `../images/<id>.jpg`, mappées dans `../images.js`
+(`IMAGES_SITE`). `script.js` attache `r.image` à chaque recette.
+
+- `images.py` : mappe nom de recette → URL d'image (écarte les images décoratives
+  répétées) -> `_data/img_liq.json`, puis jointure noms→ids.
+- Rendu : planche en héros de fiche + vignette sur les cartes, fondues au parchemin
+  par `mix-blend-mode: multiply` + léger sépia (cf. `../styles-extra.css`).
+- Couverture : 291/368 (liqueurs, crèmes, ratafias, hypocras, vins). Les rhums et
+  quelques recettes hors-blog gardent la gravure SVG en repli (la page rhum n'expose
+  pas de mapping image fiable en HTML statique).

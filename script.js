@@ -2493,6 +2493,8 @@ const RECETTES_SITE = [
     prep:['Broyer au pilon les épices et tout mélanger dans l’alcool.', 'Laisser macérer 6 semaines.', 'Dissoudre le miel dans le vin et ajouter la macération filtrée.', 'Verser le tout dans une jarre en verre et exposer 1 mois au soleil.', 'Filtrer et mettre en bouteilles.', 'Laisser reposer quelques semaines avant de consommer.', 'Cette préparation est un fortifiant à prendre en début d’hiver, faire un cure de quelques jours, prendre un petit verre le matin.'] },
 ];
 RECETTES_SITE.forEach(o => DATA.push(_recette(o)));
+/* Planche botanique du blog associée à chaque recette (le cas échéant). */
+DATA.forEach(r => { r.image = (typeof IMAGES_SITE !== 'undefined' && IMAGES_SITE[r.id]) || null; });
 
 /* ---------------------------------------------------------------------
    3. GRAVURES BOTANIQUES (SVG en ligne, monochromes sépia)
@@ -2754,7 +2756,9 @@ function carteRecette(r) {
   const fav = STORE.isFavori(r.id) ? 'is-fav' : '';
   return `
     <a class="carte" href="#/recette/${r.id}">
-      <span class="carte__gravure" aria-hidden="true">${GRAVURES[r.gravure] || ''}</span>
+      <span class="carte__gravure${r.image ? ' carte__gravure--photo' : ''}" aria-hidden="true">${r.image
+        ? `<img class="carte__photo" src="${r.image}" alt="" loading="lazy">`
+        : (GRAVURES[r.gravure] || '')}</span>
       <span class="carte__corps">
         <span class="carte__cat">${catNom(r.categorie)}</span>
         <span class="carte__nom">${r.nom}</span>
@@ -2914,11 +2918,13 @@ function vueRecette(r) {
               <div class="binom">${latinBinom(r)}</div>
             </header>
 
-            <figure class="hero">
-              <div class="hero-plate" aria-hidden="true">${GRAVURES[r.gravure] || ''}</div>
-              <svg class="hero-scale" viewBox="0 0 180 8" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true">
+            <figure class="hero${r.image ? ' hero--photo' : ''}">
+              <div class="hero-plate">${r.image
+                ? `<img class="hero-photo" src="${r.image}" alt="Planche botanique — ${r.nom}">`
+                : `<span aria-hidden="true">${GRAVURES[r.gravure] || ''}</span>`}</div>
+              ${r.image ? '' : `<svg class="hero-scale" viewBox="0 0 180 8" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true">
                 <path d="M0 4 H180"/><path d="M0 1 V7 M45 2 V6 M90 1 V7 M135 2 V6 M180 1 V7"/>
-              </svg>
+              </svg>`}
             </figure>
             <figcaption class="hero-cap">${pl.sym} ${pl.nom} · planche botanique — ${r.themes.map(t => (THEMES.find(x => x.id === t) || {}).nom || t).join(' · ') || 'macération'}</figcaption>
 

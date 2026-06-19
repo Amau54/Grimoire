@@ -1,6 +1,7 @@
 const fs = require('fs');
 const vm = require('vm');
 const notes = fs.existsSync('notes.js') ? fs.readFileSync('notes.js', 'utf8') : '';
+const imgs = fs.existsSync('images.js') ? fs.readFileSync('images.js','utf8') : '';
 let code = notes + '\n' + fs.readFileSync('script.js', 'utf8');
 // ne garder que la portion de construction des données (sans le DOM)
 const cut = code.indexOf('RECETTES_SITE.forEach(o => DATA.push(_recette(o)));');
