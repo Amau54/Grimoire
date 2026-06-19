@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="clair">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Codex des Liqueurs &amp; Hypocras — grimoire des recettes de liqueurs, crèmes, ratafias, hypocras, vins apéritifs et rhums arrangés.">
+  <title>Codex des Liqueurs &amp; Hypocras</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Typographies : titres en lettres anciennes, corps lisible. Repli sur des polices système si hors-ligne. -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ============================ BARRE SUPÉRIEURE ============================ -->
+  <header class="topbar">
+    <button id="burger" class="burger" aria-label="Ouvrir le sommaire">☰</button>
+    <a class="topbar__marque" href="#/">
+      <span class="topbar__sceau" aria-hidden="true">⚗</span>
+      <span class="topbar__nom">Codex des Liqueurs</span>
+    </a>
+    <form class="topbar__recherche" role="search" onsubmit="return false;">
+      <input id="rechercheTop" type="search" placeholder="Rechercher…" aria-label="Recherche globale" autocomplete="off">
+    </form>
+    <button id="toggleTheme" class="btn btn--ghost no-print"><span aria-hidden="true">🌙</span> Mode grimoire</button>
+  </header>
+
+  <div class="cadre">
+    <!-- ============================ MENU LATÉRAL ============================ -->
+    <aside id="sidebar" class="sidebar no-print" aria-label="Navigation">
+      <a class="sidebar__lien-accueil" href="#/">❦ Page de garde</a>
+
+      <nav aria-labelledby="t-sommaire">
+        <h2 id="t-sommaire" class="sidebar__titre">Sommaire</h2>
+        <ul id="sommaire" class="sidebar__liste"></ul>
+      </nav>
+
+      <nav aria-labelledby="t-outils">
+        <h2 id="t-outils" class="sidebar__titre">Outils</h2>
+        <ul class="sidebar__liste">
+          <li><a href="#/calculateur"><span aria-hidden="true">⚖</span> Calculateur de lot</a></li>
+          <li><a href="#/recherche"><span aria-hidden="true">🔍</span> Recherche avancée</a></li>
+          <li><a href="#/favoris"><span aria-hidden="true">✦</span> Mes favoris <em id="compteFav" class="badge">0</em></a></li>
+        </ul>
+      </nav>
+
+      <nav aria-labelledby="t-recents">
+        <h2 id="t-recents" class="sidebar__titre">Récemment consultées</h2>
+        <ul id="recents" class="sidebar__liste sidebar__liste--recents"></ul>
+      </nav>
+
+      <p class="sidebar__pied">« In vino veritas, in liquore memoria. »</p>
+    </aside>
+
+    <!-- ============================ CONTENU PRINCIPAL ============================ -->
+    <main id="app" class="contenu" aria-live="polite"></main>
+  </div>
+
+  <footer class="piedpage no-print">
+    <p>Codex des Liqueurs &amp; Hypocras — encyclopédie des macérations d'autrefois.</p>
+    <p class="piedpage__avert">⚠ L'abus d'alcool est dangereux pour la santé. À consommer avec modération. Recettes réservées à un usage adulte et responsable.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
