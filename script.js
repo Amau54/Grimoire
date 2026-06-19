@@ -2493,52 +2493,13 @@ const RECETTES_SITE = [
     prep:['Broyer au pilon les épices et tout mélanger dans l’alcool.', 'Laisser macérer 6 semaines.', 'Dissoudre le miel dans le vin et ajouter la macération filtrée.', 'Verser le tout dans une jarre en verre et exposer 1 mois au soleil.', 'Filtrer et mettre en bouteilles.', 'Laisser reposer quelques semaines avant de consommer.', 'Cette préparation est un fortifiant à prendre en début d’hiver, faire un cure de quelques jours, prendre un petit verre le matin.'] },
 ];
 RECETTES_SITE.forEach(o => DATA.push(_recette(o)));
-/* Planche botanique du blog associée à chaque recette (le cas échéant). */
-DATA.forEach(r => { r.image = (typeof IMAGES_SITE !== 'undefined' && IMAGES_SITE[r.id]) || null; });
-
-/* ---------------------------------------------------------------------
-   3. GRAVURES BOTANIQUES (SVG en ligne, monochromes sépia)
-   Une clé -> un motif décoratif servant d'illustration de fiche.
---------------------------------------------------------------------- */
-const GRAVURES = {
-  fruit: `<svg viewBox="0 0 100 100" role="img" aria-label="gravure de fruit">
-    <g fill="none" stroke="currentColor" stroke-width="1.4">
-      <path d="M50 28 C50 18 58 12 64 14 C60 18 60 24 56 28"/>
-      <circle cx="44" cy="58" r="20"/>
-      <circle cx="58" cy="62" r="16"/>
-      <path d="M50 28 C46 36 44 44 44 52" />
-      <path d="M44 40 l-10 -6 M44 46 l-12 0" stroke-width="1"/>
-    </g></svg>`,
-  fleur: `<svg viewBox="0 0 100 100" role="img" aria-label="gravure de fleur">
-    <g fill="none" stroke="currentColor" stroke-width="1.4">
-      <circle cx="50" cy="42" r="6"/>
-      <ellipse cx="50" cy="24" rx="6" ry="12"/>
-      <ellipse cx="68" cy="36" rx="12" ry="6"/>
-      <ellipse cx="32" cy="36" rx="12" ry="6"/>
-      <ellipse cx="61" cy="56" rx="10" ry="6" transform="rotate(45 61 56)"/>
-      <ellipse cx="39" cy="56" rx="10" ry="6" transform="rotate(-45 39 56)"/>
-      <path d="M50 48 C50 64 50 76 50 86 M50 70 C58 66 64 70 66 76 M50 64 C42 60 36 64 34 70"/>
-    </g></svg>`,
-  epice: `<svg viewBox="0 0 100 100" role="img" aria-label="gravure d'épice">
-    <g fill="none" stroke="currentColor" stroke-width="1.4">
-      <path d="M38 20 C34 40 34 60 38 80 C46 74 54 74 62 80 C66 60 66 40 62 20 C54 26 46 26 38 20 Z"/>
-      <path d="M50 24 L50 78 M44 34 C48 40 52 40 56 34 M44 50 C48 56 52 56 56 50 M44 66 C48 72 52 72 56 66"/>
-    </g></svg>`,
-  plante: `<svg viewBox="0 0 100 100" role="img" aria-label="gravure de plante">
-    <g fill="none" stroke="currentColor" stroke-width="1.4">
-      <path d="M50 86 L50 24"/>
-      <path d="M50 40 C40 36 32 28 30 18 C40 20 48 28 50 38"/>
-      <path d="M50 52 C60 48 68 40 70 30 C60 32 52 40 50 50"/>
-      <path d="M50 64 C42 60 36 54 34 46 C42 48 48 54 50 62"/>
-      <path d="M50 24 C48 18 52 14 56 12 C54 16 54 20 52 24"/>
-    </g></svg>`,
-  racine: `<svg viewBox="0 0 100 100" role="img" aria-label="gravure de racine">
-    <g fill="none" stroke="currentColor" stroke-width="1.4">
-      <path d="M50 14 C46 26 46 36 50 46 C54 36 54 26 50 14 Z"/>
-      <path d="M50 46 C44 54 40 64 42 78 M50 46 C56 54 60 64 58 78 M50 50 L50 84"/>
-      <path d="M50 60 C44 62 40 66 38 72 M50 66 C56 68 60 72 62 78"/>
-    </g></svg>`
-};
+/* Spécimen (image détourée du blog) associé à chaque recette, le cas échéant.
+   r.image = chemin ; r.imageFull = true si image pleine page (à encadrer). */
+DATA.forEach(r => {
+  const im = (typeof IMAGES_SITE !== 'undefined' && IMAGES_SITE[r.id]) || null;
+  r.image = im ? im.s : null;
+  r.imageFull = im ? !!im.f : false;
+});
 
 /* ---------------------------------------------------------------------
    4. ÉTAT & STOCKAGE LOCAL
@@ -2679,54 +2640,8 @@ function scaleIngredient(ing, f) {
 }
 
 /* ---------------------------------------------------------------------
-   6 ter. ORNEMENTS & ÉRUDITION (SVG inline, symboles planétaires, latin)
+   6 ter. ÉRUDITION (latin, numérotation) — aucun ornement vectoriel
 --------------------------------------------------------------------- */
-const _CORNER = '<path d="M3 71 C3 40 8 14 36 9"/><path d="M36 9 C26 5 16 6 9 13"/>'
-  + '<path d="M36 9 C42 18 41 28 32 34 C33 24 35 16 36 9Z" fill="currentColor" fill-opacity=".12"/>'
-  + '<path d="M14 52 C22 50 27 44 27 36"/><circle cx="6" cy="68" r="1.5" fill="currentColor" stroke="none"/>';
-function coins() {
-  return ['tl', 'tr', 'bl', 'br'].map(p =>
-    `<svg class="corner ${p}" viewBox="0 0 74 74" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true">${_CORNER}</svg>`
-  ).join('');
-}
-const FILET = '<div class="rule"><span class="ln"></span>'
-  + '<svg width="26" height="14" viewBox="0 0 26 14" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M1 7 H10 M16 7 H25"/><path d="M13 2 l3 5 -3 5 -3 -5 Z" fill="currentColor" fill-opacity=".15"/></svg>'
-  + '<span class="ln"></span></div>';
-const FILET_COURT = '<div class="rule"><span class="ln" style="max-width:150px"></span>'
-  + '<svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><path d="M7 0 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2Z" fill-opacity=".5"/></svg>'
-  + '<span class="ln" style="max-width:150px"></span></div>';
-const CULDELAMPE = '<div class="culdelampe"><svg viewBox="0 0 120 46" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true">'
-  + '<path d="M60 4 v10"/><path d="M60 14 C44 18 36 30 60 42 C84 30 76 18 60 14Z" fill="currentColor" fill-opacity=".10"/>'
-  + '<path d="M60 18 C50 22 48 30 60 38 C72 30 70 22 60 18Z"/><path d="M58 6 q-6 2 -9 7 M62 6 q6 2 9 7"/>'
-  + '<path d="M30 24 q14 4 24 -2 M90 24 q-14 4 -24 -2"/><circle cx="26" cy="24" r="1.8" fill="currentColor" stroke="none"/>'
-  + '<circle cx="94" cy="24" r="1.8" fill="currentColor" stroke="none"/><path d="M14 26 q8 -3 12 -2 M106 26 q-8 -3 -12 -2"/></svg></div>';
-const SEAL = '<svg class="seal" viewBox="0 0 104 104" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">'
-  + '<circle cx="52" cy="52" r="48" stroke-dasharray="1 4"/><circle cx="52" cy="52" r="41"/>'
-  + '<path d="M44 30 h16 l-2 14 a16 16 0 1 1 -12 0 Z" fill="currentColor" fill-opacity=".10"/>'
-  + '<path d="M52 58 m-9 0 a9 9 0 1 0 18 0 a9 9 0 1 0 -18 0"/><path d="M46 30 h12" stroke-width="1.4"/>'
-  + '<path d="M52 44 v6"/><path d="M40 70 q12 8 24 0"/><circle cx="52" cy="62" r="2.4" fill="currentColor" stroke="none"/></svg>';
-const GLYPH_SEAL = '<svg class="glyph-seal" viewBox="0 0 62 62" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true">'
-  + '<circle cx="31" cy="31" r="29" stroke-dasharray="1 3.5"/><circle cx="31" cy="31" r="23"/>'
-  + '<path d="M31 14 v34 M14 31 h34 M19 19 l24 24 M43 19 l-24 24" stroke-opacity=".55"/>'
-  + '<circle cx="31" cy="31" r="5" fill="currentColor" fill-opacity=".18"/></svg>';
-const SKULL = '<svg class="skull" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true">'
-  + '<path d="M9 19 a11 11 0 0 1 22 0 v6 q0 3 -3 3 h-2 v3 h-10 v-3 h-2 q-3 0 -3 -3 Z" fill="currentColor" fill-opacity=".08"/>'
-  + '<circle cx="15" cy="19" r="3.2"/><circle cx="25" cy="19" r="3.2"/><path d="M20 23 l-1.6 4 h3.2 Z" fill="currentColor"/>'
-  + '<path d="M15 31 v3 M20 31 v3 M25 31 v3"/></svg>';
-const ICO_NOTE = {
-  histoire: '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 2 h7 l2 2 v9 h-9 Z"/><path d="M5 6 h5 M5 9 h5"/></svg>',
-  propriete: '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M7.5 1 C5 4 5 8 7.5 11 C10 8 10 4 7.5 1Z"/><path d="M7.5 11 v3"/></svg>',
-  conseil: '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="7.5" cy="7.5" r="6"/><path d="M7.5 4 v4 l2.5 1.5"/></svg>'
-};
-/* planète régente + symbole alchimique par catégorie */
-const PLANETES = {
-  hypocras: { sym: '♃', nom: 'Jupiter' },
-  vins:     { sym: '☉', nom: 'Soleil' },
-  liqueurs: { sym: '☿', nom: 'Mercure' },
-  cremes:   { sym: '☽', nom: 'Lune' },
-  ratafias: { sym: '♀', nom: 'Vénus' },
-  rhums:    { sym: '♂', nom: 'Mars' }
-};
 const _ROOT_LAT = {
   hypocras: 'Vinum hippocraticum', vins: 'Vinum aromaticum', liqueurs: 'Liquor spirituosus',
   cremes: 'Crema dulcis', ratafias: 'Ratafia domesticum', rhums: 'Saccharum spiritus'
@@ -2735,9 +2650,8 @@ function latinBinom(r) {
   const racine = _ROOT_LAT[r.categorie] || 'Liquor';
   const ba = bandeAlcool(r.degre).id;
   const epith = ba === 'fort' ? 'spiritus validus' : ba === 'faible' ? 'lenis' : 'ad mensam';
-  return `<b>${racine}</b> · ${epith}`;
+  return racine + ' · ' + epith;
 }
-const _ROM = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
 function romain(n) {
   if (!n) return '';
   const u = [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'],
@@ -2764,7 +2678,7 @@ function carteRecette(r) {
     <a class="carte" href="#/recette/${r.id}" style="--rot:${_rot(r.id)}deg">
       <span class="carte__gravure${r.image ? ' carte__gravure--photo' : ''}" aria-hidden="true">${r.image
         ? `<img class="carte__photo" src="${r.image}" alt="" loading="lazy">`
-        : (GRAVURES[r.gravure] || '')}</span>
+        : '<span class="carte__nospec">❧</span>'}</span>
       <span class="carte__corps">
         <span class="carte__cat">${catNom(r.categorie)}</span>
         <span class="carte__nom">${r.nom}</span>
@@ -2790,66 +2704,46 @@ function ariane(parts) {
 
 /** Vue : Accueil. */
 function vueAccueil() {
-  const nbRecettes = DATA.length;
-  const compteTags = (mots) => {
-    const set = new Set();
-    DATA.forEach(r => r.tags.forEach(t => { if (mots.some(m => t.includes(m))) set.add(t); }));
-    return set.size;
-  };
-  const nbFruits  = compteTags(['cerise','griotte','framboise','cassis','mûre','orange','citron','noix','ananas','guigne','baies','pêcher','prune','agrume']);
-  const nbEpices  = compteTags(['cannelle','gingembre','girofle','cardamome','muscade','vanille','badiane','anis','coriandre','fenouil','café']);
-  const nbPlantes = compteTags(['génépi','mélisse','angélique','sureau','épine','prunellier','armoise','feuilles','fleurs','plante']);
+  const n = DATA.length;
+  const cnt = id => DATA.filter(r => r.categorie === id).length;
+  const cntT = id => DATA.filter(r => r.themes.includes(id)).length;
+  const chapitres = CATEGORIES.map((c, i) =>
+    `<a class="chapter-tab" href="#/categorie/${c.id}"><span class="n">${romain(i + 1)} · ${cnt(c.id)}</span>${c.nom}</a>`).join('');
+  const rubriques = THEMES.map(t =>
+    `<a class="chapter-tab" href="#/theme/${t.id}"><span class="n">${cntT(t.id)}</span>${t.nom}</a>`).join('');
 
   return `
-    <section class="page paper-tex frontispage">
-      ${coins()}
-      <div class="frontis">
-        ${SEAL}
-        <div class="overline">Officine &amp; Cellier · Codex</div>
-        <h1>Liqueurs <span class="amp">&amp;</span> Hypocras</h1>
-        <div class="latin">Herbarium Vinorum &amp; Liquorum Antiquorum</div>
-        <p class="sub">${nbRecettes} recettes de liqueurs, crèmes, ratafias, hypocras, vins d'épices &amp; rhums arrangés, relevées et dressées à la manière des planches d'herbier.</p>
-        ${FILET}
-        <form class="search" role="search" onsubmit="return false;">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M14 14 l4 4"/></svg>
-          <input id="rechercheAccueil" type="search" placeholder="Rechercher une recette, un ingrédient, une vertu…" aria-label="Recherche globale" autocomplete="off">
-          <span class="kbd">Entrée</span>
-        </form>
-        <div class="folio-front">~ Frontispice ~</div>
+    <header class="cover">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+
+      <div class="eyebrow">Boîte d'herbier · Recueil manuscrit</div>
+      <h1>Codex<span class="amp">des Liqueurs &amp;</span>Hypocras</h1>
+      <p class="sub">${n} recettes anciennes de cordiaux, ratafias, crèmes &amp; vins d'office, montées et annotées comme autant de planches d'un herbier.</p>
+
+      <div class="divider"></div>
+
+      <div class="plate-label">
+        <span class="tape" style="left:50%; transform:translateX(-50%) rotate(-2deg);"></span>
+        <div class="row"><span class="k">Collection</span><span>Liqueurs &amp; Hypocras d'office</span></div>
+        <div class="row"><span class="k">Pièces inventoriées</span><span>${n} planches</span></div>
+        <div class="row"><span class="k">Classement</span><span>Liqueurs · Crèmes · Ratafias · Hypocras · Vins · Rhums</span></div>
+        <div class="row"><span class="k">Conservation</span><span>Carton ivoire, lieu sec &amp; sombre</span></div>
       </div>
-    </section>
 
-    <section class="stats" aria-label="Statistiques du grimoire">
-      <div class="stat"><span class="stat__nb">${nbRecettes}</span><span class="stat__lbl">Recettes</span></div>
-      <div class="stat"><span class="stat__nb">${nbFruits}</span><span class="stat__lbl">Fruits</span></div>
-      <div class="stat"><span class="stat__nb">${nbEpices}</span><span class="stat__lbl">Épices</span></div>
-      <div class="stat"><span class="stat__nb">${nbPlantes}</span><span class="stat__lbl">Plantes</span></div>
-    </section>
+      <form class="search" role="search" onsubmit="return false;">
+        <input id="rechercheAccueil" type="search" placeholder="Chercher une planche… (cassis, noix, sureau)" aria-label="Recherche globale" autocomplete="off">
+        <button type="submit">Feuilleter</button>
+      </form>
 
-    <h2 class="titre-section">Les grands chapitres</h2>
-    <div class="grille-cat">
-      ${CATEGORIES.map(c => `
-        <a class="tuile-cat" href="#/categorie/${c.id}">
-          <span class="tuile-cat__ico" aria-hidden="true">${c.icone}</span>
-          <span class="tuile-cat__nom">${c.nom}</span>
-          <span class="tuile-cat__nb">${DATA.filter(r => r.categorie === c.id).length} recette(s)</span>
-          <span class="tuile-cat__desc">${c.desc}</span>
-        </a>`).join('')}
-    </div>
+      <nav class="chapters">${chapitres}</nav>
+      <p class="marginalia">— ouvrir avec soin, le papier est fragile —</p>
+    </header>
 
-    <h2 class="titre-section">Rubriques thématiques</h2>
-    <div class="grille-theme">
-      ${THEMES.map(t => `
-        <a class="tuile-theme" href="#/theme/${t.id}">
-          <span aria-hidden="true">${t.icone}</span> ${t.nom}
-          <em>${DATA.filter(r => r.themes.includes(t.id)).length}</em>
-        </a>`).join('')}
-    </div>
+    <h2 class="titre-section">Rubriques</h2>
+    <nav class="chapters chapters--rubriques">${rubriques}</nav>
 
-    <h2 class="titre-section">Au fil des pages</h2>
-    <div class="grille-recettes">
-      ${DATA.slice(0, 6).map(carteRecette).join('')}
-    </div>
+    <h2 class="titre-section">Au fil des planches</h2>
+    <div class="grille-recettes">${DATA.slice(0, 8).map(carteRecette).join('')}</div>
   `;
 }
 
@@ -2874,23 +2768,28 @@ function vueListe({ titre, recettes, ariane: fil, filtresActifs }) {
 /** Vue : fiche recette — planche d'herbier. */
 function vueRecette(r) {
   const escAttr = s => String(s).replace(/"/g, '&quot;');
-  const pl = PLANETES[r.categorie] || { sym: '☿', nom: 'Mercure' };
   const np = numPlanche(r);
   const assoc = recettesAssociees(r);
   const fav = STORE.isFavori(r.id);
-
+  const ba = bandeAlcool(r.degre);
   const macBig = r.macerationJours >= 60 ? fmt(Math.round(r.macerationJours / 30 * 10) / 10)
     : (r.macerationJours || '—');
   const macUnit = r.macerationJours >= 60 ? 'mois' : 'jours';
+  const macTl = (r.timeline.find(t => /mac[ée]r/i.test(t.phase)) || {}).duree
+    || (r.macerationJours ? r.macerationJours + ' jours' : '');
 
   const lignesIng = r.ingredients.map(i => {
     const d = scaleIngredient(i, 1);
     return `<tr data-q="${i.qte == null ? '' : i.qte}" data-u="${escAttr(i.unite || '')}" data-s="${i.scalable ? 1 : 0}" data-n="${escAttr(i.nom)}">`
-      + `<td class="q${d.adj ? ' adj' : ''}">${d.qte}</td><td class="n">${i.nom}</td></tr>`;
+      + `<td class="qte${d.adj ? ' adj' : ''}">${d.qte}</td><td class="nom">${i.nom}</td></tr>`;
   }).join('');
 
-  const note = (titre, contenu, cls) => contenu
-    ? `<div class="note"><h4>${ICO_NOTE[cls] || ''}${titre}</h4><p>${contenu}</p></div>` : '';
+  const specimen = r.image
+    ? `<div class="specimen-frame${r.imageFull ? ' specimen-frame--full' : ''}">
+         <span class="tape t1"></span><span class="tape t2"></span><span class="tape t3"></span><span class="tape t4"></span>
+         <img src="${r.image}" alt="Spécimen — ${escAttr(r.nom)}" loading="lazy">
+       </div>`
+    : `<div class="specimen-empty">— spécimen non relevé —</div>`;
 
   return `
     ${ariane([
@@ -2899,92 +2798,91 @@ function vueRecette(r) {
       { label: r.nom }
     ])}
 
-    <article class="fiche">
-      <section class="page paper-tex">
-        ${coins()}
-        <div class="plate">
+    <div class="sheet-head">
+      <div class="codex">Planche extraite du Codex</div>
+      <div class="rule"></div>
+    </div>
 
-          <aside class="margin">
-            ${GLYPH_SEAL}
-            <div class="planet" title="${pl.nom}">${pl.sym}</div>
-            <div class="planet-lab">${pl.nom}</div>
-            ${SKULL}
-            <div class="cipher">${romain(np)} · MMXXVI · ${pl.sym}</div>
-            <div class="lot-stamp">
-              <label class="lot-l" for="lotVol">Lot · litres</label>
-              <input id="lotVol" class="lot-input" type="number" min="0.1" step="0.1"
-                     value="${fmt(r.lot)}" data-base="${r.lot}" aria-label="Volume du lot en litres">
-            </div>
-          </aside>
+    <article class="plate">
+      <div class="stain s1"></div><div class="stain s2"></div><div class="stain s3"></div>
 
-          <div class="column">
-            <header class="plate-head">
-              <div class="num smallcaps">Planche ${romain(np)} · ${catNom(r.categorie)}</div>
-              <h2>${r.nom}</h2>
-              <div class="binom">${latinBinom(r)}</div>
-            </header>
+      <div class="plate-banner">
+        <div class="left">
+          <div class="institut">Codex des Liqueurs &amp; Hypocras · ${catNom(r.categorie)}</div>
+          <div class="planche-no">Planche n&deg; ${romain(np)} — ${catNom(r.categorie)}</div>
+        </div>
+        <div class="right">Réf. ${r.id}<br>${ba.label}</div>
+      </div>
 
-            <figure class="hero${r.image ? ' hero--photo' : ''}">
-              <div class="hero-plate">${r.image
-                ? `<img class="hero-photo" src="${r.image}" alt="Planche botanique — ${r.nom}">`
-                : `<span aria-hidden="true">${GRAVURES[r.gravure] || ''}</span>`}</div>
-              ${r.image ? '' : `<svg class="hero-scale" viewBox="0 0 180 8" fill="none" stroke="currentColor" stroke-width=".8" aria-hidden="true">
-                <path d="M0 4 H180"/><path d="M0 1 V7 M45 2 V6 M90 1 V7 M135 2 V6 M180 1 V7"/>
-              </svg>`}
-            </figure>
-            <figcaption class="hero-cap">${pl.sym} ${pl.nom} · planche botanique — ${r.themes.map(t => (THEMES.find(x => x.id === t) || {}).nom || t).join(' · ') || 'macération'}</figcaption>
+      <div class="plate-body">
+        <div class="specimen-mount">
+          ${specimen}
+          ${macTl ? `<div class="pen a">macération<br>${macTl} <span class="arrow">↘</span></div>` : ''}
+        </div>
 
-            <div class="badges">
-              <div class="badge"><div class="disc"><span class="big">${r.degre}</span><span class="unit">degrés</span></div><span class="lab">Titre alcoolique</span></div>
-              <div class="badge"><div class="disc"><span class="big">${macBig}</span><span class="unit">${macUnit}</span></div><span class="lab">Macération</span></div>
-              <div class="badge"><div class="disc"><span class="big" id="lotDisc" style="font-size:1.25rem">${fmt(r.lot)} L</span><span class="unit">lot</span></div><span class="lab">Rendement</span></div>
-            </div>
+        <aside class="cartouche">
+          <span class="tape ct"></span>
+          <div class="genus">${latinBinom(r)}</div>
+          <div class="vern">${r.nom}</div>
+          <div class="id-rule"></div>
+          <div class="specs">
+            <div class="spec"><div class="v">${r.degre}&deg;</div><div class="l">Degré</div></div>
+            <div class="spec"><div class="v">${macBig}&nbsp;${macUnit}</div><div class="l">Macération</div></div>
+            <div class="spec"><div class="v"><input id="lotVol" class="lot-input" type="number" min="0.1" step="0.1" value="${fmt(r.lot)}" data-base="${r.lot}" aria-label="Volume du lot en litres"></div><div class="l">Lot · litres</div></div>
+          </div>
+          <dl>
+            <div class="line"><dt>Catégorie</dt><dd>${catNom(r.categorie)}</dd></div>
+            ${r.themes.length ? `<div class="line"><dt>Rubriques</dt><dd>${r.themes.map(t => (THEMES.find(x => x.id === t) || {}).nom || t).join(', ')}</dd></div>` : ''}
+            <div class="line"><dt>Tenue</dt><dd>${ba.label}</dd></div>
+            <div class="line"><dt>Réf.</dt><dd>${r.id}</dd></div>
+          </dl>
+          <span class="stamp">Vérifié · Codex</span>
+          <div class="cartouche-actions no-print">
+            <button class="btn btn-fav ${fav ? 'is-fav' : ''}" data-fav="${r.id}">✦ ${fav ? 'Favori' : 'Garder'}</button>
+            <button class="btn btn--ghost" onclick="window.print()">Imprimer</button>
+          </div>
+        </aside>
+      </div>
 
-            ${FILET}
+      <div class="recipe">
+        ${r.histoire ? `<p class="lede">${r.histoire}</p>` : ''}
 
-            ${r.conseils ? `<div class="field-obs"><span class="fo-label">Note de terrain</span>${r.conseils}</div>` : ''}
+        <div class="recipe-grid">
+          <div>
+            <h2 class="section-title">Matière · <span id="lotCap">pour ${fmt(r.lot)} litre${r.lot > 1 ? 's' : ''}</span></h2>
+            <table class="ingredients" id="ingrTable">
+              <thead><tr><th class="q">Quantité</th><th>Ingrédient</th></tr></thead>
+              <tbody>${lignesIng}</tbody>
+            </table>
 
-            ${r.histoire ? `<h3 class="sec-title">De l'origine &amp; des vertus</h3>
-            <div class="prose lettrine"><p>${r.histoire}</p></div>` : ''}
+            <h2 class="section-title" style="margin-top:32px">Chronologie</h2>
+            <div class="timeline">${r.timeline.map(t => `<div class="ph"><div class="p">${t.phase}</div><div class="d">${t.duree}</div></div>`).join('')}</div>
+          </div>
 
-            ${FILET_COURT}
-            <h3 class="sec-title">Matière première · <span id="lotCap">pour ${fmt(r.lot)} litre${r.lot > 1 ? 's' : ''}</span></h3>
-            <table class="ingr" id="ingrTable"><tbody>${lignesIng}</tbody></table>
-
-            ${FILET_COURT}
-            <h3 class="sec-title">Du procédé · operatio</h3>
+          <div>
+            <h2 class="section-title">Procédé</h2>
             <ol class="prep">${r.preparation.map(e => `<li>${e}</li>`).join('')}</ol>
-
-            ${FILET_COURT}
-            <h3 class="sec-title">Cours des opérations · tempus</h3>
-            <div class="timeline">${r.timeline.map(t => `<div class="tl-row"><div class="ph">${t.phase}</div><div class="du">${t.duree}</div></div>`).join('')}</div>
-
-            ${r.proprietes ? `${FILET_COURT}
-            <h3 class="sec-title">Vertus &amp; propriétés</h3>
-            <div class="notes notes--solo">
-              ${note('Vertus', r.proprietes, 'propriete')}
-            </div>` : ''}
-
-            ${r.dicton ? `<div class="dicton"><p>${r.dicton}</p></div>` : ''}
-            ${CULDELAMPE}
-
-            <div class="actions-fiche no-print">
-              <button class="btn btn-fav ${fav ? 'is-fav' : ''}" data-fav="${r.id}"><span aria-hidden="true">✦</span> ${fav ? 'Favori' : 'Ajouter aux favoris'}</button>
-              <button class="btn btn--ghost" onclick="window.print()"><span aria-hidden="true">🖨</span> Imprimer / PDF</button>
-            </div>
-
-            <div class="folio"><span class="dash">—</span>&nbsp; ${romain(np)} &nbsp;<span class="dash">—</span></div>
+            ${r.conseils ? `<p class="pen-note">${r.conseils}</p>` : ''}
           </div>
         </div>
-      </section>
 
-      ${assoc.length ? `
-      <section class="voisines no-print">
-        <h2 class="titre-section">Recettes voisines</h2>
-        <p class="muet">Elles partagent des ingrédients avec celle-ci.</p>
-        <div class="grille-recettes">${assoc.map(carteRecette).join('')}</div>
-      </section>` : ''}
+        ${r.proprietes ? `<h2 class="section-title" style="margin-top:44px">Vertus &amp; observations</h2>
+        <div class="lore"><p><span class="label">Propriétés</span>${r.proprietes}</p></div>` : ''}
+
+        ${r.dicton ? `<p class="dicton">${r.dicton}<span class="src">Dicton du Codex</span></p>` : ''}
+      </div>
+
+      <div class="plate-foot">
+        <span>Codex des Liqueurs &amp; Hypocras</span>
+        <span>Planche n&deg; ${romain(np)} · folio ${np}</span>
+      </div>
     </article>
+
+    ${assoc.length ? `
+    <section class="voisines no-print">
+      <h2 class="section-title">Planches voisines</h2>
+      <div class="grille-recettes">${assoc.map(carteRecette).join('')}</div>
+    </section>` : ''}
   `;
 }
 
@@ -3194,9 +3092,11 @@ function brancherFiche() {
       const v = parseFloat(String(vol.value).replace(',', '.'));
       if (!v || v <= 0) return;
       const f = v / base;
-      $$('tr', table).forEach(tr => {
+      $$('tbody tr', table).forEach(tr => {
+        if (!('n' in tr.dataset)) return;
         const q = tr.dataset.q, u = tr.dataset.u || '', s = tr.dataset.s === '1';
-        const cq = $('.q', tr), cn = $('.n', tr);
+        const cq = $('.qte', tr), cn = $('.nom', tr);
+        if (!cq) return;
         if (q === '') { cq.textContent = '—'; }
         else if (s) { cq.textContent = fmt(parseFloat(q) * f) + (u ? ' ' + u : ''); cq.classList.remove('adj'); }
         else { cq.textContent = fmt(parseFloat(q)) + (u ? ' ' + u : ''); cq.classList.add('adj'); }
