@@ -2730,7 +2730,7 @@ function vueAccueil() {
       <h1>Codex<span class="amp">des Liqueurs &amp;</span>Hypocras</h1>
       <p class="sub">${n} recettes anciennes de cordiaux, ratafias, crèmes &amp; vins d'office, montées et annotées comme autant de planches d'un herbier.</p>
 
-      <div class="divider"></div>
+      <div class="divider"><span aria-hidden="true">&#10087;</span></div>
 
       <div class="plate-label">
         <span class="tape" style="left:50%; transform:translateX(-50%) rotate(-2deg);"></span>
@@ -2893,7 +2893,7 @@ function vueRecette(r) {
             </table>
 
             <section class="bloc-chrono">
-              <h2 class="section-title" style="margin-top:32px">Chronologie</h2>
+              <h2 class="section-title">Chronologie</h2>
               <div class="timeline">${r.timeline.map(t => `<div class="ph"><div class="p">${t.phase}</div><div class="d">${t.duree}</div></div>`).join('')}</div>
             </section>
           </div>
@@ -2905,7 +2905,7 @@ function vueRecette(r) {
           </div>
         </div>
 
-        ${r.proprietes ? `<section class="bloc-vertus"><h2 class="section-title" style="margin-top:44px">Vertus &amp; observations</h2>
+        ${r.proprietes ? `<section class="bloc-vertus"><h2 class="section-title">Vertus &amp; observations</h2>
         <div class="lore"><p><span class="label">Propriétés</span>${r.proprietes}</p></div></section>` : ''}
 
         ${r.dicton ? `<p class="dicton">${r.dicton}<span class="src">Dicton du Codex</span></p>` : ''}

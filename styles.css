@@ -1947,3 +1947,156 @@ img.topbar__sceau{
   ol.prep li{ orphans:2; widows:2; break-inside:avoid; }
   .bloc-chrono, .bloc-vertus{ break-inside:avoid; }
 }
+
+/* ===================================================================
+   POLISH VISUEL II — critique design multi-lentilles (jury).
+   Raffinements sobres, on-brand (herbier de musée), zéro SVG.
+   Bloc final : surcharge volontaire par l'ordre source.
+   =================================================================== */
+
+/* 1 — encre de plume rendue à son bleu ferro-gallique (fin du conflit vert) */
+:root{ --plume:#3a4a55; }
+:root[data-theme="sombre"]{ --plume:#9db6c4; }
+
+/* 2 — puces de difficulté dans la famille chaude (sauge / or éteint / vin) */
+.puce--faible{ background:color-mix(in srgb, var(--sage) 22%, transparent); color:color-mix(in srgb, var(--sage) 72%, var(--ink)); border-color:color-mix(in srgb, var(--sage) 34%, transparent); }
+.puce--moyen{  background:color-mix(in srgb, var(--gold) 22%, transparent); color:color-mix(in srgb, var(--gold) 52%, var(--ink)); border-color:color-mix(in srgb, var(--gold) 38%, transparent); }
+.puce--fort{   background:color-mix(in srgb, var(--wine) 16%, transparent); color:var(--wine); border-color:color-mix(in srgb, var(--wine) 34%, transparent); }
+:root[data-theme="sombre"] .puce--faible{ background:color-mix(in srgb, var(--sage) 26%, transparent); color:var(--sage); }
+:root[data-theme="sombre"] .puce--moyen{  background:color-mix(in srgb, var(--gold) 24%, transparent); color:var(--gold-soft); }
+:root[data-theme="sombre"] .puce--fort{   background:color-mix(in srgb, var(--wine) 26%, transparent); color:var(--wine); }
+
+/* 3 — fleuron gravé du frontispice (filets or + ❧ central) */
+.cover .divider{
+  width:min(300px,70%); height:auto; border-top:none;
+  margin:34px auto 30px; display:flex; align-items:center; justify-content:center; gap:18px;
+}
+.cover .divider::before, .cover .divider::after{
+  content:""; flex:1 1 auto; height:0;
+  border-top:1px solid color-mix(in srgb, var(--gold) 40%, transparent);
+}
+.cover .divider > span{
+  flex:0 0 auto; font-family:'Cormorant',serif; font-size:24px; line-height:1;
+  color:color-mix(in srgb, var(--gold) 82%, transparent);
+  text-shadow:0 1px 0 rgba(255,250,235,.5);
+}
+:root[data-theme="sombre"] .cover .divider::before,
+:root[data-theme="sombre"] .cover .divider::after{ border-top-color:color-mix(in srgb, var(--gold-soft) 34%, transparent); }
+:root[data-theme="sombre"] .cover .divider > span{ color:var(--gold-soft); text-shadow:0 1px 2px rgba(0,0,0,.5); }
+
+/* 4 — keyline or intérieure du frontispice + coins lisibles */
+.cover{
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--gold) 22%, transparent) inset,
+    0 1px 0 rgba(255,250,235,.5) inset,
+    0 18px 40px -18px var(--shadow);
+}
+.cover .corner{ width:34px; height:34px; background:transparent;
+  border:1px solid color-mix(in srgb, var(--gold) 36%, rgba(70,56,30,.30)); }
+:root[data-theme="sombre"] .cover{
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--gold-soft) 20%, transparent) inset,
+    0 1px 0 rgba(255,245,220,.06) inset,
+    0 20px 46px -18px rgba(0,0,0,.6);
+}
+:root[data-theme="sombre"] .cover .corner{ border-color:color-mix(in srgb, var(--gold-soft) 30%, transparent); }
+
+/* 5 — eyebrow flanqué de deux filets or courts (bandeau gravé) */
+.cover .eyebrow{
+  display:flex; align-items:center; justify-content:center; gap:14px;
+  font-size:11.5px; letter-spacing:.34em; text-indent:.34em; margin-bottom:22px;
+}
+.cover .eyebrow::before, .cover .eyebrow::after{
+  content:""; width:38px; height:0; flex:0 0 auto;
+  border-top:1px solid color-mix(in srgb, var(--gold) 44%, transparent);
+}
+:root[data-theme="sombre"] .cover .eyebrow::before,
+:root[data-theme="sombre"] .cover .eyebrow::after{ border-top-color:color-mix(in srgb, var(--gold-soft) 40%, transparent); }
+
+/* 6 — scotch gommé sur la photo collée des cartes */
+.carte__gravure--photo{ position:relative; }
+.carte__gravure--photo::before{
+  content:""; position:absolute; z-index:2; top:-7px; left:50%;
+  width:34px; height:15px; transform:translateX(-58%) rotate(3.5deg);
+  background:
+    linear-gradient(110deg, rgba(228,214,170,0) 0 6%, rgba(228,214,170,.62) 12% 88%, rgba(228,214,170,0) 94% 100%),
+    repeating-linear-gradient(90deg, rgba(150,128,78,.10) 0 1px, transparent 1px 5px);
+  border-left:1px solid rgba(150,128,78,.22); border-right:1px solid rgba(150,128,78,.22);
+  box-shadow:0 1px 2px rgba(40,28,12,.20), 0 1px 0 rgba(255,253,247,.5) inset;
+  pointer-events:none;
+}
+:root[data-theme="sombre"] .carte__gravure--photo::before{
+  background:
+    linear-gradient(110deg, rgba(210,196,150,0) 0 6%, rgba(210,196,150,.34) 12% 88%, rgba(210,196,150,0) 94% 100%),
+    repeating-linear-gradient(90deg, rgba(120,100,60,.16) 0 1px, transparent 1px 5px);
+  border-left-color:rgba(176,142,86,.20); border-right-color:rgba(176,142,86,.20);
+  box-shadow:0 1px 2px rgba(0,0,0,.4), 0 1px 0 rgba(255,253,247,.18) inset;
+}
+@media print{ .carte__gravure--photo::before{ display:none; } }
+
+/* 7 — cartel des cartes : cote soulignée d'un filet or, nom rapproché */
+.carte__cat{ color:var(--ink-faint); padding-bottom:5px; margin-bottom:1px;
+  border-bottom:1px solid color-mix(in srgb, var(--gold) 30%, transparent); }
+.carte__nom{ font-size:22px; letter-spacing:.005em; color:var(--ink); margin-top:5px; }
+:root[data-theme="sombre"] .carte__cat{ border-bottom-color:color-mix(in srgb, var(--gold) 36%, transparent); }
+
+/* 8 + 13 — numéros d'étape : gouttière resserrée, encre vin tokenisée (suit le thème) */
+ol.prep li{ padding:0 0 1.15rem 46px; line-height:1.55; max-width:64ch; }
+ol.prep li:last-child{ padding-bottom:0; }
+ol.prep li::before{
+  font-size:13.5px; color:var(--wine);
+  border-color:color-mix(in srgb, var(--wine) 50%, transparent);
+  box-shadow:0 0 0 1px color-mix(in srgb, var(--wine) 16%, transparent), .5px .5px 0 color-mix(in srgb, var(--wine) 28%, transparent);
+}
+.cote-inv{ color:color-mix(in srgb, var(--wine) 80%, transparent); border-color:color-mix(in srgb, var(--wine) 55%, transparent); }
+
+/* 9 — rythme vertical des sections (remplace les margin-top inline retirés du JS) */
+.bloc-chrono{ margin-top:2.1rem; }
+.bloc-vertus{ margin-top:2.4rem; }
+.bloc-chrono .section-title, .bloc-vertus .section-title{ margin-top:0; }
+
+/* 10 — étoile favori des cartes : effacée au repos, sceau au vin si active */
+.carte__fav{ font-size:15px; color:transparent; text-shadow:0 0 0 rgba(90,76,46,.24);
+  transition:text-shadow .14s ease, transform .14s ease; }
+.carte:hover .carte__fav{ text-shadow:0 0 0 rgba(90,76,46,.44); }
+.carte__fav.is-fav{ color:var(--wine); text-shadow:0 1px 0 rgba(255,253,247,.45); transform:rotate(-6deg) scale(1.05); }
+:root[data-theme="sombre"] .carte__fav{ text-shadow:0 0 0 rgba(216,189,132,.28); }
+:root[data-theme="sombre"] .carte:hover .carte__fav{ text-shadow:0 0 0 rgba(216,189,132,.5); }
+:root[data-theme="sombre"] .carte__fav.is-fav{ color:#cf8a86; text-shadow:0 1px 0 rgba(0,0,0,.4); }
+
+/* 11 — étoile du bouton « Conservée » : or tokenisé */
+.btn-fav.is-fav .ico{ color:var(--gold-soft); }
+:root[data-theme="sombre"] .btn-fav.is-fav .ico{ color:var(--gold-soft); }
+
+/* 12 — intitulés du menu = onglets de classeur (filet de registre) */
+.sidebar__titre{ display:flex; align-items:center; gap:10px; margin:22px 0 10px; }
+.sidebar__titre::after{ content:""; flex:1 1 auto; height:0;
+  border-top:1px solid color-mix(in srgb, var(--rule) 70%, transparent); }
+.sidebar__titre:first-of-type{ margin-top:8px; }
+
+/* 14 — filet doré « registre relié » sous la topbar */
+.topbar{
+  border-bottom:none;
+  box-shadow:
+    0 1px 0 rgba(20,15,8,.55),
+    0 2px 0 color-mix(in srgb, var(--gold-soft) 38%, transparent),
+    0 8px 18px -12px rgba(20,12,4,.6);
+}
+:root[data-theme="sombre"] .topbar{
+  box-shadow:
+    0 1px 0 rgba(0,0,0,.6),
+    0 2px 0 color-mix(in srgb, var(--gold-soft) 30%, transparent),
+    0 8px 20px -12px rgba(0,0,0,.7);
+}
+@media print{ .topbar{ box-shadow:none !important; } }
+
+/* 15 — hover de carte : on soulève la fiche, la photo se redresse */
+.carte:hover{ transform:translateY(-3px) rotate(0);
+  box-shadow:0 18px 30px -16px var(--shadow), 0 3px 8px -6px var(--shadow); z-index:1; }
+.carte:hover .carte__photo{ transform:rotate(0) scale(1.015); }
+.carte:active{ transform:translateY(-1px) rotate(0); transition-duration:80ms; }
+:root[data-theme="sombre"] .carte:hover{ box-shadow:0 20px 34px -16px rgba(0,0,0,.6), 0 4px 12px -8px rgba(0,0,0,.5); }
+@media (prefers-reduced-motion:reduce){
+  .carte:hover{ transform:none; }
+  .carte:hover .carte__photo{ transform:rotate(-2deg); }
+}
