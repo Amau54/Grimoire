@@ -10,7 +10,7 @@ Recherche menée par workflow multi-agents sur les API Wikimedia Commons & Openv
 | Élément | Source | Auteur | Licence |
 |---|---|---|---|
 | `images/paper-light.jpg` (parchemin clair) | « Pergament.0 », Wikimedia Commons | Tim Jones | **CC BY 2.0** |
-| `images/paper-dark.jpg` (cuir patiné, thème nuit) | « Free vintage antique leather book cover texture for layers », Wikimedia Commons | Pink Sherbet Photography (D. Sharon Pruitt) | **CC BY 2.0** |
+| `images/paper-dark.jpg` (parchemin sombre, thème grimoire) | « Pergament.0 », Wikimedia Commons (même scan, assombri en brun-noir chaud) | Tim Jones | **CC BY 2.0** |
 
 Les textures ont été recadrées, rendues sans couture (tuilables) et calées en tonalité ; les auteurs restent crédités ci-dessus conformément à CC BY.
 

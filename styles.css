@@ -1843,31 +1843,38 @@ img.topbar__sceau{
 }
 .btn-print-go:hover{ background:#7a2228; }
 
-/* --- 5. THÈME GRIMOIRE LISIBLE : voile sombre uniforme sur le cuir --- */
-:root[data-theme="sombre"] body{ background-color:#14100a; }
-:root[data-theme="sombre"] .plate{
+/* --- 5. THÈME GRIMOIRE : parchemin sombre calme + hiérarchie page→planche→cartouche.
+   Fond uniforme (plus de cuir bruité), la « feuille » ressort sur la « table ». --- */
+:root[data-theme="sombre"]{ --paper-body:#161009; }
+:root[data-theme="sombre"] body{
+  background-color:#161009;
   background-image:
-    radial-gradient(140% 120% at 50% 22%, rgba(150,120,72,.10), rgba(0,0,0,0) 46%),
-    linear-gradient(rgba(26,21,14,.86), rgba(22,18,12,.9)),
+    linear-gradient(rgba(15,11,7,.60), rgba(12,9,6,.66)),
     var(--paper-tex) !important;
-  background-size:auto, auto, 520px !important;
-  border-color:rgba(67,55,34,.5);
+  background-size:auto, 520px !important;
 }
+/* la planche = feuille claire posée sur la table sombre */
+:root[data-theme="sombre"] .plate,
 :root[data-theme="sombre"] .cover,
 :root[data-theme="sombre"] .grille-recettes .carte{
   background-image:
-    linear-gradient(rgba(26,21,14,.85), rgba(22,18,12,.9)),
+    radial-gradient(150% 120% at 50% 20%, rgba(176,142,86,.10), rgba(0,0,0,0) 50%),
+    linear-gradient(rgba(32,25,15,.28), rgba(26,20,12,.34)),
     var(--paper-tex) !important;
-  background-size:auto, 420px !important;
+  background-size:auto, auto, 480px !important;
+  border-color:rgba(150,124,74,.34);
 }
+:root[data-theme="sombre"] .plate::before{ border-color:rgba(150,124,74,.28); }
+:root[data-theme="sombre"] .plate::after{ border-color:rgba(176,142,86,.22); }
+/* le cartouche = étiquette distincte, un cran plus chaud + liseré or */
 :root[data-theme="sombre"] .cartouche{
   background-image:
-    linear-gradient(rgba(38,31,21,.94), rgba(32,26,17,.96)),
+    linear-gradient(rgba(50,40,25,.46), rgba(42,34,21,.52)),
     var(--paper-tex) !important;
   background-size:auto, 220px !important;
-  box-shadow:inset 0 0 0 1px rgba(216,199,155,.14), 0 2px 10px rgba(0,0,0,.5);
+  box-shadow:inset 0 0 0 1px rgba(198,160,100,.22), 0 2px 12px rgba(0,0,0,.45);
 }
-:root[data-theme="sombre"]{ --ink:#f0e7d4; --ink-soft:#d4c9b0; --ink-faint:#a3957a; }
+:root[data-theme="sombre"]{ --ink:#f3ead7; --ink-soft:#d9cfb6; --ink-faint:#ab9c80; }
 :root[data-theme="sombre"] .lede,
 :root[data-theme="sombre"] .pen-note{ background:rgba(20,16,10,.5); box-shadow:0 0 0 7px rgba(20,16,10,.5); color:var(--ink-soft); }
 :root[data-theme="sombre"] .lot-calc{
