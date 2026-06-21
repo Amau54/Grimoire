@@ -2816,7 +2816,7 @@ function vueRecette(r) {
     ])}
 
     <div class="sheet-head">
-      <div class="codex">Planche extraite du Codex</div>
+      <div class="codex">Planche</div>
       <div class="rule"></div>
     </div>
 
@@ -2854,11 +2854,19 @@ function vueRecette(r) {
             <div class="line"><dt>Tenue</dt><dd>${ba.label}</dd></div>
             <div class="line"><dt>Réf.</dt><dd>${r.id}</dd></div>
           </dl>
-          <span class="stamp">Vérifié · Codex</span>
           <div class="cartouche-actions no-print">
-            <button class="btn btn-fav ${fav ? 'is-fav' : ''}" data-fav="${r.id}">✦ ${fav ? 'Favori' : 'Garder'}</button>
-            <button class="btn btn--ghost cook-mode" id="cookMode" type="button" aria-pressed="false" hidden title="Garder l'écran allumé pendant la préparation">☀ Écran éveillé</button>
-            <button class="btn btn--ghost" onclick="window.print()">Imprimer</button>
+            <button class="btn btn-fav ${fav ? 'is-fav' : ''}" data-fav="${r.id}"><span class="ico" aria-hidden="true">✦</span> ${fav ? 'Conservée' : 'Conserver'}</button>
+            <button class="btn btn--ghost cook-mode" id="cookMode" type="button" aria-pressed="false" hidden title="Empêcher l'écran de s'éteindre pendant la préparation"><span class="ico" aria-hidden="true">☼</span> Garder l'écran allumé</button>
+            <button class="btn btn--ghost btn-print" id="btnPrint" type="button" aria-expanded="false"><span class="ico" aria-hidden="true">⎙</span> Imprimer…</button>
+          </div>
+          <div class="print-opts no-print" id="printOpts" hidden role="group" aria-label="Choisir ce qui sera imprimé">
+            <p class="po-tt">À porter sur la feuille</p>
+            <label><input type="checkbox" data-po="specimen" checked> Spécimen</label>
+            <label><input type="checkbox" data-po="histoire" checked> Histoire</label>
+            <label><input type="checkbox" data-po="chrono" checked> Chronologie</label>
+            <label><input type="checkbox" data-po="vertus" checked> Vertus &amp; observations</label>
+            <label><input type="checkbox" data-po="dicton" checked> Dicton</label>
+            <button class="btn btn-print-go" id="btnPrintGo" type="button">Imprimer la planche</button>
           </div>
         </aside>
       </div>
@@ -2870,20 +2878,24 @@ function vueRecette(r) {
           <div>
             <h2 class="section-title">Matière · <span id="lotCap">pour ${fmt(r.lot)}&nbsp;litre${r.lot > 1 ? 's' : ''}</span></h2>
             <div class="lot-calc no-print" role="group" aria-label="Calculateur de lot">
-              <span class="lc-l">Calculateur de lot</span>
-              <button class="lc-mul" type="button" data-mul="0.5" title="Diviser par deux">½</button>
-              <span class="lc-field">pour <input id="lotVol" class="lot-input" type="text" inputmode="decimal" value="${fmt(r.lot)}" data-base="${r.lot}" aria-label="Volume du lot en litres"> L</span>
-              <button class="lc-mul" type="button" data-mul="2" title="Doubler">×2</button>
-              <button class="lc-reset" type="button" title="Revenir au lot de référence">↺</button>
-              <span class="lc-fac" aria-live="polite">×<b id="lotFactor">1</b></span>
+              <span class="lc-l">Régler le lot</span>
+              <span class="lc-set">
+                <button class="lc-step" type="button" data-step="-1" aria-label="Retirer un litre" title="Un litre de moins">&minus;</button>
+                <span class="lc-field"><input id="lotVol" class="lot-input" type="text" inputmode="decimal" value="${fmt(r.lot)}" data-base="${r.lot}" aria-label="Volume du lot en litres"><span class="lc-u">litre${r.lot > 1 ? 's' : ''}</span></span>
+                <button class="lc-step" type="button" data-step="1" aria-label="Ajouter un litre" title="Un litre de plus">+</button>
+              </span>
+              <button class="lc-reset" type="button" title="Revenir au lot de référence" aria-label="Réinitialiser">&#8635;</button>
+              <span class="lc-fac" aria-live="polite">à l'échelle <b id="lotFactor">1</b>&times;</span>
             </div>
             <table class="ingredients" id="ingrTable">
               <thead><tr><th scope="col" class="ck" aria-label="Fait"></th><th scope="col" class="q">Quantité</th><th scope="col">Ingrédient</th></tr></thead>
               <tbody>${lignesIng}</tbody>
             </table>
 
-            <h2 class="section-title" style="margin-top:32px">Chronologie</h2>
-            <div class="timeline">${r.timeline.map(t => `<div class="ph"><div class="p">${t.phase}</div><div class="d">${t.duree}</div></div>`).join('')}</div>
+            <section class="bloc-chrono">
+              <h2 class="section-title" style="margin-top:32px">Chronologie</h2>
+              <div class="timeline">${r.timeline.map(t => `<div class="ph"><div class="p">${t.phase}</div><div class="d">${t.duree}</div></div>`).join('')}</div>
+            </section>
           </div>
 
           <div>
@@ -2893,8 +2905,8 @@ function vueRecette(r) {
           </div>
         </div>
 
-        ${r.proprietes ? `<h2 class="section-title" style="margin-top:44px">Vertus &amp; observations</h2>
-        <div class="lore"><p><span class="label">Propriétés</span>${r.proprietes}</p></div>` : ''}
+        ${r.proprietes ? `<section class="bloc-vertus"><h2 class="section-title" style="margin-top:44px">Vertus &amp; observations</h2>
+        <div class="lore"><p><span class="label">Propriétés</span>${r.proprietes}</p></div></section>` : ''}
 
         ${r.dicton ? `<p class="dicton">${r.dicton}<span class="src">Dicton du Codex</span></p>` : ''}
       </div>
@@ -2926,52 +2938,8 @@ function vueFavoris() {
   `;
 }
 
-/** Vue : calculateur. */
-function vueCalculateur(id) {
-  const r = id ? getRecette(id) : DATA[0];
-  const options = DATA.map(x => `<option value="${x.id}" ${x.id === r.id ? 'selected' : ''}>${x.nom}</option>`).join('');
-  return `
-    ${ariane([{ label: 'Accueil', href: '#/' }, { label: 'Calculateur de lot' }])}
-    <h1 class="titre-page">Calculateur de lot</h1>
-    <p class="intro">Recalculez automatiquement quantités, sucre et alcool pour n'importe quelle taille de lot.</p>
-
-    <div class="calc">
-      <div class="calc__controles">
-        <label>Recette
-          <select id="calcRecette">${options}</select>
-        </label>
-        <label>Volume désiré (litres)
-          <input id="calcVolume" type="number" min="0.1" step="0.1" value="${fmt(r.lot)}">
-        </label>
-        <p class="calc__base">Lot de référence : <strong id="calcBase">${fmt(r.lot)} L</strong></p>
-      </div>
-      <div id="calcResultat"></div>
-    </div>
-  `;
-}
-
-/** Rendu du tableau du calculateur. */
-function rendreCalcul() {
-  const r = getRecette($('#calcRecette').value);
-  const vol = parseFloat($('#calcVolume').value);
-  $('#calcBase').textContent = fmt(r.lot) + ' L';
-  if (!r || !vol || vol <= 0) { $('#calcResultat').innerHTML = '<p class="vide">Indiquez un volume valide.</p>'; return; }
-  const facteur = vol / r.lot;
-  $('#calcResultat').innerHTML = `
-    <p class="calc__facteur">Facteur d'échelle : <strong>×${fmt(facteur)}</strong></p>
-    <table class="tableau-ingredients">
-      <thead><tr><th>Quantité recalculée</th><th>Ingrédient</th></tr></thead>
-      <tbody>
-        ${r.ingredients.map(i => {
-          const q = (i.scalable && i.qte != null) ? fmt(i.qte * facteur) + ' ' + i.unite
-                  : (i.qte != null ? fmt(i.qte) + ' ' + i.unite + ' (à ajuster)' : '—');
-          return `<tr><td class="qte">${q}</td><td>${i.nom}</td></tr>`;
-        }).join('')}
-      </tbody>
-    </table>
-    <p class="bloc__note">Les ingrédients « à ajuster » (pincées, pointes de muscade) se dosent au goût.</p>
-  `;
-}
+/* Le calculateur de lot autonome a été retiré : il vit désormais dans chaque
+   planche (réglette « Régler le lot » avec − / +). Voir vueRecette + brancherFiche. */
 
 /* Données structurées schema.org/Recipe (SEO) pour la fiche affichée. */
 function injectRecipeJsonLd(r) {
@@ -3075,10 +3043,6 @@ function router() {
   else if (seg[0] === 'favoris') {
     cont.innerHTML = vueFavoris();
   }
-  else if (seg[0] === 'calculateur') {
-    cont.innerHTML = vueCalculateur(seg[1]);
-    brancherCalculateur();
-  }
   else {
     cont.innerHTML = '<p class="vide">Page inconnue.</p>';
   }
@@ -3155,18 +3119,41 @@ function brancherFiche() {
   if (btn) btn.addEventListener('click', () => {
     const actif = STORE.toggleFavori(btn.dataset.fav);
     btn.classList.toggle('is-fav', actif);
-    btn.innerHTML = `<span aria-hidden="true">✦</span> ${actif ? 'Favori' : 'Ajouter aux favoris'}`;
+    btn.innerHTML = `<span class="ico" aria-hidden="true">✦</span> ${actif ? 'Conservée' : 'Conserver'}`;
     majSidebar();
   });
+
+  // Panneau d'impression : cocher les sections à porter sur la feuille
+  const pBtn = $('#btnPrint'), pPanel = $('#printOpts');
+  if (pBtn && pPanel) {
+    pBtn.addEventListener('click', () => {
+      const ouvre = pPanel.hidden;
+      pPanel.hidden = !ouvre;
+      pBtn.setAttribute('aria-expanded', String(ouvre));
+    });
+    $$('input[data-po]', pPanel).forEach(cb => {
+      const appliquer = () => document.body.classList.toggle('po-no-' + cb.dataset.po, !cb.checked);
+      appliquer();                       // réinitialise à l'ouverture de chaque planche
+      cb.addEventListener('change', appliquer);
+    });
+    const go = $('#btnPrintGo');
+    if (go) go.addEventListener('click', () => window.print());
+  }
 
   // CALCULATEUR DE LOT EN DIRECT (tableau d'ingrédients + quantités du procédé)
   const vol = $('#lotVol');
   const table = $('#ingrTable');
   if (vol) {
     const base = parseFloat(vol.dataset.base) || 1;
+    // normalise la saisie : nombre valide, borné [0,5 ; 500] L, arrondi au dixième
+    const normLot = raw => {
+      const n = parseFloat(String(raw).replace(',', '.'));
+      if (!isFinite(n) || n <= 0) return null;
+      return Math.min(500, Math.max(0.5, Math.round(n * 10) / 10));
+    };
     const recalc = () => {
-      const v = parseFloat(String(vol.value).replace(',', '.'));
-      if (!v || v <= 0) return;
+      const v = normLot(vol.value);
+      if (v == null) return;
       const f = v / base;
       if (table) $$('tbody tr', table).forEach(tr => {
         if (!('n' in tr.dataset)) return;
@@ -3186,12 +3173,14 @@ function brancherFiche() {
       });
       const fac = $('#lotFactor'); if (fac) fac.textContent = fmt(f);
       const cap = $('#lotCap'); if (cap) cap.textContent = 'pour ' + fmt(v) + ' litre' + (v > 1 ? 's' : '');
+      const u = $('.lc-u'); if (u) u.textContent = 'litre' + (v > 1 ? 's' : '');
     };
     vol.addEventListener('input', recalc);
-    vol.addEventListener('change', recalc);
-    $$('.lc-mul').forEach(b => b.addEventListener('click', () => {
-      const cur = parseFloat(String(vol.value).replace(',', '.')) || base;
-      vol.value = fmt(Math.min(500, Math.max(0.05, cur * parseFloat(b.dataset.mul))));
+    // au blur/Entrée : on recale le champ sur la valeur bornée et arrondie
+    vol.addEventListener('change', () => { const v = normLot(vol.value); vol.value = fmt(v != null ? v : base); recalc(); });
+    $$('.lc-step').forEach(b => b.addEventListener('click', () => {
+      const cur = normLot(vol.value) || base;
+      vol.value = fmt(normLot(cur + parseFloat(b.dataset.step)) || 0.5);
       recalc();
     }));
     const rb = $('.lc-reset');
@@ -3233,16 +3222,6 @@ function brancherFiche() {
       }
     });
   }
-}
-
-function brancherCalculateur() {
-  $('#calcRecette').addEventListener('change', () => {
-    const r = getRecette($('#calcRecette').value);
-    $('#calcVolume').value = fmt(r.lot);
-    rendreCalcul();
-  });
-  $('#calcVolume').addEventListener('input', rendreCalcul);
-  rendreCalcul();
 }
 
 /* ---------------------------------------------------------------------

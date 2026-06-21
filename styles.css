@@ -492,18 +492,6 @@ body{
   margin-top:5px;
 }
 
-.cartouche .stamp{
-  font-family:'Special Elite', monospace;
-  font-size:10px; letter-spacing:.16em; text-transform:uppercase;
-  color:var(--wine);
-  border:1.5px solid rgba(90,29,35,.5);
-  display:inline-block;
-  padding:4px 9px;
-  transform:rotate(-4deg);
-  margin-top:16px;
-  opacity:.82;
-}
-
 /* Champ de lot ÉDITABLE — placé dans la .spec "Lot" du cartouche.
    Dactylographié, sobre, centré, spinners masqués. */
 input.lot-input{
@@ -1504,7 +1492,7 @@ ol.prep li:last-child{ padding-bottom:0; }
 td.qte,.lot-input,.spec .v,#lotFactor,.iq,.lot-calc{ font-variant-numeric:lining-nums tabular-nums; }
 
 /* P1-6 — cibles tactiles ≥44px, champ lot ≥16px (anti-zoom iOS) */
-.lot-input,.lc-mul,.lc-reset,.btn,.sidebar__liste a,#toggleTheme,.chapter-tab,.cook-mode{ min-height:44px; }
+.lot-input,.lc-step,.lc-reset,.btn,.sidebar__liste a,#toggleTheme,.chapter-tab,.cook-mode{ min-height:44px; }
 .lot-input{ font-size:16px; }
 
 /* P2-15 — voile ivoire derrière le texte courant sur texture (contraste garanti) */
@@ -1550,12 +1538,11 @@ td.qte,.lot-input,.spec .v,#lotFactor,.iq,.lot-calc{ font-variant-numeric:lining
 }
 .lot-calc .lot-input::-webkit-outer-spin-button,
 .lot-calc .lot-input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
-.lc-mul,.lc-reset{
+.lc-reset{
   font-family:'Cormorant SC',serif; font-weight:600; font-size:14px; cursor:pointer;
   background:rgba(214,201,164,.5); border:1px solid rgba(80,66,38,.32);
   color:var(--ink); padding:6px 11px; min-width:38px;
 }
-.lc-mul:hover,.lc-reset:hover{ background:rgba(222,210,174,.85); }
 .lc-fac{ margin-left:auto; font-family:'Special Elite',monospace; font-size:13px; color:var(--wine); }
 .lc-fac b{ font-size:15px; }
 
@@ -1595,7 +1582,6 @@ td.qte,.lot-input,.spec .v,#lotFactor,.iq,.lot-calc{ font-variant-numeric:lining
   .section-title,.vern,.genus,.plate-banner{ break-after:avoid; }
   .recipe p,.lede{ orphans:3; widows:3; }
   .lot-calc,.cartouche-actions,.to-top,.skip-link,.cook-mode{ display:none!important; }
-  @page{ margin:16mm; }
 }
 
 /* h1 sémantique pour le nom de recette : conserver le rendu de l'étiquette */
@@ -1709,11 +1695,7 @@ table.ingredients td{ border-bottom-color:rgba(90,76,46,.22); }
 }
 @media print{ .cote-inv{ color:#000; border-color:#000; mix-blend-mode:normal; } }
 
-/* #25 tampon « Vérifié » à l'encre inégale + numéros d'étape « repassés main » */
-.cartouche .stamp{
-  background-image:var(--paper-tex); background-size:120px; background-blend-mode:screen;
-  box-shadow:inset 0 0 0 1px rgba(90,29,35,.18); mix-blend-mode:multiply; opacity:.86;
-}
+/* numéros d'étape « repassés main » */
 ol.prep li::before{ box-shadow:0 0 0 1px rgba(90,29,35,.10), .5px .5px 0 rgba(90,29,35,.18); }
 
 /* ===================================================================
@@ -1768,4 +1750,193 @@ ol.prep li::before{ box-shadow:0 0 0 1px rgba(90,29,35,.10), .5px .5px 0 rgba(90
 img.topbar__sceau{
   height:27px; width:auto; line-height:0;
   filter:invert(.92) sepia(.55) saturate(1.5) brightness(1.04) drop-shadow(0 1px 1px rgba(0,0,0,.4));
+}
+
+/* ===================================================================
+   RÉVISION UX (demande utilisateur) — emblèmes plus grands & lisibles,
+   réglette de lot − / +, options d'impression A4, thème grimoire lisible.
+   Bloc final : surcharge volontaire par l'ordre source.
+   =================================================================== */
+
+/* --- 1. EMBLÈMES : plus grands, plus contrastés --- */
+.sb-emb, .chap-emb, .cat-embleme{
+  filter:contrast(1.06) saturate(1.05);
+  border-width:1px; border-color:var(--mount-edge);
+  box-shadow:0 1px 3px rgba(40,30,15,.34), inset 0 0 0 1px rgba(255,255,255,.45);
+}
+.sb-emb{ width:38px; height:38px; padding:3px; border-radius:3px; }
+.chap-emb{ width:80px; height:80px; padding:6px; }
+.cat-embleme{ width:124px; height:124px; padding:9px; }
+@media (max-width:560px){ .cat-embleme{ width:84px; height:84px; } .sb-emb{ width:34px; height:34px; } }
+
+/* --- 2. RÉGLETTE DE LOT (− / +), style apothicaire ancien --- */
+.lot-calc{
+  gap:10px; padding:9px 13px;
+  background:
+    linear-gradient(rgba(244,239,226,.72), rgba(238,231,212,.72)),
+    var(--paper-tex);
+  background-size:auto, 220px;
+  border:1px solid rgba(90,76,46,.34);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.4), 0 1px 2px rgba(40,30,15,.12);
+}
+.lot-calc .lc-l{
+  font-family:'Cormorant SC',serif; font-weight:600; font-size:13px;
+  letter-spacing:.10em; text-transform:none; color:var(--ink); margin-right:4px;
+}
+.lc-set{ display:inline-flex; align-items:stretch; border:1px solid rgba(80,66,38,.42);
+  background:rgba(255,252,243,.6); }
+.lc-step{
+  font-family:'Cormorant',serif; font-weight:700; font-size:20px; line-height:1;
+  cursor:pointer; min-width:38px; padding:0 12px;
+  background:rgba(214,201,164,.5); color:var(--ink); border:0;
+  border-inline:1px solid rgba(80,66,38,.3);
+  transition:background .12s ease;
+}
+.lc-step:hover{ background:var(--gold-soft); color:#2a2118; }
+.lc-step:active{ background:var(--gold); }
+.lot-calc .lc-field{ display:inline-flex; align-items:baseline; gap:5px; padding:0 4px; }
+.lot-calc .lot-input{
+  width:50px; text-align:center; font-family:'Special Elite',monospace; font-size:15px;
+  background:transparent; border:0; color:var(--ink); padding:7px 2px;
+}
+.lc-u{ font-family:'EB Garamond',serif; font-style:italic; font-size:13px; color:var(--ink-faint); }
+.lc-reset{
+  font-family:serif; font-size:16px; cursor:pointer; min-width:40px; padding:6px 10px;
+  background:rgba(214,201,164,.45); border:1px solid rgba(80,66,38,.32); color:var(--ink);
+}
+.lc-reset:hover{ background:rgba(222,210,174,.9); }
+.lc-fac{ margin-left:auto; font-family:'EB Garamond',serif; font-style:italic;
+  font-size:13px; color:var(--ink-faint); }
+.lc-fac b{ font-family:'Special Elite',monospace; font-style:normal; font-size:15px; color:var(--wine); }
+
+/* --- 3. BOUTONS D'ACTION : icône bien visible, intégration ancienne --- */
+.cartouche-actions{ gap:9px; margin-top:18px; }
+.cartouche-actions .ico{ font-size:15px; line-height:1; margin-right:2px; opacity:.95; }
+.btn-fav .ico{ color:var(--gold); }
+.btn-fav.is-fav{ background:var(--wine); border-color:var(--wine); color:#f4ead8; }
+.btn-fav.is-fav .ico{ color:#f6d98a; }
+
+/* --- 4. PANNEAU D'IMPRESSION (cocher ce qu'on porte sur la feuille) --- */
+.print-opts{
+  margin-top:12px; padding:12px 14px;
+  background:
+    linear-gradient(rgba(246,240,226,.86), rgba(240,233,214,.86)),
+    var(--paper-tex);
+  background-size:auto, 220px;
+  border:1px solid rgba(90,76,46,.4);
+  box-shadow:0 2px 8px rgba(40,30,15,.18), inset 0 0 0 1px rgba(255,255,255,.4);
+}
+.print-opts .po-tt{
+  margin:0 0 8px; font-family:'Cormorant SC',serif; font-weight:600; font-size:13px;
+  letter-spacing:.08em; color:var(--ink);
+}
+.print-opts label{
+  display:flex; align-items:center; gap:8px; margin:5px 0;
+  font-family:'EB Garamond',serif; font-size:15px; color:var(--ink-soft); cursor:pointer;
+}
+.print-opts input[type="checkbox"]{ width:16px; height:16px; accent-color:var(--wine); }
+.btn-print-go{
+  margin-top:10px; width:100%; cursor:pointer;
+  font-family:'Cormorant SC',serif; font-weight:600; letter-spacing:.08em; font-size:14px;
+  padding:9px 12px; color:#f4ead8; background:var(--wine);
+  border:1px solid rgba(70,20,24,.6);
+}
+.btn-print-go:hover{ background:#7a2228; }
+
+/* --- 5. THÈME GRIMOIRE LISIBLE : voile sombre uniforme sur le cuir --- */
+:root[data-theme="sombre"] body{ background-color:#14100a; }
+:root[data-theme="sombre"] .plate{
+  background-image:
+    radial-gradient(140% 120% at 50% 22%, rgba(150,120,72,.10), rgba(0,0,0,0) 46%),
+    linear-gradient(rgba(26,21,14,.86), rgba(22,18,12,.9)),
+    var(--paper-tex) !important;
+  background-size:auto, auto, 520px !important;
+  border-color:rgba(67,55,34,.5);
+}
+:root[data-theme="sombre"] .cover,
+:root[data-theme="sombre"] .grille-recettes .carte{
+  background-image:
+    linear-gradient(rgba(26,21,14,.85), rgba(22,18,12,.9)),
+    var(--paper-tex) !important;
+  background-size:auto, 420px !important;
+}
+:root[data-theme="sombre"] .cartouche{
+  background-image:
+    linear-gradient(rgba(38,31,21,.94), rgba(32,26,17,.96)),
+    var(--paper-tex) !important;
+  background-size:auto, 220px !important;
+  box-shadow:inset 0 0 0 1px rgba(216,199,155,.14), 0 2px 10px rgba(0,0,0,.5);
+}
+:root[data-theme="sombre"]{ --ink:#f0e7d4; --ink-soft:#d4c9b0; --ink-faint:#a3957a; }
+:root[data-theme="sombre"] .lede,
+:root[data-theme="sombre"] .pen-note{ background:rgba(20,16,10,.5); box-shadow:0 0 0 7px rgba(20,16,10,.5); color:var(--ink-soft); }
+:root[data-theme="sombre"] .lot-calc{
+  background:linear-gradient(rgba(40,33,22,.8), rgba(34,28,18,.8)), var(--paper-tex);
+  background-size:auto, 220px;
+}
+:root[data-theme="sombre"] .lc-set{ background:rgba(20,16,10,.4); }
+:root[data-theme="sombre"] .print-opts{
+  background:linear-gradient(rgba(38,31,21,.92), rgba(32,26,17,.94)), var(--paper-tex);
+  background-size:auto, 220px;
+}
+:root[data-theme="sombre"] .timeline .ph{ background:rgba(20,16,10,.4); }
+
+/* --- 6. IMPRESSION A4 : une planche tient sur une page --- */
+@media print{
+  @page{ size:A4; margin:11mm 13mm; }
+  html, body{ font-size:10.5px; line-height:1.32; }
+  .wrap, .contenu, .cadre{ padding:0 !important; margin:0 !important; max-width:none !important; }
+  .ariane, .sheet-head, .plate-foot, .voisines, .print-opts,
+  .cote-inv, .stain, .tape, .pen, .marginalia{ display:none !important; }
+  .plate{ border:none !important; padding:0 !important; box-shadow:none !important; }
+  .plate::before, .plate::after, .specimen-mount::before{ display:none !important; }
+  .plate-banner{ border-bottom:1px solid #000; margin-bottom:7px; padding-bottom:4px; }
+  .plate-banner .institut{ font-size:10px; }
+  .plate-banner .planche-no{ font-size:13px; }
+  .plate-body{ display:flex; gap:12px; align-items:flex-start; margin:0; }
+  .specimen-mount{ flex:0 0 36mm; margin:0; }
+  .specimen-frame{ transform:none !important; margin:0; }
+  .specimen-frame img{ max-height:42mm; width:auto; border:1px solid #999; box-shadow:none !important; filter:none !important; }
+  .cartouche{ flex:1; transform:none !important; box-shadow:none !important; padding:0 !important; background:#fff !important; }
+  .cartouche h1.vern{ font-size:15px; margin:0 0 6px; }
+  .cartouche .genus{ font-size:11px; }
+  .cartouche .specs{ gap:8px; }
+  .cartouche .spec .v{ font-size:14px; }
+  .cartouche dl{ font-size:10px; }
+  .recipe{ margin-top:9px; }
+  .recipe-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .section-title{ font-size:12.5px; margin:7px 0 4px !important; }
+  .lede{ font-size:10.5px; line-height:1.34; margin:0 0 8px; }
+  .lede::first-letter{ font-size:2.3em; }
+  .ingredients th, .ingredients td{ padding:2px 5px; font-size:10px; }
+  .ingredients .ck{ display:none; }
+  ol.prep{ font-size:10px; line-height:1.32; padding-left:20px; }
+  ol.prep li{ margin-bottom:3px; }
+  ol.prep li::before{ display:none; }
+  .timeline{ gap:4px; }
+  .timeline .ph{ padding:3px 6px; font-size:9.5px; }
+  .pen-note, .dicton{ font-size:10px; }
+  .lore p{ font-size:10px; }
+  .lot-calc, .cartouche-actions{ display:none !important; }
+  body.po-no-specimen .specimen-mount{ display:none !important; }
+  body.po-no-histoire .lede{ display:none !important; }
+  body.po-no-chrono .bloc-chrono{ display:none !important; }
+  body.po-no-vertus .bloc-vertus{ display:none !important; }
+  body.po-no-dicton .dicton{ display:none !important; }
+}
+
+/* --- Correctifs vérif. adversariale : onglets-chapitres lisibles en grimoire,
+   garde-fous d'impression pour procédés longs. --- */
+:root[data-theme="sombre"] .chapter-tab{
+  background:rgba(34,28,18,.72);
+  border-color:rgba(216,199,155,.22);
+  border-bottom-color:rgba(216,199,155,.32);
+  color:var(--ink);
+}
+:root[data-theme="sombre"] .chapter-tab:hover{ background:rgba(46,38,24,.88); }
+:root[data-theme="sombre"] .chapter-tab .n{ color:var(--gold-soft); }
+
+@media print{
+  ol.prep li{ orphans:2; widows:2; break-inside:avoid; }
+  .bloc-chrono, .bloc-vertus{ break-inside:avoid; }
 }
