@@ -17,21 +17,21 @@
    rubriques transversales (historiques, médicinales, fruits, fleurs…).
 --------------------------------------------------------------------- */
 const CATEGORIES = [
-  { id: 'liqueurs',   nom: 'Liqueurs',            icone: '🍶', desc: "Élixirs sucrés obtenus par macération ou infusion d'alcool." },
-  { id: 'cremes',     nom: 'Crèmes',              icone: '🫖', desc: "Liqueurs onctueuses et très sucrées, riches en fruits." },
-  { id: 'ratafias',   nom: 'Ratafias',            icone: '🍷', desc: "Macérations de fruits dans l'eau-de-vie, sucrées après coup." },
-  { id: 'hypocras',   nom: 'Hypocras',            icone: '⚗️', desc: "Vins épicés et miellés hérités du Moyen Âge." },
-  { id: 'vins',       nom: 'Vins apéritifs',      icone: '🍇', desc: "Vins aromatisés de fruits, feuilles ou épices." },
-  { id: 'rhums',      nom: 'Rhums arrangés',      icone: '🥃', desc: "Rhums parfumés aux fruits et épices des îles." }
+  { id: 'liqueurs',   nom: 'Liqueurs',            icone: '🍶', embleme: 'images/emblems/cat-liqueurs.png', desc: "Élixirs sucrés obtenus par macération ou infusion d'alcool." },
+  { id: 'cremes',     nom: 'Crèmes',              icone: '🫖', embleme: 'images/emblems/cat-cremes.png',   desc: "Liqueurs onctueuses et très sucrées, riches en fruits." },
+  { id: 'ratafias',   nom: 'Ratafias',            icone: '🍷', embleme: 'images/emblems/cat-ratafias.png', desc: "Macérations de fruits dans l'eau-de-vie, sucrées après coup." },
+  { id: 'hypocras',   nom: 'Hypocras',            icone: '⚗️', embleme: 'images/emblems/cat-hypocras.png', desc: "Vins épicés et miellés hérités du Moyen Âge." },
+  { id: 'vins',       nom: 'Vins apéritifs',      icone: '🍇', embleme: 'images/emblems/cat-vins.png',     desc: "Vins aromatisés de fruits, feuilles ou épices." },
+  { id: 'rhums',      nom: 'Rhums arrangés',      icone: '🥃', embleme: 'images/emblems/cat-rhums.png',    desc: "Rhums parfumés aux fruits et épices des îles." }
 ];
 
 /* Rubriques transversales (thèmes) affichées comme catégories d'accès. */
 const THEMES = [
-  { id: 'historiques', nom: 'Recettes historiques', icone: '📜' },
-  { id: 'medicinales', nom: 'Recettes médicinales', icone: '⚕️' },
-  { id: 'fruits',      nom: 'Recettes aux fruits',  icone: '🍒' },
-  { id: 'fleurs',      nom: 'Recettes aux fleurs',  icone: '🌸' },
-  { id: 'epices',      nom: 'Recettes aux épices',  icone: '🌿' }
+  { id: 'historiques', nom: 'Recettes historiques', icone: '📜', embleme: 'images/emblems/theme-historiques.png' },
+  { id: 'medicinales', nom: 'Recettes médicinales', icone: '⚕️', embleme: 'images/emblems/theme-medicinales.png' },
+  { id: 'fruits',      nom: 'Recettes aux fruits',  icone: '🍒', embleme: 'images/emblems/theme-fruits.png' },
+  { id: 'fleurs',      nom: 'Recettes aux fleurs',  icone: '🌸', embleme: 'images/emblems/theme-fleurs.png' },
+  { id: 'epices',      nom: 'Recettes aux épices',  icone: '🌿', embleme: 'images/emblems/theme-epices.png' }
 ];
 
 /* ---------------------------------------------------------------------
@@ -2718,9 +2718,9 @@ function vueAccueil() {
   const cnt = id => DATA.filter(r => r.categorie === id).length;
   const cntT = id => DATA.filter(r => r.themes.includes(id)).length;
   const chapitres = CATEGORIES.map((c, i) =>
-    `<a class="chapter-tab" href="#/categorie/${c.id}"><span class="n">${romain(i + 1)} · ${cnt(c.id)}</span>${c.nom}</a>`).join('');
+    `<a class="chapter-tab" href="#/categorie/${c.id}"><img class="chap-emb" src="${c.embleme}" alt="" loading="lazy"><span class="n">${romain(i + 1)} · ${cnt(c.id)}</span>${c.nom}</a>`).join('');
   const rubriques = THEMES.map(t =>
-    `<a class="chapter-tab" href="#/theme/${t.id}"><span class="n">${cntT(t.id)}</span>${t.nom}</a>`).join('');
+    `<a class="chapter-tab" href="#/theme/${t.id}"><img class="chap-emb" src="${t.embleme}" alt="" loading="lazy"><span class="n">${cntT(t.id)}</span>${t.nom}</a>`).join('');
 
   return `
     <header class="cover">
@@ -2758,10 +2758,16 @@ function vueAccueil() {
 }
 
 /** Vue : liste filtrée (catégorie, thème ou recherche). */
-function vueListe({ titre, recettes, ariane: fil, filtresActifs }) {
+function vueListe({ titre, recettes, ariane: fil, filtresActifs, embleme, soustitre }) {
+  const enTete = embleme
+    ? `<header class="cat-tete">
+         <img class="cat-embleme" src="${embleme}" alt="" loading="lazy">
+         <div><h1 class="titre-page">${titre}</h1>${soustitre ? `<p class="cat-sous">${soustitre}</p>` : ''}</div>
+       </header>`
+    : `<h1 class="titre-page">${titre}</h1>`;
   return `
     ${ariane(fil)}
-    <h1 class="titre-page">${titre}</h1>
+    ${enTete}
 
     <div class="barre-filtres">
       <input id="rechercheListe" type="search" placeholder="Affiner…" aria-label="Recherche" value="${filtresActifs.q || ''}" autocomplete="off">
@@ -3031,6 +3037,7 @@ function router() {
     const recettes = DATA.filter(r => r.categorie === seg[1]);
     cont.innerHTML = vueListe({
       titre: cat ? cat.nom : 'Catégorie',
+      embleme: cat ? cat.embleme : '', soustitre: cat ? cat.desc : '',
       recettes,
       ariane: [{ label: 'Accueil', href: '#/' }, { label: cat ? cat.nom : 'Catégorie' }],
       filtresActifs: { categorie: seg[1] }
@@ -3042,6 +3049,7 @@ function router() {
     const recettes = DATA.filter(r => r.themes.includes(seg[1]));
     cont.innerHTML = vueListe({
       titre: th ? th.nom : 'Rubrique',
+      embleme: th ? th.embleme : '', soustitre: '',
       recettes,
       ariane: [{ label: 'Accueil', href: '#/' }, { label: th ? th.nom : 'Rubrique' }],
       filtresActifs: { theme: seg[1] }
@@ -3247,10 +3255,10 @@ function majSidebar() {
     const courant = location.hash;
     som.innerHTML = CATEGORIES.map(c =>
       `<li><a href="#/categorie/${c.id}" class="${courant === '#/categorie/'+c.id ? 'actif':''}">
-        <span aria-hidden="true">${c.icone}</span> ${c.nom}</a></li>`).join('')
+        <img class="sb-emb" src="${c.embleme}" alt="" loading="lazy" aria-hidden="true"> ${c.nom}</a></li>`).join('')
       + THEMES.map(t =>
       `<li><a href="#/theme/${t.id}" class="lien-theme ${courant === '#/theme/'+t.id ? 'actif':''}">
-        <span aria-hidden="true">${t.icone}</span> ${t.nom}</a></li>`).join('');
+        <img class="sb-emb" src="${t.embleme}" alt="" loading="lazy" aria-hidden="true"> ${t.nom}</a></li>`).join('');
   }
   // Récents
   const rec = $('#recents');
