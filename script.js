@@ -2796,7 +2796,7 @@ function vueRecette(r) {
   }).join('');
 
   const specimen = r.image
-    ? `<div class="specimen-frame">
+    ? `<div class="specimen-frame" style="--srot:${_rot(r.id)}deg">
          <span class="tape t1"></span><span class="tape t2"></span><span class="tape t3"></span><span class="tape t4"></span>
          <img src="${r.image}" alt="Spécimen — ${escAttr(r.nom)}" loading="lazy">
        </div>`
@@ -2816,6 +2816,7 @@ function vueRecette(r) {
 
     <article class="plate">
       <div class="stain s1"></div><div class="stain s2"></div><div class="stain s3"></div>
+      <span class="cote-inv" aria-hidden="true">HERB · COD<br>${String(np).padStart(4, '0')}</span>
 
       <div class="plate-banner">
         <div class="left">
@@ -2837,7 +2838,7 @@ function vueRecette(r) {
           <h1 class="vern">${r.nom}</h1>
           <div class="id-rule"></div>
           <div class="specs">
-            <div class="spec"><div class="v">${r.degre}&deg;</div><div class="l">Degré</div></div>
+            <div class="spec"><div class="v">${r.degre} &deg;</div><div class="l">Degré</div></div>
             <div class="spec"><div class="v">${macBig}&nbsp;${macUnit}</div><div class="l">Macération</div></div>
             <div class="spec"><div class="v" id="lotRef">${fmt(r.lot)}&nbsp;L</div><div class="l">Lot · référence</div></div>
           </div>
@@ -2861,7 +2862,7 @@ function vueRecette(r) {
 
         <div class="recipe-grid">
           <div>
-            <h2 class="section-title">Matière · <span id="lotCap">pour ${fmt(r.lot)} litre${r.lot > 1 ? 's' : ''}</span></h2>
+            <h2 class="section-title">Matière · <span id="lotCap">pour ${fmt(r.lot)}&nbsp;litre${r.lot > 1 ? 's' : ''}</span></h2>
             <div class="lot-calc no-print" role="group" aria-label="Calculateur de lot">
               <span class="lc-l">Calculateur de lot</span>
               <button class="lc-mul" type="button" data-mul="0.5" title="Diviser par deux">½</button>

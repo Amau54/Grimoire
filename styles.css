@@ -1600,3 +1600,118 @@ td.qte,.lot-input,.spec .v,#lotFactor,.iq,.lot-calc{ font-variant-numeric:lining
 
 /* h1 sémantique pour le nom de recette : conserver le rendu de l'étiquette */
 .cartouche h1.vern{ margin:0 0 14px; font-size:15px; }
+
+/* =====================================================================
+   POLISH — réalisme & beauté (critique design multi-lentilles, live-test)
+   Tout en CSS pur, zéro SVG ; ombres chaudes (jamais noir pur),
+   lumière cohérente haut-gauche. Surcharge volontaire (ordre source).
+   ===================================================================== */
+
+/* accents manquants : or, sauge ; encre de plume réchauffée (ferro-gallique) */
+:root{ --gold:#a8843e; --gold-soft:#c2a368; --sage:#6b7355; --plume:#3a463f; }
+:root[data-theme="sombre"]{ --gold:#c2a064; --gold-soft:#d8bd84; --sage:#8a9472; --plume:#aab5a4; }
+
+/* #1 vignettage chaud de la feuille — « page sous lampe d'atelier » */
+.plate{
+  background-image:
+    radial-gradient(135% 110% at 50% 28%, rgba(255,250,236,.20) 0%, rgba(255,250,236,0) 46%, rgba(70,52,26,.06) 80%, rgba(60,44,22,.12) 100%),
+    var(--paper-tex);
+  background-size:auto, 560px;
+}
+:root[data-theme="sombre"] .plate{
+  background-image:
+    radial-gradient(135% 110% at 50% 28%, rgba(120,98,60,.10) 0%, rgba(0,0,0,0) 45%, rgba(0,0,0,.20) 100%),
+    var(--paper-tex);
+}
+
+/* #2 ombres multi-couches teintées chaud — le tirage est « posé », pas « flottant » */
+.specimen-frame img{
+  box-shadow:
+    1px 1px 2px rgba(40,25,12,.30),
+    3px 10px 18px -8px rgba(50,32,14,.30),
+    4px 26px 42px -22px rgba(50,32,14,.26),
+    0 1px 0 rgba(255,255,255,.6) inset;
+}
+.carte__photo{ box-shadow:1px 1px 2px rgba(40,25,12,.30), 3px 6px 12px -4px rgba(50,32,14,.26); }
+
+/* #4 rotation propre à chaque spécimen (variable posée par le balisage) */
+.specimen-frame{ transform:rotate(var(--srot,-.8deg)); }
+
+/* #3 scotch : soulèvement (ombre double) + grain à deux fréquences */
+.tape{ opacity:.80; box-shadow:1px 3px 7px -3px rgba(40,28,12,.42), 0 1px 1px rgba(40,28,12,.30); }
+.tape::after{
+  background:
+    repeating-linear-gradient(90deg, rgba(90,74,40,.05) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(91.5deg, rgba(120,100,60,.035) 0 1px, transparent 1px 7px);
+}
+
+/* #6 tranche de papier : lumière sur l'arête haute, ombre sur la basse */
+.cartouche,.plate-label,.calc,.lot-calc,.grille-recettes .carte{
+  box-shadow:0 6px 16px -10px var(--shadow), 0 1px 0 rgba(255,253,247,.6) inset, 0 -1px 0 rgba(80,62,34,.14) inset;
+}
+
+/* #8 + #12 lettrine calée sur 3 lignes, rubriquée au vin */
+.lede::first-letter{
+  font-family:'Cormorant SC',serif; font-weight:600; font-style:normal;
+  font-size:3.2em; line-height:1; float:left; margin:.06em .12em -.04em 0; padding:0;
+  text-transform:uppercase; color:var(--wine);
+}
+
+/* #9 accent or mesuré (filet intérieur, sceau, divider) — jamais sur le corps */
+.plate::after{ border-color:color-mix(in srgb, var(--gold) 26%, transparent); }
+.topbar__sceau{ color:var(--gold-soft); }
+.cover .divider{ border-top-color:color-mix(in srgb, var(--gold) 30%, transparent); }
+
+/* #11 sauge végétal très ténu sur les filets de section (3ᵉ température) */
+.section-title::after{ border-top:1px solid color-mix(in srgb, var(--sage) 38%, transparent); }
+
+/* #14 interlettrage des petites capitales corrélé à la taille */
+.cartouche .vern{ letter-spacing:.14em; margin-bottom:18px; }
+.specs .spec .v{ letter-spacing:.015em; }
+
+/* #15 hiérarchie des filets : cadre franc / articulation demi-ton / détail ténu */
+.plate::before{ border-color:rgba(90,76,46,.42); }
+.plate::after{ inset:21px; }
+.cartouche dl .line{ border-bottom-color:rgba(90,76,48,.28); }
+table.ingredients td{ border-bottom-color:rgba(90,76,46,.22); }
+
+/* #16 chiffres tabulaires dans l'étiquette/inventaire */
+.cartouche dl,.plate-banner .right,.plate-foot,.timeline .d{ font-variant-numeric:lining-nums tabular-nums; }
+
+/* #17 équilibrage des lignes courtes + veuves/orphelines aussi à l'écran */
+.section-title,.titre-section,.dicton,.cover .sub{ text-wrap:balance; }
+.recipe p,.lede,.lore p{ orphans:2; widows:2; }
+
+/* #18 quantités inline : subordonnées au texte (fini le « damier rouge ») */
+.iq{ font-size:.76em; color:var(--ink); opacity:.72; letter-spacing:.01em; }
+
+/* #20/21 gouttière & cadence */
+.plate-body{ gap:48px; }
+.specs{ margin:18px 0 6px; }
+
+/* #22 tête d'épingle entomologique — relief + reflet ponctuel */
+.specimen-mount{ position:relative; }
+.specimen-mount::before{
+  content:""; position:absolute; z-index:7; top:9px; left:50%; transform:translateX(-50%);
+  width:13px; height:13px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #fff 0%, #c9b98e 22%, #8a7240 55%, #5b4824 100%);
+  box-shadow:0 3px 5px -1px rgba(30,18,6,.55), 0 0 0 1px rgba(40,28,12,.25);
+}
+@media print{ .specimen-mount::before{ display:none; } }
+
+/* #23 cote d'inventaire estampée (coin bas-droit, encre qui mord le papier) */
+.cote-inv{
+  position:absolute; right:30px; bottom:84px; z-index:3;
+  font-family:'Special Elite',monospace; font-size:10px; letter-spacing:.16em;
+  line-height:1.5; text-align:center; color:rgba(90,29,35,.55);
+  border:1.5px solid rgba(90,29,35,.30); padding:5px 8px;
+  transform:rotate(-3.5deg); mix-blend-mode:multiply;
+}
+@media print{ .cote-inv{ color:#000; border-color:#000; mix-blend-mode:normal; } }
+
+/* #25 tampon « Vérifié » à l'encre inégale + numéros d'étape « repassés main » */
+.cartouche .stamp{
+  background-image:var(--paper-tex); background-size:120px; background-blend-mode:screen;
+  box-shadow:inset 0 0 0 1px rgba(90,29,35,.18); mix-blend-mode:multiply; opacity:.86;
+}
+ol.prep li::before{ box-shadow:0 0 0 1px rgba(90,29,35,.10), .5px .5px 0 rgba(90,29,35,.18); }
