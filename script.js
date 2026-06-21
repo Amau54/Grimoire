@@ -2865,7 +2865,7 @@ function vueRecette(r) {
             <div class="lot-calc no-print" role="group" aria-label="Calculateur de lot">
               <span class="lc-l">Calculateur de lot</span>
               <button class="lc-mul" type="button" data-mul="0.5" title="Diviser par deux">½</button>
-              <span class="lc-field">pour <input id="lotVol" class="lot-input" type="number" min="0.05" step="0.1" value="${fmt(r.lot)}" data-base="${r.lot}" aria-label="Volume du lot en litres"> L</span>
+              <span class="lc-field">pour <input id="lotVol" class="lot-input" type="text" inputmode="decimal" value="${fmt(r.lot)}" data-base="${r.lot}" aria-label="Volume du lot en litres"> L</span>
               <button class="lc-mul" type="button" data-mul="2" title="Doubler">×2</button>
               <button class="lc-reset" type="button" title="Revenir au lot de référence">↺</button>
               <span class="lc-fac" aria-live="polite">×<b id="lotFactor">1</b></span>
@@ -2984,19 +2984,31 @@ function injectRecipeJsonLd(r) {
   document.head.appendChild(s);
 }
 
-/* Finitions après rendu : apparition au scroll, fondu des images, retour-haut. */
+/* Finitions après rendu : apparition au scroll, fondu des images, retour-haut.
+   Robuste : ce qui est déjà visible s'affiche tout de suite, et un filet de
+   sécurité garantit qu'aucun contenu ne reste masqué (appareil lent / IO inerte). */
 function postRender() {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // fondu des images de spécimen au chargement
+  // fondu des images de spécimen au chargement (et jamais bloqué si erreur)
   $$('.specimen-frame img, .carte__photo').forEach(img => {
     if (img.complete) img.classList.add('is-loaded');
-    else img.addEventListener('load', () => img.classList.add('is-loaded'), { once: true });
+    else {
+      img.addEventListener('load', () => img.classList.add('is-loaded'), { once: true });
+      img.addEventListener('error', () => img.classList.add('is-loaded'), { once: true });
+    }
   });
-  if (reduce || !('IntersectionObserver' in window)) return;
+  const els = $$('.carte, .plate, .cover');
+  if (reduce || !('IntersectionObserver' in window)) { els.forEach(el => el.classList.add('is-in')); return; }
   const io = new IntersectionObserver(es => es.forEach(e => {
     if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
-  }), { rootMargin: '0px 0px -8% 0px' });
-  $$('.carte, .plate, .cover').forEach(el => { el.classList.add('reveal'); io.observe(el); });
+  }), { rootMargin: '0px 0px -6% 0px' });
+  const vh = window.innerHeight || 800;
+  els.forEach(el => {
+    if (el.getBoundingClientRect().top < vh * 0.96) { el.classList.add('is-in'); }   // déjà à l'écran
+    else { el.classList.add('reveal'); io.observe(el); }
+  });
+  // filet de sécurité : rien ne doit rester invisible
+  setTimeout(() => $$('.reveal:not(.is-in)').forEach(el => el.classList.add('is-in')), 1200);
 }
 
 /* ---------------------------------------------------------------------
@@ -3170,7 +3182,7 @@ function brancherFiche() {
     vol.addEventListener('change', recalc);
     $$('.lc-mul').forEach(b => b.addEventListener('click', () => {
       const cur = parseFloat(String(vol.value).replace(',', '.')) || base;
-      vol.value = fmt(Math.max(0.05, cur * parseFloat(b.dataset.mul)));
+      vol.value = fmt(Math.min(500, Math.max(0.05, cur * parseFloat(b.dataset.mul))));
       recalc();
     }));
     const rb = $('.lc-reset');
