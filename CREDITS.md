@@ -5,6 +5,16 @@ sceau du codex) sont de **vraies œuvres** — scans de papier ancien, gravures 
 planches botaniques — issues de **Wikimedia Commons**, sous licence libre.
 Recherche menée par workflow multi-agents sur les API Wikimedia Commons & Openverse.
 
+## Spécimens des planches
+
+Les images de spécimens proviennent du blog hypocras.blog4ever.com et de Wikimedia
+Commons. **31 d'entre elles**, qui étaient en réalité des logos, vieilles publicités,
+cartes ou photos hors-sujet, ont été remplacées par de **vraies planches botaniques
+du domaine public** correspondant à l'ingrédient principal (majoritairement les
+planches de Köhler, *Medizinal-Pflanzen* ; aussi Redouté, Flora Batava, Thomé) —
+ex. café → *Coffea arabica*, troussepinette → *Prunus spinosa*, vin tonique →
+*Cinchona officinalis* (quinquina).
+
 ## Fonds (textures de papier)
 
 | Élément | Source | Auteur | Licence |
