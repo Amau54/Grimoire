@@ -2823,6 +2823,7 @@ function vueRecette(r) {
     <article class="plate">
       <div class="stain s1"></div><div class="stain s2"></div><div class="stain s3"></div>
       <span class="cote-inv" aria-hidden="true">HERB · COD<br>${String(np).padStart(4, '0')}</span>
+      <button class="fav-star ${fav ? 'is-fav' : ''}" data-fav="${r.id}" type="button" aria-pressed="${fav}" aria-label="${fav ? 'Retirer cette planche des favoris' : 'Ajouter cette planche aux favoris'}" title="Favori">&#9733;</button>
 
       <div class="plate-banner">
         <div class="left">
@@ -2855,8 +2856,6 @@ function vueRecette(r) {
             <div class="line"><dt>Réf.</dt><dd>${r.id}</dd></div>
           </dl>
           <div class="cartouche-actions no-print">
-            <button class="btn btn-fav ${fav ? 'is-fav' : ''}" data-fav="${r.id}"><span class="ico" aria-hidden="true">✦</span> ${fav ? 'Conservée' : 'Conserver'}</button>
-            <button class="btn btn--ghost cook-mode" id="cookMode" type="button" aria-pressed="false" hidden title="Empêcher l'écran de s'éteindre pendant la préparation"><span class="ico" aria-hidden="true">☼</span> Garder l'écran allumé</button>
             <button class="btn btn--ghost btn-print" id="btnPrint" type="button" aria-expanded="false"><span class="ico" aria-hidden="true">⎙</span> Imprimer…</button>
           </div>
           <div class="print-opts no-print" id="printOpts" hidden role="group" aria-label="Choisir ce qui sera imprimé">
@@ -2877,15 +2876,24 @@ function vueRecette(r) {
         <div class="recipe-grid">
           <div>
             <h2 class="section-title">Matière · <span id="lotCap">pour ${fmt(r.lot)}&nbsp;litre${r.lot > 1 ? 's' : ''}</span></h2>
-            <div class="lot-calc no-print" role="group" aria-label="Calculateur de lot">
-              <span class="lc-l">Régler le lot</span>
-              <span class="lc-set">
-                <button class="lc-step" type="button" data-step="-1" aria-label="Retirer un litre" title="Un litre de moins">&minus;</button>
-                <span class="lc-field"><input id="lotVol" class="lot-input" type="text" inputmode="decimal" value="${fmt(r.lot)}" data-base="${r.lot}" aria-label="Volume du lot en litres"><span class="lc-u">litre${r.lot > 1 ? 's' : ''}</span></span>
-                <button class="lc-step" type="button" data-step="1" aria-label="Ajouter un litre" title="Un litre de plus">+</button>
+            <div class="lot-calc no-print" role="group" aria-label="Régler le volume du lot et l'échelle">
+              <span class="lc-grp">
+                <span class="lc-l">Lot</span>
+                <span class="lc-set">
+                  <button class="lc-step" type="button" data-vol="-1" aria-label="Un litre de moins" title="Un litre de moins">&minus;</button>
+                  <span class="lc-field"><input id="lotVol" class="lot-input" type="text" inputmode="decimal" value="${fmt(r.lot)}" data-base="${r.lot}" aria-label="Volume du lot en litres"><span class="lc-u">litre${r.lot > 1 ? 's' : ''}</span></span>
+                  <button class="lc-step" type="button" data-vol="1" aria-label="Un litre de plus" title="Un litre de plus">+</button>
+                </span>
+              </span>
+              <span class="lc-grp">
+                <span class="lc-l">Échelle</span>
+                <span class="lc-set">
+                  <button class="lc-step" type="button" data-scale="-1" aria-label="Échelle inférieure" title="Échelle inférieure">&minus;</button>
+                  <span class="lc-field lc-field--scale"><span class="lc-mult" aria-hidden="true">&times;</span><input id="lotScale" class="lot-input lot-input--scale" type="text" inputmode="decimal" value="1" aria-label="Facteur d'échelle (×1, ×2, ×3…)"></span>
+                  <button class="lc-step" type="button" data-scale="1" aria-label="Échelle supérieure" title="Échelle supérieure">+</button>
+                </span>
               </span>
               <button class="lc-reset" type="button" title="Revenir au lot de référence" aria-label="Réinitialiser">&#8635;</button>
-              <span class="lc-fac" aria-live="polite">à l'échelle <b id="lotFactor">1</b>&times;</span>
             </div>
             <table class="ingredients" id="ingrTable">
               <thead><tr><th scope="col" class="ck" aria-label="Fait"></th><th scope="col" class="q">Quantité</th><th scope="col">Ingrédient</th></tr></thead>
@@ -3115,11 +3123,13 @@ function brancherFiltres(base) {
 }
 
 function brancherFiche() {
-  const btn = $('.btn-fav');
-  if (btn) btn.addEventListener('click', () => {
-    const actif = STORE.toggleFavori(btn.dataset.fav);
-    btn.classList.toggle('is-fav', actif);
-    btn.innerHTML = `<span class="ico" aria-hidden="true">✦</span> ${actif ? 'Conservée' : 'Conserver'}`;
+  // Étoile favori en haut à droite de la planche
+  const star = $('.fav-star');
+  if (star) star.addEventListener('click', () => {
+    const actif = STORE.toggleFavori(star.dataset.fav);
+    star.classList.toggle('is-fav', actif);
+    star.setAttribute('aria-pressed', String(actif));
+    star.setAttribute('aria-label', actif ? 'Retirer cette planche des favoris' : 'Ajouter cette planche aux favoris');
     majSidebar();
   });
 
@@ -3140,21 +3150,18 @@ function brancherFiche() {
     if (go) go.addEventListener('click', () => window.print());
   }
 
-  // CALCULATEUR DE LOT EN DIRECT (tableau d'ingrédients + quantités du procédé)
+  // RÉGLAGE EN DIRECT — volume (litres) ET échelle (×) liés ; met à jour le
+  // tableau d'ingrédients et les quantités inline du procédé.
   const vol = $('#lotVol');
+  const scale = $('#lotScale');
   const table = $('#ingrTable');
   if (vol) {
     const base = parseFloat(vol.dataset.base) || 1;
-    // normalise la saisie : nombre valide, borné [0,5 ; 500] L, arrondi au dixième
-    const normLot = raw => {
-      const n = parseFloat(String(raw).replace(',', '.'));
-      if (!isFinite(n) || n <= 0) return null;
-      return Math.min(500, Math.max(0.5, Math.round(n * 10) / 10));
-    };
-    const recalc = () => {
-      const v = normLot(vol.value);
-      if (v == null) return;
-      const f = v / base;
+    const normLot = raw => { const n = parseFloat(String(raw).replace(',', '.')); if (!isFinite(n) || n <= 0) return null; return Math.min(500, Math.max(0.5, Math.round(n * 10) / 10)); };
+    const normScale = raw => { const n = parseFloat(String(raw).replace(',', '.')); if (!isFinite(n) || n <= 0) return null; return Math.min(200, Math.max(0.1, Math.round(n * 100) / 100)); };
+    // applique un facteur f. skip = 'vol' ou 'scale' : ne pas réécrire ce champ (saisie en cours)
+    const render = (f, skip) => {
+      const v = Math.round(base * f * 10) / 10;
       if (table) $$('tbody tr', table).forEach(tr => {
         if (!('n' in tr.dataset)) return;
         const q = tr.dataset.q, u = tr.dataset.u || '', s = tr.dataset.s === '1';
@@ -3165,27 +3172,39 @@ function brancherFiche() {
         else { cq.textContent = fmt(parseFloat(q)) + (u ? ' ' + u : ''); cq.classList.add('adj'); }
         if (cn) cn.textContent = scaleNom(tr.dataset.n || cn.textContent, f);
       });
-      // quantités inline insérées dans le procédé
       $$('.iq').forEach(el => {
         const q = el.dataset.q; if (q == null || q === '') return;
         const u = el.dataset.u || '', s = el.dataset.s !== '0';
         el.textContent = (s ? fmt(parseFloat(q) * f) : fmt(parseFloat(q))) + (u ? ' ' + u : '');
       });
-      const fac = $('#lotFactor'); if (fac) fac.textContent = fmt(f);
       const cap = $('#lotCap'); if (cap) cap.textContent = 'pour ' + fmt(v) + ' litre' + (v > 1 ? 's' : '');
-      const u = $('.lc-u'); if (u) u.textContent = 'litre' + (v > 1 ? 's' : '');
+      const uu = $('.lc-u'); if (uu) uu.textContent = 'litre' + (v > 1 ? 's' : '');
+      if (skip !== 'vol') vol.value = fmt(v);
+      if (skip !== 'scale' && scale) scale.value = fmt(Math.round(f * 100) / 100);
     };
-    vol.addEventListener('input', recalc);
-    // au blur/Entrée : on recale le champ sur la valeur bornée et arrondie
-    vol.addEventListener('change', () => { const v = normLot(vol.value); vol.value = fmt(v != null ? v : base); recalc(); });
+    const fromVol = skipWrite => { const v = normLot(vol.value); if (v == null) return; render(v / base, skipWrite ? 'vol' : null); };
+    const fromScale = skipWrite => { const s = normScale(scale.value); if (s == null) return; render(s, skipWrite ? 'scale' : null); };
+    vol.addEventListener('input', () => fromVol(true));
+    vol.addEventListener('change', () => { const v = normLot(vol.value); vol.value = fmt(v != null ? v : base); fromVol(false); });
+    if (scale) {
+      scale.addEventListener('input', () => fromScale(true));
+      scale.addEventListener('change', () => { const s = normScale(scale.value); scale.value = fmt(s != null ? s : 1); fromScale(false); });
+    }
     $$('.lc-step').forEach(b => b.addEventListener('click', () => {
-      const cur = normLot(vol.value) || base;
-      vol.value = fmt(normLot(cur + parseFloat(b.dataset.step)) || 0.5);
-      recalc();
+      if (b.dataset.vol != null) {
+        const cur = normLot(vol.value) || base;
+        vol.value = fmt(normLot(cur + parseFloat(b.dataset.vol)) || 0.5);
+        fromVol(false);
+      } else if (b.dataset.scale != null && scale) {
+        const cur = normScale(scale.value) || 1, d = parseFloat(b.dataset.scale);
+        const next = d > 0 ? Math.floor(cur + 1e-6) + 1 : Math.ceil(cur - 1e-6) - 1;   // pas entier : ×1, ×2, ×3…
+        scale.value = fmt(Math.min(200, Math.max(0.5, next)));
+        fromScale(false);
+      }
     }));
     const rb = $('.lc-reset');
-    if (rb) rb.addEventListener('click', () => { vol.value = fmt(base); recalc(); });
-    recalc();
+    if (rb) rb.addEventListener('click', () => { vol.value = fmt(base); fromVol(false); });
+    fromVol(false);
   }
 
   // Cases à cocher d'ingrédients (suivi de préparation, persistant par recette)
@@ -3205,23 +3224,6 @@ function brancherFiche() {
     });
   }
 
-  // Mode cuisine : empêche la mise en veille de l'écran (Wake Lock)
-  const cm = $('#cookMode');
-  if (cm && 'wakeLock' in navigator) {
-    cm.hidden = false;
-    let wl = null;
-    const release = () => { cm.setAttribute('aria-pressed', 'false'); };
-    cm.addEventListener('click', async () => {
-      if (wl) { try { await wl.release(); } catch (e) {} wl = null; release(); return; }
-      try { wl = await navigator.wakeLock.request('screen'); cm.setAttribute('aria-pressed', 'true'); wl.addEventListener('release', release); }
-      catch (e) {}
-    });
-    document.addEventListener('visibilitychange', async () => {
-      if (cm.getAttribute('aria-pressed') === 'true' && document.visibilityState === 'visible') {
-        try { wl = await navigator.wakeLock.request('screen'); wl.addEventListener('release', release); } catch (e) {}
-      }
-    });
-  }
 }
 
 /* ---------------------------------------------------------------------

@@ -2177,3 +2177,31 @@ ol.prep li::before{
   .carte:hover{ transform:none; }
   .carte:hover .carte__photo{ transform:rotate(-2deg); }
 }
+
+/* ===================================================================
+   Étoile favori (coin haut-droit de la planche) + échelle éditable.
+   =================================================================== */
+.fav-star{
+  position:absolute; top:16px; right:18px; z-index:6;
+  width:42px; height:42px; padding:0; line-height:1;
+  font-size:27px; cursor:pointer;
+  background:transparent; border:none;
+  color:rgba(90,76,46,.30);
+  text-shadow:0 1px 0 rgba(255,253,247,.55);
+  transition:transform .14s ease, color .14s ease, text-shadow .14s ease;
+}
+.fav-star:hover{ color:var(--gold); transform:scale(1.14) rotate(-6deg); }
+.fav-star:active{ transform:scale(1.02); }
+.fav-star.is-fav{ color:var(--wine); text-shadow:0 1px 2px rgba(90,29,35,.25), 0 1px 0 rgba(255,253,247,.6); }
+.fav-star:focus-visible{ outline:2px solid var(--wine); outline-offset:3px; border-radius:4px; }
+:root[data-theme="sombre"] .fav-star{ color:rgba(216,189,132,.42); text-shadow:0 1px 1px rgba(0,0,0,.4); }
+:root[data-theme="sombre"] .fav-star:hover{ color:var(--gold-soft); }
+:root[data-theme="sombre"] .fav-star.is-fav{ color:#df9089; }
+@media print{ .fav-star{ display:none !important; } }
+@media (max-width:560px){ .fav-star{ top:10px; right:10px; font-size:24px; } }
+
+/* réglette : deux groupes (Lot litres + Échelle ×) */
+.lc-grp{ display:inline-flex; align-items:center; gap:8px; }
+.lc-field--scale{ padding-left:3px; }
+.lc-mult{ font-family:'Special Elite',monospace; font-size:14px; color:var(--ink-faint); margin-right:1px; }
+.lot-input--scale{ width:40px; }
