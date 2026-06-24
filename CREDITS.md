@@ -7,13 +7,18 @@ Recherche menée par workflow multi-agents sur les API Wikimedia Commons & Openv
 
 ## Spécimens des planches
 
-Les images de spécimens proviennent du blog hypocras.blog4ever.com et de Wikimedia
-Commons. **31 d'entre elles**, qui étaient en réalité des logos, vieilles publicités,
-cartes ou photos hors-sujet, ont été remplacées par de **vraies planches botaniques
-du domaine public** correspondant à l'ingrédient principal (majoritairement les
-planches de Köhler, *Medizinal-Pflanzen* ; aussi Redouté, Flora Batava, Thomé) —
-ex. café → *Coffea arabica*, troussepinette → *Prunus spinosa*, vin tonique →
-*Cinchona officinalis* (quinquina).
+**Les 368 spécimens** sont désormais de **vraies planches botaniques du domaine
+public en haute définition** (≈1350 px), une par recette, sourcées sur Wikimedia
+Commons selon l'ingrédient principal — majoritairement les planches de **Köhler**
+(*Medizinal-Pflanzen*), complétées par **Thomé**, **Redouté**, **Flora Batava**,
+**Vietz**, **Pomona Italiana**, USDA Pomological, etc. Sourcing mené par workflow
+multi-agents (un lot de recettes par agent, recherche + vérification HD sur l'API
+Commons), puis téléchargement des originaux et redimensionnement local.
+
+Exemples : café → *Coffea arabica*, cassis → *Ribes nigrum*, génépi → *Artemisia*,
+troussepinette → *Prunus spinosa*, vin tonique du pape → *Cinchona officinalis*
+(quinquina), bounty → *Cocos nucifera*. Les versions basse définition d'origine
+(blog hypocras.blog4ever.com + premiers compléments) sont conservées hors dépôt.
 
 ## Fonds (textures de papier)
 
