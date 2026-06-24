@@ -1888,43 +1888,120 @@ img.topbar__sceau{
 }
 :root[data-theme="sombre"] .timeline .ph{ background:rgba(20,16,10,.4); }
 
-/* --- 6. IMPRESSION A4 : une planche tient sur une page --- */
+/* --- 6. IMPRESSION A4 : planche d'herbier gravée, harmonieuse, sur 1 page --- */
 @media print{
+  /* 1 — cadence verticale unique + encre de gravure (gris anthracite) */
+  :root{ --rythm:3.6pt; --ink-print:#1f1d19; --rule:#3a362f; --rule-fin:#6f6a61; }
   @page{ size:A4; margin:11mm 13mm; }
-  html, body{ font-size:10.5px; line-height:1.32; }
+  html, body{ color:var(--ink-print) !important; font-size:10.25px; line-height:1.4; }
+  .cover, .plate, .cartouche, .calc, a{ color:var(--ink-print) !important; }
   .wrap, .contenu, .cadre{ padding:0 !important; margin:0 !important; max-width:none !important; }
-  .ariane, .sheet-head, .plate-foot, .voisines, .print-opts,
-  .cote-inv, .stain, .tape, .pen, .marginalia{ display:none !important; }
-  .plate{ border:none !important; padding:0 !important; box-shadow:none !important; }
-  .plate::before, .plate::after, .specimen-mount::before{ display:none !important; }
-  .plate-banner{ border-bottom:1px solid #000; margin-bottom:7px; padding-bottom:4px; }
-  .plate-banner .institut{ font-size:10px; }
-  .plate-banner .planche-no{ font-size:13px; }
-  .plate-body{ display:flex; gap:12px; align-items:flex-start; margin:0; }
-  .specimen-mount{ flex:0 0 36mm; margin:0; }
-  .specimen-frame{ transform:none !important; margin:0; }
-  .specimen-frame img{ max-height:42mm; width:auto; border:1px solid #999; box-shadow:none !important; filter:none !important; }
-  .cartouche{ flex:1; transform:none !important; box-shadow:none !important; padding:0 !important; background:#fff !important; }
-  .cartouche h1.vern{ font-size:15px; margin:0 0 6px; }
-  .cartouche .genus{ font-size:11px; }
-  .cartouche .specs{ gap:8px; }
-  .cartouche .spec .v{ font-size:14px; }
-  .cartouche dl{ font-size:10px; }
-  .recipe{ margin-top:9px; }
-  .recipe-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-  .section-title{ font-size:12.5px; margin:7px 0 4px !important; }
-  .lede{ font-size:10.5px; line-height:1.34; margin:0 0 8px; }
-  .lede::first-letter{ font-size:2.3em; }
-  .ingredients th, .ingredients td{ padding:2px 5px; font-size:10px; }
-  .ingredients .ck{ display:none; }
-  ol.prep{ font-size:10px; line-height:1.32; padding-left:20px; }
-  ol.prep li{ margin-bottom:3px; }
-  ol.prep li::before{ display:none; }
-  .timeline{ gap:4px; }
-  .timeline .ph{ padding:3px 6px; font-size:9.5px; }
-  .pen-note, .dicton{ font-size:10px; }
-  .lore p{ font-size:10px; }
+  .ariane, .sheet-head, .voisines, .print-opts, .cote-inv, .stain, .tape, .pen, .marginalia,
   .lot-calc, .cartouche-actions{ display:none !important; }
+
+  /* cadre gravé de la planche (répété sur chaque page) + plat qui remplit la feuille */
+  body::before{ content:""; position:fixed; inset:7mm; border:.75pt solid var(--rule-fin);
+    box-shadow:inset 0 0 0 1.4pt #fff, inset 0 0 0 2.1pt rgba(58,54,47,.45); pointer-events:none; z-index:0; }
+  .plate{ border:none !important; padding:0 !important; box-shadow:none !important;
+    display:flex; flex-direction:column; min-height:255mm; }
+  .plate::before, .plate::after, .specimen-mount::before{ display:none !important; }
+
+  /* 2 — bandeau de tête aligné, filet noir d'ancrage */
+  .plate-banner{ display:flex; justify-content:space-between; align-items:baseline; gap:18px;
+    border-bottom:.9pt solid #14120e; margin:0 0 calc(var(--rythm)*2); padding-bottom:calc(var(--rythm)*1.2); }
+  .plate-banner .institut{ font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:#4a463f; }
+  .plate-banner .planche-no{ font-size:13px; letter-spacing:.08em; color:var(--ink-print); }
+  .plate-banner .right{ text-align:right; line-height:1.4; font-size:9px; letter-spacing:.06em;
+    color:#3a362f; font-variant-numeric:lining-nums tabular-nums; }
+  .plate-banner .right *{ color:#3a362f !important; background:none !important; }
+
+  /* 3 — en-tête : spécimen + cartouche, calés en haut */
+  .plate-body{ display:flex; gap:11mm; align-items:flex-start; margin:0 0 calc(var(--rythm)*2.5); }
+  .specimen-mount{ flex:0 0 40mm; margin:0; padding:0; }
+  .specimen-frame{ width:100%; margin:0; transform:none !important; }
+  .specimen-frame img{ display:block; margin:0 auto; max-height:48mm; width:auto; max-width:100%;
+    background:#fff !important; border:.75pt solid var(--rule); box-shadow:none !important; filter:none !important; }
+  .cartouche{ flex:1; padding:0 !important; transform:none !important; background:#fff !important;
+    box-shadow:none !important; border:none !important; }
+
+  /* 4 — hiérarchie du cartouche */
+  .cartouche h1.vern{ font-size:15.5px; line-height:1.12; letter-spacing:.07em; margin:0 0 var(--rythm); color:var(--ink-print); }
+  .cartouche .genus{ font-style:italic; font-size:11px; color:#3a362f; margin:0 0 calc(var(--rythm)*1.2); line-height:1.15; }
+  .cartouche .id-rule{ border-top:.75pt solid var(--rule) !important; margin:calc(var(--rythm)*1.5) 0 calc(var(--rythm)*2) !important; }
+
+  /* 5 — specs en 3 colonnes régulières */
+  .cartouche .specs{ display:flex; gap:0; margin:calc(var(--rythm)*2) 0 calc(var(--rythm)*1.5); border:.5pt solid var(--rule); }
+  .cartouche .specs .spec{ flex:1 1 0; min-width:0; text-align:center; padding:5px 3px; border-right:.5pt solid var(--rule-fin); }
+  .cartouche .specs .spec:last-child{ border-right:none; }
+  .cartouche .specs .spec .v{ font-size:13px; line-height:1; color:var(--ink-print); font-variant-numeric:lining-nums tabular-nums; }
+  .cartouche .specs .spec .l{ font-size:8px; letter-spacing:.1em; text-transform:uppercase; color:#46423b; margin-top:3px; }
+
+  /* 6 — liste clé/valeur du cartouche */
+  .cartouche dl{ font-size:9.5px; line-height:1.4; color:var(--ink-print); margin:0; }
+  .cartouche dl .line{ display:flex; justify-content:space-between; gap:10px; padding:3px 0; border-bottom:.5pt dotted var(--rule-fin); }
+  .cartouche dl .line:last-child{ border-bottom:none; }
+  .cartouche dl dt{ color:#46423b; font-size:9px; letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
+  .cartouche dl dd{ margin:0; text-align:right; color:var(--ink-print); font-variant-numeric:lining-nums tabular-nums; }
+
+  /* 7 — corps : on récupère l'espace mort de tête */
+  .recipe{ margin-top:calc(var(--rythm)*3); padding-top:calc(var(--rythm)*2.5); border-top:.9pt solid var(--rule); }
+
+  /* 8 — colonnes équilibrées + filet de gouttière */
+  .recipe-grid{ display:grid; grid-template-columns:1fr 1.18fr; gap:11mm; align-items:start; }
+  .recipe-grid > *:last-child{ border-left:.5pt solid var(--rule-fin); padding-left:11mm; }
+  .recipe-grid > *{ break-inside:avoid; }
+
+  /* 9 — numéros d'étape : décimales discrètes (rétablis) */
+  ol.prep{ font-size:10px; line-height:1.4; padding-left:0; margin:0; }
+  ol.prep li{ position:relative; padding:0 0 calc(var(--rythm)*1.25) 7.5mm; margin:0; max-width:none; }
+  ol.prep li:last-child{ padding-bottom:0; }
+  ol.prep li::before{ display:flex !important; content:counter(step) "."; position:absolute; left:0; top:0; width:6mm;
+    align-items:baseline; justify-content:flex-end; padding-right:1.5mm;
+    font-family:'Special Elite',monospace; font-size:9.5px; color:var(--ink-print);
+    border:none; background:none; box-shadow:none; border-radius:0; transform:none;
+    font-variant-numeric:lining-nums tabular-nums; }
+
+  /* 10 — tableau d'ingrédients */
+  table.ingredients{ font-size:10px; }
+  .ingredients th{ padding:0 0 3px; font-size:8px; letter-spacing:.12em; color:var(--ink-print); border-bottom:.75pt solid var(--rule); }
+  .ingredients td{ padding:calc(var(--rythm)*0.6) 0; border-bottom:.5pt solid var(--rule-fin); color:var(--ink-print); }
+  .ingredients td.nom{ font-size:11px; }
+  .ingredients td.qte{ font-size:9.5px; padding-right:8px; color:var(--ink-print); font-variant-numeric:lining-nums tabular-nums; }
+  .ingredients .ck{ display:none; }
+
+  /* 11 — titres de section + rythme des blocs + lettrine calmée */
+  .section-title{ font-size:11.5px; letter-spacing:.15em; color:var(--ink-print); margin:0 0 calc(var(--rythm)*1.5) !important; gap:3mm; }
+  .section-title::after{ border-top:.5pt solid var(--rule); }
+  .bloc-chrono, .bloc-vertus{ margin-top:calc(var(--rythm)*3.5) !important; }
+  .bloc-chrono .section-title, .bloc-vertus .section-title{ margin-top:0 !important; }
+  .lede{ font-size:10.5px; line-height:1.4; margin:0 0 calc(var(--rythm)*2.5); color:#2a2825; }
+  .lede::first-letter{ font-size:2.05em; line-height:.9; padding:1px 5px 0 0; color:var(--ink-print); }
+
+  /* 12 — chronologie */
+  .timeline{ gap:0; border-color:var(--rule); break-inside:avoid; }
+  .timeline .ph{ padding:2.5px 6px; border-right:.5pt solid var(--rule-fin); }
+  .timeline .ph .p{ font-size:9px; letter-spacing:.06em; color:var(--ink-print); }
+  .timeline .ph .d{ font-size:9px; color:#3a362f; margin-top:1px; font-variant-numeric:lining-nums tabular-nums; }
+  .pen-note{ font-size:10px; }
+  .lore p{ font-size:10px; }
+
+  /* 13 — pied de planche, ancré en bas (remplit la feuille) */
+  .plate-foot{ display:flex !important; justify-content:space-between; align-items:baseline;
+    margin-top:auto; padding-top:calc(var(--rythm)*1.2); border-top:.5pt solid var(--rule);
+    font-family:'Special Elite',monospace; font-size:8.5px; letter-spacing:.12em; text-transform:uppercase;
+    color:#56514a; font-variant-numeric:lining-nums tabular-nums; }
+
+  /* 14 — exergue du dicton + garde-fous anti-coupure */
+  .dicton{ text-align:center; font-family:'Cormorant',serif; font-style:italic; font-size:11px; line-height:1.4;
+    color:var(--rule); margin:calc(var(--rythm)*3) auto 0; max-width:62%; text-wrap:balance; }
+  .dicton::before{ content:""; display:block; width:16mm; height:0; margin:0 auto 6px; border-top:.5pt solid var(--rule); }
+  .dicton .src{ display:block; margin-top:5px; font-family:'Special Elite',monospace; font-style:normal;
+    font-size:7.5px; letter-spacing:.18em; text-transform:uppercase; color:#6a655c; }
+  table.ingredients, .timeline, .ingredients tr, .bloc-chrono, .bloc-vertus{ break-inside:avoid; }
+  .section-title, h1.vern, .genus{ break-after:avoid; }
+  .recipe p, .lede, .lore p, ol.prep li{ orphans:2; widows:2; }
+
+  /* options : sections décochées dans le panneau d'impression */
   body.po-no-specimen .specimen-mount{ display:none !important; }
   body.po-no-histoire .lede{ display:none !important; }
   body.po-no-chrono .bloc-chrono{ display:none !important; }
